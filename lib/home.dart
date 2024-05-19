@@ -314,8 +314,8 @@ class _HomeState extends State<Home> {
   }
 
   void loadNextSongInformation() async {
-    //3 seconds
-    Timer.periodic(Duration(milliseconds: 3000), (timer) async {
+    //10 seconds
+    Timer.periodic(Duration(milliseconds: 10000), (timer) async {
       //Next
       //Need to create diff urls in the future
       final urlNext = Uri.parse(kstream[currentStationIndex].urlNext);
