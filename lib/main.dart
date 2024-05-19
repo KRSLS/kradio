@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kradio/home.dart';
 import 'package:flutter/services.dart';
+import 'package:kradio/welcomeScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'KRadio',
       theme: ThemeData(
         brightness: Brightness.light,
         useMaterial3: true,
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: WelcomeScreen(),
     );
   }
 }
