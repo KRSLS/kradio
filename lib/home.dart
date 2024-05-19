@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kradio/kstream.dart';
 import 'package:kradio/playerScreen.dart';
+import 'package:kradio/settings.dart';
 
 import 'package:radio_player/radio_player.dart';
 import 'package:headset_connection_event/headset_event.dart';
@@ -370,10 +371,14 @@ class _HomeState extends State<Home> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Settings();
+                    }));
+                  },
                   title: Text(
                     'Settings',
-                    style: TextStyle(fontSize: 18),
                   ),
                   trailing: Icon(Icons.settings_rounded),
                 ),
