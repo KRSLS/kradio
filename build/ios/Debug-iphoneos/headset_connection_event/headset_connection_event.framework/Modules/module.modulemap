@@ -1,0 +1,11 @@
+framework module headset_connection_event {
+  umbrella header "headset_connection_event-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module headset_connection_event.Swift {
+  header "headset_connection_event-Swift.h"
+  requires objc
+}
