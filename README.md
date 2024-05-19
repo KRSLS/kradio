@@ -1,6 +1,7 @@
 # KRadio
 
-A clean radio player.
+A clean radio player for android & ios devices.
+At the moment only android is supported.
 
 ## Guide etc TBA
 
