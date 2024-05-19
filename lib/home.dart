@@ -188,16 +188,16 @@ class _HomeState extends State<Home> {
 
   int currentStationIndex = 0;
   void changeRadioStation(int index) async {
-    // radioPlayer.stop();
+    setState(() {
+      currentStationIndex = index;
+    });
+    await radioPlayer.stop();
     await radioPlayer.setChannel(
       title: kstream[index].title,
       url: kstream[index].url,
       imagePath: kstream[index].urlImage,
     );
-    radioPlayer.play();
-    setState(() {
-      currentStationIndex = index;
-    });
+    await radioPlayer.play();
   }
 
   void previousStation() {
@@ -418,8 +418,7 @@ class _HomeState extends State<Home> {
                           SnackBar(
                             content: Text(
                               'Artist copied.',
-                              style:
-                                  TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
                         );
@@ -443,8 +442,7 @@ class _HomeState extends State<Home> {
                           SnackBar(
                             content: Text(
                               'Title copied.',
-                              style:
-                                  TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
                         );
@@ -470,8 +468,7 @@ class _HomeState extends State<Home> {
                             SnackBar(
                               content: Text(
                                 'Next song copied.',
-                                style: TextStyle(
-                                    fontSize: 16),
+                                style: TextStyle(fontSize: 16),
                               ),
                             ),
                           );
@@ -583,10 +580,12 @@ class _HomeState extends State<Home> {
                                                       : Text('TBA'),
                                                   trailing: IconButton(
                                                     onPressed: () {
-                                                      kstream[index]
-                                                              .isFavorite =
-                                                          !kstream[index]
-                                                              .isFavorite;
+                                                      setState(() {
+                                                        kstream[currentStationIndex]
+                                                            .isFavorite = !kstream[
+                                                                currentStationIndex]
+                                                            .isFavorite;
+                                                      });
                                                     },
                                                     icon: Icon(kstream[index]
                                                             .isFavorite
