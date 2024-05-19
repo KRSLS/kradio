@@ -17,7 +17,9 @@ import 'package:xml/xml_events.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({super.key, required this.startWithStation});
+
+  final int startWithStation;
 
   @override
   State<Home> createState() => _HomeState();
@@ -27,6 +29,7 @@ class _HomeState extends State<Home> {
   RadioPlayer radioPlayer = RadioPlayer();
   bool isPlaying = false;
   List<String>? metadata;
+  String currentStreamTitle = '';
 
   List<KStream> kstream = [
     KStream(
@@ -171,6 +174,56 @@ class _HomeState extends State<Home> {
   final headsetPlugin = HeadsetEvent();
   HeadsetState? headsetState;
 
+  @override
+  void initState() {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    // TODO: implement initState
+    super.initState();
+
+    checkForInternet();
+
+    initRadioPlayer();
+
+    loadNextSongInformation();
+
+    changeRadioStation(widget.startWithStation);
+
+    currentStreamTitle = kstream[currentStationIndex].title;
+
+    ///Request Permissions (Required for Android 12)
+    headsetPlugin.requestPermission();
+
+    /// if headset is plugged
+    headsetPlugin.getCurrentState.then((_val) {
+      setState(() {
+        headsetState = _val;
+      });
+    });
+
+    /// Detect the moment headset is plugged or unplugged
+    headsetPlugin.setListener((_val) {
+      setState(() {
+        headsetState = _val;
+        if (this.headsetState == HeadsetState.DISCONNECT) {
+          radioPlayer.stop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:
+                  Text('Audio output device disconnected, stopped playing.'),
+              action: SnackBarAction(
+                label: ('Okay'),
+                onPressed: () {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                },
+              ),
+            ),
+          );
+        }
+      });
+    });
+  }
+
   void initRadioPlayer() {
     radioPlayer.stateStream.listen((value) {
       setState(() {
@@ -212,52 +265,6 @@ class _HomeState extends State<Home> {
       changeRadioStation(0);
     } else
       changeRadioStation(currentStationIndex + 1);
-  }
-
-  @override
-  void initState() {
-    WidgetsFlutterBinding.ensureInitialized();
-
-    // TODO: implement initState
-    super.initState();
-
-    checkForInternet();
-
-    initRadioPlayer();
-
-    loadNextSongInformation();
-
-    ///Request Permissions (Required for Android 12)
-    headsetPlugin.requestPermission();
-
-    /// if headset is plugged
-    headsetPlugin.getCurrentState.then((_val) {
-      setState(() {
-        headsetState = _val;
-      });
-    });
-
-    /// Detect the moment headset is plugged or unplugged
-    headsetPlugin.setListener((_val) {
-      setState(() {
-        headsetState = _val;
-        if (this.headsetState == HeadsetState.DISCONNECT) {
-          radioPlayer.stop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content:
-                  Text('Audio output device disconnected, stopped playing.'),
-              action: SnackBarAction(
-                label: ('Okay'),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                },
-              ),
-            ),
-          );
-        }
-      });
-    });
   }
 
   bool showNextSong = false;
@@ -327,6 +334,9 @@ class _HomeState extends State<Home> {
         var tempNextArtist = XmlDocument.parse(nextArtist);
         nextArtist = tempNextArtist.findAllElements('Artist').toString();
         nextArtist = nextArtist.substring(15, nextArtist.indexOf("ID") - 2);
+
+        //change current title for the appbar
+        currentStreamTitle = kstream[currentStationIndex].title;
       });
     });
   }
@@ -336,6 +346,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         leading: Builder(
           builder: (context) {
@@ -347,7 +358,7 @@ class _HomeState extends State<Home> {
             );
           },
         ),
-        title: Text('KRadio'),
+        title: Text(currentStreamTitle),
       ),
       drawer: Drawer(
         child: Padding(
@@ -356,10 +367,15 @@ class _HomeState extends State<Home> {
             child: Column(
               children: [
                 ListTile(
-                  title: Text('Radio List'),
-                ),
-                ListTile(
-                  title: Text('Settings'),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  onTap: () {},
+                  title: Text(
+                    'Settings',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  trailing: Icon(Icons.settings_rounded),
                 ),
               ],
             ),
@@ -384,230 +400,272 @@ class _HomeState extends State<Home> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Center(
-                    child: Text(
-                      kstream[currentStationIndex].title,
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 52.0),
-                    child: Center(
-                      child: Material(
-                        elevation: 30,
-                        shadowColor: Color.fromARGB(255, 145, 57, 183),
-                        // shadowColor: Colors.purple,
-                        borderRadius: BorderRadius.circular(20),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.network(
-                            kstream[currentStationIndex].urlImage.toString(),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onLongPress: () {
-                        HapticFeedback.lightImpact();
-                        Clipboard.setData(
-                            ClipboardData(text: '${metadata?[0]}'));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Artist copied.',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        metadata?[0] ?? 'Loading...',
-                        overflow: TextOverflow.fade,
-                        style: TextStyle(fontSize: 24),
-                        maxLines: 1,
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onLongPress: () {
-                        HapticFeedback.lightImpact();
-                        Clipboard.setData(
-                            ClipboardData(text: '${metadata?[1]}'));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Title copied.',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        metadata?[1] ?? 'Loading...',
-                        overflow: TextOverflow.fade,
-                        style: TextStyle(fontSize: 18),
-                        maxLines: 1,
-                      ),
-                    ),
-                  ),
-                  Visibility(
-                    visible: showNextSong,
-                    child: Center(
-                      child: GestureDetector(
-                        onLongPress: () {
-                          HapticFeedback.lightImpact();
-                          Clipboard.setData(ClipboardData(
-                              text: '${nextSong} - ${nextArtist}'));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Next song copied.',
-                                style: TextStyle(fontSize: 16),
+                  // Center(
+                  //   child: Text(
+                  //     kstream[currentStationIndex].title,
+                  //     style: TextStyle(fontSize: 24),
+                  //   ),
+                  // ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 30.0, horizontal: 30.0),
+                        child: Center(
+                          child: Container(
+                            width: double.infinity,
+                            child: Material(
+                              elevation: 50,
+                              shadowColor: Color.fromARGB(255, 145, 57, 183),
+                              // shadowColor: Colors.purple,
+                              borderRadius: BorderRadius.circular(20),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  fit: BoxFit.cover,
+                                  kstream[currentStationIndex]
+                                      .urlImage
+                                      .toString(),
+                                ),
                               ),
                             ),
-                          );
-                        },
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          'Next song: ${nextSong} by ${nextArtist}',
-                          style: TextStyle(
-                            fontSize: 18,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.fade,
                         ),
                       ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            kstream[currentStationIndex].isFavorite =
-                                !kstream[currentStationIndex].isFavorite;
-                          });
-                        },
-                        icon: Icon(
-                          kstream[currentStationIndex].isFavorite
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_outline_rounded,
-                          size: 38,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          previousStation();
-                        },
-                        icon: Icon(
-                          Icons.arrow_circle_left_rounded,
-                          size: 52,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          isPlaying ? radioPlayer.stop() : radioPlayer.play();
-                        },
-                        icon: Icon(
-                          !isPlaying
-                              ? Icons.play_circle_rounded
-                              : Icons.pause_circle_rounded,
-                          size: 86,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          nextStation();
-                        },
-                        icon: Icon(
-                          Icons.arrow_circle_right_rounded,
-                          size: 52,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return StatefulBuilder(builder:
-                                    (BuildContext context,
-                                        StateSetter setState) {
-                                  return Padding(
-                                    padding: EdgeInsets.all(6.0),
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                            padding: EdgeInsets.all(6.0),
-                                            child: Text(
-                                              'Radio List',
-                                              style: TextStyle(fontSize: 20),
-                                            )),
-                                        Divider(),
-                                        Expanded(
-                                          child: ListView.builder(
-                                              itemCount: kstream.length,
-                                              itemBuilder: (context, index) {
-                                                return ListTile(
-                                                  leading: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    child: Image.network(
-                                                      fit: BoxFit.fitWidth,
-                                                      kstream[index]
-                                                          .urlImage
-                                                          .toString(),
-                                                    ),
-                                                  ),
-                                                  onTap: () {
-                                                    changeRadioStation(index);
-                                                    Navigator.pop(context);
-                                                  },
-                                                  title: Text(
-                                                      kstream[index].title),
-                                                  subtitle: kstream[index]
-                                                              .description !=
-                                                          null
-                                                      ? Text(kstream[index]
-                                                          .description!)
-                                                      : Text('TBA'),
-                                                  trailing: IconButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        kstream[currentStationIndex]
-                                                            .isFavorite = !kstream[
-                                                                currentStationIndex]
-                                                            .isFavorite;
-                                                      });
-                                                    },
-                                                    icon: Icon(kstream[index]
-                                                            .isFavorite
-                                                        ? Icons.favorite_rounded
-                                                        : Icons
-                                                            .favorite_outline_rounded),
-                                                  ),
-                                                );
-                                              }),
-                                        ),
-                                      ],
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Center(
+                            child: GestureDetector(
+                              onLongPress: () {
+                                HapticFeedback.lightImpact();
+                                Clipboard.setData(
+                                    ClipboardData(text: '${metadata?[0]}'));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Artist copied.',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                metadata?[0] ?? 'Loading...',
+                                overflow: TextOverflow.fade,
+                                style: TextStyle(fontSize: 24),
+                                // maxLines: 1,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: GestureDetector(
+                              onLongPress: () {
+                                HapticFeedback.lightImpact();
+                                Clipboard.setData(
+                                    ClipboardData(text: '${metadata?[1]}'));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Title copied.',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                metadata?[1] ?? 'Loading...',
+                                overflow: TextOverflow.fade,
+                                style: TextStyle(fontSize: 18),
+                                // maxLines: 1,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Visibility(
+                            visible: showNextSong,
+                            child: Center(
+                              child: GestureDetector(
+                                onLongPress: () {
+                                  HapticFeedback.lightImpact();
+                                  Clipboard.setData(ClipboardData(
+                                      text: '${nextSong} - ${nextArtist}'));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Next song copied.',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
                                     ),
                                   );
-                                });
-                              });
-                        },
-                        icon: Icon(
-                          Icons.list_alt_rounded,
-                          size: 38,
-                        ),
+                                },
+                                child: Text(
+                                  textAlign: TextAlign.center,
+                                  'Next: ${nextSong} by ${nextArtist}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                  // maxLines: 1,
+                                  overflow: TextOverflow.fade,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: MediaQuery.of(context).platformBrightness ==
+                              Brightness.light
+                          ? Color.fromARGB(30, 0, 0, 0)
+                          : Color.fromARGB(30, 255, 255, 255),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                kstream[currentStationIndex].isFavorite =
+                                    !kstream[currentStationIndex].isFavorite;
+                              });
+                            },
+                            icon: Icon(
+                              kstream[currentStationIndex].isFavorite
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_outline_rounded,
+                              size: 38,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              previousStation();
+                            },
+                            icon: Icon(
+                              Icons.arrow_circle_left_rounded,
+                              size: 52,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              isPlaying
+                                  ? radioPlayer.stop()
+                                  : radioPlayer.play();
+                            },
+                            icon: Icon(
+                              !isPlaying
+                                  ? Icons.play_circle_rounded
+                                  : Icons.pause_circle_rounded,
+                              size: 86,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              nextStation();
+                            },
+                            icon: Icon(
+                              Icons.arrow_circle_right_rounded,
+                              size: 52,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return StatefulBuilder(builder:
+                                        (BuildContext context,
+                                            StateSetter setState) {
+                                      return Padding(
+                                        padding: EdgeInsets.all(6.0),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Text(
+                                                  'Radio List',
+                                                  style:
+                                                      TextStyle(fontSize: 20),
+                                                )),
+                                            Divider(),
+                                            Expanded(
+                                              child: ListView.builder(
+                                                  itemCount: kstream.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return ListTile(
+                                                      leading: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        child: Image.network(
+                                                          fit: BoxFit.fitWidth,
+                                                          kstream[index]
+                                                              .urlImage
+                                                              .toString(),
+                                                        ),
+                                                      ),
+                                                      onTap: () {
+                                                        changeRadioStation(
+                                                            index);
+                                                        Navigator.pop(context);
+                                                      },
+                                                      title: Text(
+                                                          kstream[index].title),
+                                                      subtitle: kstream[index]
+                                                                  .description !=
+                                                              null
+                                                          ? Text(kstream[index]
+                                                              .description!)
+                                                          : Text('TBA'),
+                                                      trailing: IconButton(
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            kstream[currentStationIndex]
+                                                                    .isFavorite =
+                                                                !kstream[
+                                                                        currentStationIndex]
+                                                                    .isFavorite;
+                                                          });
+                                                        },
+                                                        icon: Icon(kstream[
+                                                                    index]
+                                                                .isFavorite
+                                                            ? Icons
+                                                                .favorite_rounded
+                                                            : Icons
+                                                                .favorite_outline_rounded),
+                                                      ),
+                                                    );
+                                                  }),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                                  });
+                            },
+                            icon: Icon(
+                              Icons.list_alt_rounded,
+                              size: 38,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
