@@ -317,6 +317,7 @@ class _HomeState extends State<Home> {
     //3 seconds
     Timer.periodic(Duration(milliseconds: 3000), (timer) async {
       //Next
+      //Need to create diff urls in the future
       final urlNext = Uri.parse(kstream[currentStationIndex].urlNext);
       final requestNext = await HttpClient().getUrl(urlNext);
       final responseNext = await requestNext.close();
