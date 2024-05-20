@@ -149,7 +149,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       isFavorite: false,
     ),
   ];
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
