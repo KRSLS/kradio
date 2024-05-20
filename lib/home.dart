@@ -747,7 +747,6 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                           ),
-                          Text(sleepTimerTest),
                         ],
                       ),
                     ],
