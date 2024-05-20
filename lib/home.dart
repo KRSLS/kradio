@@ -371,6 +371,9 @@ class _HomeState extends State<Home> {
       if (enableSleepTimer) {
         print('Sleep timer execution.');
         await radioPlayer.stop();
+        setState(() {
+          enableSleepTimer = false;
+        });
       } else
         print('Sleep timer execution but the options is not enabled.');
     });
