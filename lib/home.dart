@@ -10,9 +10,11 @@ import 'package:flutter/widgets.dart';
 import 'package:kradio/kstream.dart';
 import 'package:kradio/playerScreen.dart';
 import 'package:kradio/settings.dart';
+import 'package:kradio/welcomeScreen.dart';
 
 import 'package:radio_player/radio_player.dart';
 import 'package:headset_connection_event/headset_event.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:xml/xml.dart';
 import 'package:xml/xml_events.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -175,6 +177,20 @@ class _HomeState extends State<Home> {
   final headsetPlugin = HeadsetEvent();
   HeadsetState? headsetState;
 
+  int currentStationIndex = 0;
+
+  bool showNextSong = false;
+  String nextSong = '';
+  String nextArtist = '';
+
+  String previousSong = '';
+  String previousArtist = '';
+
+  bool enableSleepTimer = false;
+  double sleepTimer = 60.0;
+  double maxSleepTimer = 120;
+  String sleepTimerTest = 'running';
+
   @override
   void initState() {
     WidgetsFlutterBinding.ensureInitialized();
@@ -182,27 +198,36 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
 
+    //Check for internet listener
     checkForInternet();
 
+    //Initialize radio player
     initRadioPlayer();
 
+    //Load the next song information
+    //xml parsing //run every 5 seconds
     loadNextSongInformation();
 
+    //Start radio with the users selected radio station
+    //passed from the previous screen
     changeRadioStation(widget.startWithStation);
 
+    //set the csi to the data passed from previous screen
+    currentStationIndex = widget.startWithStation;
+    //set the app bar title to the current station title
     currentStreamTitle = kstream[currentStationIndex].title;
 
-    ///Request Permissions (Required for Android 12)
+    //request permissions for the package
     headsetPlugin.requestPermission();
 
-    /// if headset is plugged
+    //set the current state of audio output
     headsetPlugin.getCurrentState.then((_val) {
       setState(() {
         headsetState = _val;
       });
     });
 
-    /// Detect the moment headset is plugged or unplugged
+    //listen for changes to audio output
     headsetPlugin.setListener((_val) {
       setState(() {
         headsetState = _val;
@@ -240,7 +265,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-  int currentStationIndex = 0;
   void changeRadioStation(int index) async {
     setState(() {
       currentStationIndex = index;
@@ -267,13 +291,6 @@ class _HomeState extends State<Home> {
     } else
       changeRadioStation(currentStationIndex + 1);
   }
-
-  bool showNextSong = false;
-  String nextSong = '';
-  String nextArtist = '';
-
-  String previousSong = '';
-  String previousArtist = '';
 
   void checkForInternet() async {
     final listener =
@@ -343,6 +360,186 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void sleep() {
+    //Star a timer with the time that the user selects
+    //Double to int
+    Timer t = Timer(Duration(minutes: sleepTimer.toInt()), () async {
+      //Only run the code bellow if the option is still enabled
+      if (enableSleepTimer) {
+        print('Sleep timer execution.');
+        await radioPlayer.stop();
+      } else
+        print('Sleep timer execution but the options is not enabled.');
+    });
+  }
+
+  void modalRadioList() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(6.0),
+                      child: Text(
+                        'Radio List',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: kstream.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  fit: BoxFit.fitWidth,
+                                  kstream[index].urlImage.toString(),
+                                ),
+                              ),
+                              onTap: () {
+                                changeRadioStation(index);
+                                Navigator.pop(context);
+                              },
+                              title: Text(kstream[index].title),
+                              subtitle: kstream[index].description != null
+                                  ? Text(kstream[index].description!)
+                                  : Text('TBA'),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    kstream[currentStationIndex].isFavorite =
+                                        !kstream[currentStationIndex]
+                                            .isFavorite;
+                                  });
+                                },
+                                icon: Icon(kstream[index].isFavorite
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_outline_rounded),
+                              ),
+                            );
+                          }),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+  }
+
+  void modalPlayerProperties() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              width: double.infinity,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(6.0),
+                      child: Text(
+                        'Menu',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.share_rounded),
+                      title: Text('Share'),
+                      subtitle: Text('Share the vibes with someone.'),
+                      onTap: () async {
+                        await Share.share(kstream[currentStationIndex].url);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(enableSleepTimer
+                          ? Icons.mode_night_rounded
+                          : Icons.mode_night_outlined),
+                      title: Text('Sleep timer'),
+                      subtitle: Text('Stop the player after some time.'),
+                      onTap: () {
+                        modalSleepTimer();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+  }
+
+  void modalSleepTimer() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              width: double.infinity,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(6.0),
+                      child: Text(
+                        'Sleep timer',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    CheckboxListTile(
+                        title: Text('Enable'),
+                        subtitle:
+                            Text('This will stop the player after some time.'),
+                        value: enableSleepTimer,
+                        onChanged: (value) {
+                          setState(() {
+                            enableSleepTimer = value!;
+                          });
+                        }),
+                    Visibility(
+                        visible: enableSleepTimer,
+                        child: Slider(
+                          min: 0,
+                          max: maxSleepTimer,
+                          divisions: maxSleepTimer.toInt(),
+                          label: sleepTimer.round().toString() + ' min',
+                          value: sleepTimer,
+                          onChanged: (value) {
+                            setState(() {
+                              sleepTimer = value;
+                            });
+                          },
+                          onChangeEnd: (value) {
+                            //if the value at the end of the drag is 0
+                            // then just disable the sleep feature
+                            if (value == 0) {
+                              setState(() {
+                                enableSleepTimer = false;
+                              });
+                            } else
+                              sleep();
+                          },
+                        )),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -353,21 +550,42 @@ class _HomeState extends State<Home> {
         leading: Builder(
           builder: (context) {
             return IconButton(
+              tooltip: 'Drawer',
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
-              icon: Icon(Icons.menu_outlined),
+              icon: Icon(Icons.menu_rounded),
             );
           },
         ),
         title: Text(currentStreamTitle),
+        actions: [
+          IconButton(
+            tooltip: 'Sleep Timer',
+            onPressed: () {
+              modalSleepTimer();
+            },
+            icon: Icon(enableSleepTimer
+                ? Icons.mode_night_rounded
+                : Icons.mode_night_outlined),
+          ),
+          IconButton(
+            tooltip: 'Properties',
+            onPressed: () {
+              modalPlayerProperties();
+            },
+            icon: Icon(Icons.more_vert_rounded),
+          ),
+        ],
       ),
       drawer: Drawer(
         child: Padding(
           padding: EdgeInsets.all(6.0),
           child: SafeArea(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                SizedBox(),
                 ListTile(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -421,6 +639,7 @@ class _HomeState extends State<Home> {
                         child: Center(
                           child: Container(
                             width: double.infinity,
+                            height: 300,
                             child: Material(
                               elevation: 50,
                               shadowColor: Color.fromARGB(255, 145, 57, 183),
@@ -525,6 +744,7 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                           ),
+                          Text(sleepTimerTest),
                         ],
                       ),
                     ],
@@ -540,9 +760,10 @@ class _HomeState extends State<Home> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 20.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           IconButton(
+                            tooltip: 'Favorite',
                             onPressed: () {
                               setState(() {
                                 kstream[currentStationIndex].isFavorite =
@@ -557,6 +778,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           IconButton(
+                            tooltip: 'Previous',
                             onPressed: () {
                               previousStation();
                             },
@@ -566,6 +788,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           IconButton(
+                            tooltip: isPlaying ? 'Stop' : 'Play',
                             onPressed: () {
                               isPlaying
                                   ? radioPlayer.stop()
@@ -579,6 +802,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           IconButton(
+                            tooltip: 'Next',
                             onPressed: () {
                               nextStation();
                             },
@@ -588,81 +812,9 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           IconButton(
+                            tooltip: 'Radio List',
                             onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return StatefulBuilder(builder:
-                                        (BuildContext context,
-                                            StateSetter setState) {
-                                      return Padding(
-                                        padding: EdgeInsets.all(6.0),
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                                padding: EdgeInsets.all(6.0),
-                                                child: Text(
-                                                  'Radio List',
-                                                  style:
-                                                      TextStyle(fontSize: 20),
-                                                )),
-                                            Divider(),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                  itemCount: kstream.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return ListTile(
-                                                      leading: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20),
-                                                        child: Image.network(
-                                                          fit: BoxFit.fitWidth,
-                                                          kstream[index]
-                                                              .urlImage
-                                                              .toString(),
-                                                        ),
-                                                      ),
-                                                      onTap: () {
-                                                        changeRadioStation(
-                                                            index);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      title: Text(
-                                                          kstream[index].title),
-                                                      subtitle: kstream[index]
-                                                                  .description !=
-                                                              null
-                                                          ? Text(kstream[index]
-                                                              .description!)
-                                                          : Text('TBA'),
-                                                      trailing: IconButton(
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            kstream[currentStationIndex]
-                                                                    .isFavorite =
-                                                                !kstream[
-                                                                        currentStationIndex]
-                                                                    .isFavorite;
-                                                          });
-                                                        },
-                                                        icon: Icon(kstream[
-                                                                    index]
-                                                                .isFavorite
-                                                            ? Icons
-                                                                .favorite_rounded
-                                                            : Icons
-                                                                .favorite_outline_rounded),
-                                                      ),
-                                                    );
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    });
-                                  });
+                              modalRadioList();
                             },
                             icon: Icon(
                               Icons.list_alt_rounded,
