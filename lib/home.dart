@@ -20,7 +20,10 @@ import 'package:xml/xml_events.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key, required this.startWithStation});
+  const Home({
+    super.key,
+    required this.startWithStation,
+  });
 
   final int startWithStation;
 

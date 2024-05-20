@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kradio/globalSettings.dart';
 import 'package:kradio/home.dart';
 import 'package:kradio/kstream.dart';
 
@@ -149,6 +150,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       isFavorite: false,
     ),
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    //since this is the first page load the global settings
+    GlobalSettings().loadSettings();
+  }
   
   @override
   Widget build(BuildContext context) {

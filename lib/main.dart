@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kradio/globalSettings.dart';
 import 'package:kradio/home.dart';
 import 'package:flutter/services.dart';
 import 'package:kradio/welcomeScreen.dart';
@@ -45,4 +46,5 @@ class MyApp extends StatelessWidget {
       home: WelcomeScreen(),
     );
   }
+
 }

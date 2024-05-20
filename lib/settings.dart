@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kradio/globalSettings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -8,11 +10,13 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  bool showNextSong = true;
-  bool stopPlayerOnDeviceDisconnect = true;
-  bool sleepTimer = false;
-  double sleepTimerValue = 0.0;
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    GlobalSettings().loadSettings();
+  }
+  bool t = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,19 +45,21 @@ class _SettingsState extends State<Settings> {
             ),
             CheckboxListTile(
                 title: Text('Show upcoming song'),
-                value: showNextSong,
+                value: GlobalSettings.showNextSong,
                 onChanged: (value) {
                   setState(() {
-                    showNextSong = value!;
+                    GlobalSettings.showNextSong = value!;
                   });
+                  GlobalSettings().saveSettings();
                 }),
             CheckboxListTile(
                 title: Text('Stop player if audio output is disconnected'),
-                value: stopPlayerOnDeviceDisconnect,
+                value: GlobalSettings.stopPlayerOnDeviceDisconnect,
                 onChanged: (value) {
                   setState(() {
-                    stopPlayerOnDeviceDisconnect = value!;
+                    GlobalSettings.stopPlayerOnDeviceDisconnect = value!;
                   });
+                  GlobalSettings().saveSettings();
                 }),
           ],
         ),
