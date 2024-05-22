@@ -334,8 +334,9 @@ class _HomeState extends State<Home> {
   }
 
   void loadNextSongInformation() async {
+    const HtmlEscape htmlEscape = HtmlEscape();
     //10 seconds
-    Timer.periodic(Duration(milliseconds: 10000), (timer) async {
+    Timer.periodic(Duration(milliseconds: 2000), (timer) async {
       //Next
       //Need to create diff urls in the future
       final urlNext = Uri.parse(kstream[currentStationIndex].urlNext);
@@ -352,10 +353,14 @@ class _HomeState extends State<Home> {
         var tempNextSong = XmlDocument.parse(nextArtist);
         nextSong = tempNextSong.findAllElements('Song').toString();
         nextSong = nextSong.substring(14, nextSong.indexOf(">") - 1);
+        nextSong = nextSong.replaceAll("&amp;", '&');
+        print(nextSong);
         //Arist
         var tempNextArtist = XmlDocument.parse(nextArtist);
         nextArtist = tempNextArtist.findAllElements('Artist').toString();
         nextArtist = nextArtist.substring(15, nextArtist.indexOf("ID") - 2);
+        nextArtist = nextArtist.replaceAll("&amp;", '&');
+        print(nextArtist);
 
         //change current title for the appbar
         currentStreamTitle = kstream[currentStationIndex].title;
