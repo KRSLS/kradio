@@ -454,14 +454,17 @@ class _HomeState extends State<Home> {
         ),
         title: Text(currentStreamTitle),
         actions: [
-          IconButton(
-            tooltip: 'Sleep Timer',
-            onPressed: () {
-              modalSleepTimer();
-            },
-            icon: Icon(enableSleepTimer
-                ? Icons.mode_night_rounded
-                : Icons.mode_night_outlined),
+          Visibility(
+            visible: enableSleepTimer,
+            child: IconButton(
+              tooltip: 'Sleep Timer',
+              onPressed: () {
+                modalSleepTimer();
+              },
+              icon: Icon(enableSleepTimer
+                  ? Icons.mode_night_rounded
+                  : Icons.mode_night_outlined),
+            ),
           ),
           IconButton(
             tooltip: 'Properties',
