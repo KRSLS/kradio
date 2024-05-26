@@ -3,11 +3,14 @@
 A clean radio player for android & ios devices.
 At the moment only android is supported.
 
-## Guide etc TBA
+Made with Flutter
+Radio player that streams music from KISS FM, a clean and minimalistic design with a lot of features.
 
-This project is still super early.
+Next song info, good looking, sleep timer, favorite stations, custom station image/gif and highly customizable.
 
 Some images:
 
-<img src="https://github.com/KRSLS/kradio/assets/105395630/3fdee73b-3b70-4ee2-8f02-6ddde525ba93" width="200"/>
-<img src="https://github.com/KRSLS/kradio/assets/105395630/80c1f704-4fc4-49eb-958c-574184e62924" width="200"/>
+<img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_01.png" width="200"/>
+<img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_02.png" width="200"/>
+<img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_03.png" width="200"/>
+<img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_04.png" width="200"/>
