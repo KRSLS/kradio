@@ -16,9 +16,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    //since this is the first page load the global settings
-    GlobalSettings().loadSettings();
   }
 
   @override
