@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kradio/globalSettings.dart';
-import 'package:kradio/home.dart';
-import 'package:kradio/kstream.dart';
+import 'package:KRadio/globalSettings.dart';
+import 'package:KRadio/home.dart';
+import 'package:KRadio/kstream.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});

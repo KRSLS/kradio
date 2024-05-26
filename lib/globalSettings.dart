@@ -1,4 +1,4 @@
-import 'package:kradio/kstream.dart';
+import 'package:KRadio/kstream.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GlobalSettings {

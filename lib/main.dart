@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kradio/globalSettings.dart';
-import 'package:kradio/home.dart';
+import 'package:KRadio/globalSettings.dart';
+import 'package:KRadio/home.dart';
 import 'package:flutter/services.dart';
-import 'package:kradio/welcomeScreen.dart';
+import 'package:KRadio/welcomeScreen.dart';
 
 void main() {
   runApp(const MyApp());

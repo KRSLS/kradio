@@ -7,11 +7,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:kradio/globalSettings.dart';
-import 'package:kradio/kstream.dart';
-import 'package:kradio/playerScreen.dart';
-import 'package:kradio/settings.dart';
-import 'package:kradio/welcomeScreen.dart';
+import 'package:KRadio/globalSettings.dart';
+import 'package:KRadio/kstream.dart';
+import 'package:KRadio/playerScreen.dart';
+import 'package:KRadio/settings.dart';
+import 'package:KRadio/welcomeScreen.dart';
 
 import 'package:radio_player/radio_player.dart';
 import 'package:headset_connection_event/headset_event.dart';
