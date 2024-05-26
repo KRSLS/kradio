@@ -504,7 +504,7 @@ class _HomeState extends State<Home> {
         decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.cover,
-            opacity: 0.4,
+            opacity: GlobalSettings.bgOpacity,
             image: NetworkImage(
               KStream.streams[currentStationIndex].urlImage.toString(),
             ),

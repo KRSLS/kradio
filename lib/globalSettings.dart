@@ -4,8 +4,12 @@ class GlobalSettings {
   static bool showNextSong = true;
   static bool stopPlayerOnDeviceDisconnect = true;
 
-  static bool playerButtonsBG = true;
 
+  //Player Settings
+  static double bgOpacityMin = 0.0;
+  static double bgOpacityMax = 0.5;
+  static double bgOpacity = 0.4;
+  static bool playerButtonsBG = true;
   static double playerBGBlurMin = 1.0;
   static double playerBGBlurMax = 40.0;
   static double playerBGBlurValue = 10.0;

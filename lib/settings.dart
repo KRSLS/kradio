@@ -39,6 +39,23 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             ListTile(
+              title: Text('Background image opacity'),
+              trailing: Text(
+                  GlobalSettings.bgOpacity.toStringAsFixed(2) + ''),
+            ),
+            Slider(
+              min: GlobalSettings.bgOpacityMin,
+              max: GlobalSettings.bgOpacityMax,
+              value: GlobalSettings.bgOpacity,
+              divisions: 50,
+              label: GlobalSettings.bgOpacity.toStringAsFixed(2),
+              onChanged: (value) {
+                setState(() {
+                  GlobalSettings.bgOpacity = value;
+                });
+              },
+            ),
+            ListTile(
               title: Text('Background blur amount'),
               trailing: Text(
                   GlobalSettings.playerBGBlurValue.toInt().toString() + 'px'),
@@ -56,7 +73,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             CheckboxListTile(
-              title: Text('Controller background'),
+                title: Text('Controller background'),
                 value: GlobalSettings.playerButtonsBG,
                 onChanged: (value) {
                   setState(() {
