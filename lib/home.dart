@@ -641,8 +641,8 @@ class _HomeState extends State<Home> {
                         color: GlobalSettings.playerButtonsBG
                             ? MediaQuery.of(context).platformBrightness ==
                                     Brightness.light
-                                ? Color.fromARGB(30, 0, 0, 0)
-                                : Color.fromARGB(30, 255, 255, 255)
+                                ? Color.fromARGB(40, 0, 0, 0)
+                                : Color.fromARGB(40, 255, 255, 255)
                             : Colors.transparent,
                       ),
                       child: Padding(
