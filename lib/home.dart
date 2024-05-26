@@ -53,7 +53,8 @@ class _HomeState extends State<Home> {
   bool enableSleepTimer = false;
   double sleepTimer = 60.0;
   double maxSleepTimer = 120;
-  String sleepTimerTest = 'running';
+  DateTime sleepTimerDT = DateTime.now();
+  Timer? t;
 
   @override
   void initState() {
@@ -253,7 +254,7 @@ class _HomeState extends State<Home> {
   //handle sleep timer
   void sleep() {
     //start a timer with the time that the user selects
-    Timer t = Timer(Duration(minutes: sleepTimer.toInt()), () async {
+    t = Timer(Duration(minutes: sleepTimer.toInt()), () async {
       //only run the code bellow if the option is still enabled
       if (enableSleepTimer) {
         print('Sleep timer execution.');
@@ -400,6 +401,14 @@ class _HomeState extends State<Home> {
                         onChanged: (value) {
                           setState(() {
                             enableSleepTimer = value!;
+
+                            if (enableSleepTimer) {
+                              sleep();
+                              sleepTimerDT = DateTime.now()
+                                  .add(Duration(minutes: sleepTimer.toInt()));
+                            } else {
+                              t!.cancel();
+                            }
                           });
                         }),
                     Visibility(
@@ -411,8 +420,11 @@ class _HomeState extends State<Home> {
                           label: sleepTimer.round().toString() + ' min',
                           value: sleepTimer,
                           onChanged: (value) {
+                            t!.cancel();
                             setState(() {
                               sleepTimer = value;
+                              sleepTimerDT = DateTime.now()
+                                  .add(Duration(minutes: sleepTimer.toInt()));
                             });
                           },
                           onChangeEnd: (value) {
@@ -421,9 +433,12 @@ class _HomeState extends State<Home> {
                             if (value == 0) {
                               setState(() {
                                 enableSleepTimer = false;
+                                t!.cancel();
                               });
-                            } else
+                            } else {
+                              t!.cancel;
                               sleep();
+                            }
                           },
                         )),
                   ],
@@ -459,7 +474,24 @@ class _HomeState extends State<Home> {
             child: IconButton(
               tooltip: 'Sleep Timer',
               onPressed: () {
-                modalSleepTimer();
+                // modalSleepTimer();
+
+                ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+                    content: Text(
+                        'The player will stop at ${sleepTimerDT.hour}:${sleepTimerDT.minute}'),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            modalSleepTimer();
+                          },
+                          child: Text('Change')),
+                      TextButton(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context)
+                                .clearMaterialBanners();
+                          },
+                          child: Text('Okay'))
+                    ]));
               },
               icon: Icon(enableSleepTimer
                   ? Icons.mode_night_rounded
@@ -649,7 +681,8 @@ class _HomeState extends State<Home> {
                             : Colors.transparent,
                       ),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 4.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 4.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
