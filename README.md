@@ -10,7 +10,10 @@ Next song info, good looking, sleep timer, favorite stations, custom station ima
 
 Some images:
 
-<img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_01.png" width="200"/>
+<div>
+  <img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_01.png" width="200"/>
 <img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_02.png" width="200"/>
 <img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_03.png" width="200"/>
 <img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_04.png" width="200"/>
+</div>
+
