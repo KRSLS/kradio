@@ -4,7 +4,11 @@ class GlobalSettings {
   static bool showNextSong = true;
   static bool stopPlayerOnDeviceDisconnect = true;
 
-  static double playerBGBlurValue = 2.0;
+  static bool playerButtonsBG = true;
+
+  static double playerBGBlurMin = 1.0;
+  static double playerBGBlurMax = 40.0;
+  static double playerBGBlurValue = 10.0;
 
   void loadSettings() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

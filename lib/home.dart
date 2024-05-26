@@ -301,15 +301,15 @@ class _HomeState extends State<Home> {
                                 Navigator.pop(context);
                               },
                               title: Text(KStream.streams[index].title),
-                              subtitle: KStream.streams[index].description != null
+                              subtitle: KStream.streams[index].description !=
+                                      null
                                   ? Text(KStream.streams[index].description!)
                                   : Text('TBA'),
                               trailing: IconButton(
                                 onPressed: () {
                                   setState(() {
                                     KStream.streams[index].isFavorite =
-                                        !KStream.streams[index]
-                                            .isFavorite;
+                                        !KStream.streams[index].isFavorite;
                                   });
                                 },
                                 icon: Icon(KStream.streams[index].isFavorite
@@ -351,7 +351,8 @@ class _HomeState extends State<Home> {
                       title: Text('Share'),
                       subtitle: Text('Share the vibes with someone.'),
                       onTap: () async {
-                        await Share.share(KStream.streams[currentStationIndex].url);
+                        await Share.share(
+                            KStream.streams[currentStationIndex].url);
                       },
                     ),
                     ListTile(
@@ -510,7 +511,9 @@ class _HomeState extends State<Home> {
           ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: GlobalSettings.playerBGBlurValue, sigmaY: GlobalSettings.playerBGBlurValue),
+          filter: ImageFilter.blur(
+              sigmaX: GlobalSettings.playerBGBlurValue,
+              sigmaY: GlobalSettings.playerBGBlurValue),
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.0),
@@ -535,8 +538,7 @@ class _HomeState extends State<Home> {
                                 borderRadius: BorderRadius.circular(20),
                                 child: Image.network(
                                   fit: BoxFit.cover,
-                                  KStream.streams[currentStationIndex]
-                                      .urlImage
+                                  KStream.streams[currentStationIndex].urlImage
                                       .toString(),
                                 ),
                               ),
@@ -631,79 +633,86 @@ class _HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: MediaQuery.of(context).platformBrightness ==
-                              Brightness.light
-                          ? Color.fromARGB(30, 0, 0, 0)
-                          : Color.fromARGB(30, 255, 255, 255),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                            tooltip: 'Favorite',
-                            onPressed: () {
-                              setState(() {
-                                KStream.streams[currentStationIndex].isFavorite =
-                                    !KStream.streams[currentStationIndex].isFavorite;
-                              });
-                            },
-                            icon: Icon(
-                              KStream.streams[currentStationIndex].isFavorite
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_outline_rounded,
-                              size: 38,
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: GlobalSettings.playerButtonsBG
+                            ? MediaQuery.of(context).platformBrightness ==
+                                    Brightness.light
+                                ? Color.fromARGB(30, 0, 0, 0)
+                                : Color.fromARGB(30, 255, 255, 255)
+                            : Colors.transparent,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            IconButton(
+                              tooltip: 'Favorite',
+                              onPressed: () {
+                                setState(() {
+                                  KStream.streams[currentStationIndex]
+                                          .isFavorite =
+                                      !KStream.streams[currentStationIndex]
+                                          .isFavorite;
+                                });
+                              },
+                              icon: Icon(
+                                KStream.streams[currentStationIndex].isFavorite
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_outline_rounded,
+                                size: 38,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            tooltip: 'Previous',
-                            onPressed: () {
-                              previousStation();
-                            },
-                            icon: Icon(
-                              Icons.arrow_circle_left_rounded,
-                              size: 52,
+                            IconButton(
+                              tooltip: 'Previous',
+                              onPressed: () {
+                                previousStation();
+                              },
+                              icon: Icon(
+                                Icons.arrow_circle_left_rounded,
+                                size: 52,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            tooltip: isPlaying ? 'Stop' : 'Play',
-                            onPressed: () {
-                              isPlaying
-                                  ? radioPlayer.stop()
-                                  : radioPlayer.play();
-                            },
-                            icon: Icon(
-                              !isPlaying
-                                  ? Icons.play_circle_rounded
-                                  : Icons.pause_circle_rounded,
-                              size: 86,
+                            IconButton(
+                              tooltip: isPlaying ? 'Stop' : 'Play',
+                              onPressed: () {
+                                isPlaying
+                                    ? radioPlayer.stop()
+                                    : radioPlayer.play();
+                              },
+                              icon: Icon(
+                                !isPlaying
+                                    ? Icons.play_circle_rounded
+                                    : Icons.pause_circle_rounded,
+                                size: 86,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            tooltip: 'Next',
-                            onPressed: () {
-                              nextStation();
-                            },
-                            icon: Icon(
-                              Icons.arrow_circle_right_rounded,
-                              size: 52,
+                            IconButton(
+                              tooltip: 'Next',
+                              onPressed: () {
+                                nextStation();
+                              },
+                              icon: Icon(
+                                Icons.arrow_circle_right_rounded,
+                                size: 52,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            tooltip: 'Radio List',
-                            onPressed: () {
-                              modalRadioList();
-                            },
-                            icon: Icon(
-                              Icons.list_alt_rounded,
-                              size: 38,
+                            IconButton(
+                              tooltip: 'Radio List',
+                              onPressed: () {
+                                modalRadioList();
+                              },
+                              icon: Icon(
+                                Icons.list_alt_rounded,
+                                size: 38,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
