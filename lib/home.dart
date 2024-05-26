@@ -37,146 +37,6 @@ class _HomeState extends State<Home> {
   List<String>? metadata;
   String currentStreamTitle = '';
 
-  List<KStream> kstream = [
-    KStream(
-      title: 'KISS 60s',
-      url: 'https://netradio.live24.gr/kiss-web-classic',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/60s/AirPlayNext.xml',
-      urlImage:
-          'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExODc1c3FqdGRlMjQyYXgwYXJrYWpzdjZpdzYxOWZudHE1d3NoM3VmZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gjgWQA5QBuBmUZahOP/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS 70s',
-      url: 'https://netradio.live24.gr/kiss-web-70s',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/70s/AirPlayNext.xml',
-      urlImage:
-          'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExODc1c3FqdGRlMjQyYXgwYXJrYWpzdjZpdzYxOWZudHE1d3NoM3VmZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gjgWQA5QBuBmUZahOP/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS 80s',
-      url: 'https://netradio.live24.gr/kiss-web-80s',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/80s/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS 90s',
-      url: 'https://netradio.live24.gr/kiss-web-90s',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/90s/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS 00s',
-      url: 'https://netradio.live24.gr/kiss-web-oos',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/00s/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS DISCO',
-      url: 'https://netradio.live24.gr/actionfm',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/Disco/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS LATIN',
-      url: 'https://netradio.live24.gr/kiss-web-latin1',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/Latin/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS CHILL',
-      url: 'https://netradio.live24.gr/kiss-web-lounge',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/Chill/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS BALLADS',
-      url: 'https://netradio.live24.gr/kiss-web-balads',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/Ballads/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS XMAS',
-      url: 'https://netradio.live24.gr/kiss-web-xmas',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/KissMas/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'KISS JAZZ',
-      url: 'https://netradio.live24.gr/kiss-web-jazz',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/Jazz/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'REBEL',
-      url: 'https://netradio.live24.gr/rebel1052',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/Rebel/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'NRG',
-      url: 'https://netradio.live24.gr/kiss-web-nrg',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/NRG/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'CAVIAR',
-      description: 'OOOOOOHhhhh babyyyy',
-      url: 'https://netradio.live24.gr/kiss-web-rock',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/Caviar/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-    KStream(
-      title: 'HOT',
-      description: 'Amazing, dev loves this.',
-      url: 'https://netradio.live24.gr/hotfm',
-      urlNext:
-          'https://deliver.siliconweb.com/kissfm/Webradios/HotFM/AirPlayNext.xml',
-      urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
-      isFavorite: false,
-    ),
-  ];
-
   final headsetPlugin = HeadsetEvent();
   HeadsetState? headsetState;
 
@@ -218,7 +78,7 @@ class _HomeState extends State<Home> {
     //set the csi to the data passed from previous screen
     currentStationIndex = widget.startWithStation;
     //set the app bar title to the current station title
-    currentStreamTitle = kstream[currentStationIndex].title;
+    currentStreamTitle = KStream.streams[currentStationIndex].title;
 
     //request permissions for the package
     headsetPlugin.requestPermission();
@@ -283,9 +143,9 @@ class _HomeState extends State<Home> {
     //then start the player again
     await radioPlayer.stop();
     await radioPlayer.setChannel(
-      title: kstream[index].title,
-      url: kstream[index].url,
-      imagePath: kstream[index].urlImage,
+      title: KStream.streams[index].title,
+      url: KStream.streams[index].url,
+      imagePath: KStream.streams[index].urlImage,
     );
     await radioPlayer.play();
   }
@@ -294,7 +154,7 @@ class _HomeState extends State<Home> {
   void previousStation() {
     //handle out of range index
     if (currentStationIndex - 1 < 0) {
-      changeRadioStation(kstream.length - 1);
+      changeRadioStation(KStream.streams.length - 1);
     } else
       changeRadioStation(currentStationIndex - 1);
   }
@@ -302,7 +162,7 @@ class _HomeState extends State<Home> {
   //go the next station
   void nextStation() {
     //handle out of range index
-    if (currentStationIndex + 1 > kstream.length - 1) {
+    if (currentStationIndex + 1 > KStream.streams.length - 1) {
       changeRadioStation(0);
     } else
       changeRadioStation(currentStationIndex + 1);
@@ -354,7 +214,7 @@ class _HomeState extends State<Home> {
     //this function runes every 2 seconds
     Timer.periodic(Duration(milliseconds: 2000), (timer) async {
       //next
-      final urlNext = Uri.parse(kstream[currentStationIndex].urlNext);
+      final urlNext = Uri.parse(KStream.streams[currentStationIndex].urlNext);
       final requestNext = await HttpClient().getUrl(urlNext);
       final responseNext = await requestNext.close();
       await responseNext
@@ -384,7 +244,7 @@ class _HomeState extends State<Home> {
         nextArtist = nextArtist.replaceAll("&amp;", '&');
 
         //change current title for the appbar
-        currentStreamTitle = kstream[currentStationIndex].title;
+        currentStreamTitle = KStream.streams[currentStationIndex].title;
       });
     });
   }
@@ -425,33 +285,33 @@ class _HomeState extends State<Home> {
                     ),
                     Expanded(
                       child: ListView.builder(
-                          itemCount: kstream.length,
+                          itemCount: KStream.streams.length,
                           itemBuilder: (context, index) {
                             return ListTile(
                               leading: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
                                 child: Image.network(
                                   fit: BoxFit.fitWidth,
-                                  kstream[index].urlImage.toString(),
+                                  KStream.streams[index].urlImage.toString(),
                                 ),
                               ),
                               onTap: () {
                                 changeRadioStation(index);
                                 Navigator.pop(context);
                               },
-                              title: Text(kstream[index].title),
-                              subtitle: kstream[index].description != null
-                                  ? Text(kstream[index].description!)
+                              title: Text(KStream.streams[index].title),
+                              subtitle: KStream.streams[index].description != null
+                                  ? Text(KStream.streams[index].description!)
                                   : Text('TBA'),
                               trailing: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    kstream[currentStationIndex].isFavorite =
-                                        !kstream[currentStationIndex]
+                                    KStream.streams[currentStationIndex].isFavorite =
+                                        !KStream.streams[currentStationIndex]
                                             .isFavorite;
                                   });
                                 },
-                                icon: Icon(kstream[index].isFavorite
+                                icon: Icon(KStream.streams[index].isFavorite
                                     ? Icons.favorite_rounded
                                     : Icons.favorite_outline_rounded),
                               ),
@@ -490,7 +350,7 @@ class _HomeState extends State<Home> {
                       title: Text('Share'),
                       subtitle: Text('Share the vibes with someone.'),
                       onTap: () async {
-                        await Share.share(kstream[currentStationIndex].url);
+                        await Share.share(KStream.streams[currentStationIndex].url);
                       },
                     ),
                     ListTile(
@@ -644,7 +504,7 @@ class _HomeState extends State<Home> {
             fit: BoxFit.cover,
             opacity: 0.4,
             image: NetworkImage(
-              kstream[currentStationIndex].urlImage.toString(),
+              KStream.streams[currentStationIndex].urlImage.toString(),
             ),
           ),
         ),
@@ -674,7 +534,7 @@ class _HomeState extends State<Home> {
                                 borderRadius: BorderRadius.circular(20),
                                 child: Image.network(
                                   fit: BoxFit.cover,
-                                  kstream[currentStationIndex]
+                                  KStream.streams[currentStationIndex]
                                       .urlImage
                                       .toString(),
                                 ),
@@ -787,12 +647,12 @@ class _HomeState extends State<Home> {
                             tooltip: 'Favorite',
                             onPressed: () {
                               setState(() {
-                                kstream[currentStationIndex].isFavorite =
-                                    !kstream[currentStationIndex].isFavorite;
+                                KStream.streams[currentStationIndex].isFavorite =
+                                    !KStream.streams[currentStationIndex].isFavorite;
                               });
                             },
                             icon: Icon(
-                              kstream[currentStationIndex].isFavorite
+                              KStream.streams[currentStationIndex].isFavorite
                                   ? Icons.favorite_rounded
                                   : Icons.favorite_outline_rounded,
                               size: 38,
