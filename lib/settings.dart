@@ -38,10 +38,32 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
             ),
+            CheckboxListTile(
+                title: Text('Stop player on output disconnect'),
+                subtitle: Text(
+                    'When disconnecting an audio output like bluetooth speaker or headphones etc, the radio player will stop.'),
+                value: GlobalSettings.stopPlayerOnDeviceDisconnect,
+                onChanged: (value) {
+                  setState(() {
+                    GlobalSettings.stopPlayerOnDeviceDisconnect = value!;
+                  });
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
+            CheckboxListTile(
+                title: Text('Show upcoming song'),
+                subtitle: Text('Displays upcoming song information.'),
+                value: GlobalSettings.showNextSong,
+                onChanged: (value) {
+                  setState(() {
+                    GlobalSettings.showNextSong = value!;
+                  });
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
             ListTile(
               title: Text('Background image opacity'),
-              trailing: Text(
-                  GlobalSettings.bgOpacity.toStringAsFixed(2) + ''),
+              trailing: Text(GlobalSettings.bgOpacity.toStringAsFixed(2) + ''),
             ),
             Slider(
               min: GlobalSettings.bgOpacityMin,
@@ -53,23 +75,26 @@ class _SettingsState extends State<Settings> {
                 setState(() {
                   GlobalSettings.bgOpacity = value;
                 });
+                GlobalSettings.saveSettings();
               },
             ),
+            Divider(),
             ListTile(
               title: Text('Background blur amount'),
-              trailing: Text(
-                  GlobalSettings.playerBGBlurValue.toInt().toString() + 'px'),
+              trailing:
+                  Text(GlobalSettings.playerBGBlur.toInt().toString() + 'px'),
             ),
             Slider(
               min: GlobalSettings.playerBGBlurMin,
               max: GlobalSettings.playerBGBlurMax,
-              value: GlobalSettings.playerBGBlurValue,
+              value: GlobalSettings.playerBGBlur,
               divisions: GlobalSettings.playerBGBlurMax.toInt(),
-              label: GlobalSettings.playerBGBlurValue.round().toString() + 'px',
+              label: GlobalSettings.playerBGBlur.round().toString() + 'px',
               onChanged: (value) {
                 setState(() {
-                  GlobalSettings.playerBGBlurValue = value;
+                  GlobalSettings.playerBGBlur = value;
                 });
+                GlobalSettings.saveSettings();
               },
             ),
             CheckboxListTile(
@@ -79,7 +104,49 @@ class _SettingsState extends State<Settings> {
                   setState(() {
                     GlobalSettings.playerButtonsBG = value!;
                   });
-                })
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
+            ListTile(
+              title: Text('Delete local stored data'),
+              subtitle: Text(
+                'WARNING, this will delete all local stored data.',
+                style: TextStyle(color: Colors.red),
+              ),
+              onTap: () {
+                ScaffoldMessenger.of(context).showMaterialBanner(
+                  MaterialBanner(
+                    content: Text(
+                      'Are you sure you want to delete all local stored data?',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.clear();
+                          GlobalSettings.loadSettings();
+                          ScaffoldMessenger.of(context).clearMaterialBanners();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Deleted all local stored data, please restart your application.'),
+                            ),
+                          );
+                        },
+                        child: Text('Yes'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).clearMaterialBanners();
+                        },
+                        child: Text('No'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),

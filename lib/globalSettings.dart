@@ -1,10 +1,7 @@
+import 'package:kradio/kstream.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GlobalSettings {
-  static bool showNextSong = true;
-  static bool stopPlayerOnDeviceDisconnect = true;
-
-
   //Player Settings
   static double bgOpacityMin = 0.0;
   static double bgOpacityMax = 0.5;
@@ -12,25 +9,67 @@ class GlobalSettings {
   static bool playerButtonsBG = true;
   static double playerBGBlurMin = 1.0;
   static double playerBGBlurMax = 40.0;
-  static double playerBGBlurValue = 10.0;
+  static double playerBGBlur = 10.0;
+  static bool showNextSong = true;
+  static bool stopPlayerOnDeviceDisconnect = true;
 
-  void loadSettings() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  static void loadSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await prefs.setBool('showNextSong', showNextSong);
-    await prefs.setBool(
-        'stopPlayerOnDeviceDisconnect', stopPlayerOnDeviceDisconnect);
+    showNextSong = await prefs.getBool('showNextSong')!;
+
+    bgOpacityMin = await prefs.getDouble('bgOpacityMin')!;
+    bgOpacityMax = await prefs.getDouble('bgOpacityMax')!;
+    bgOpacity = await prefs.getDouble('bgOpacity')!;
+    playerButtonsBG = await prefs.getBool('playerButtonsBG')!;
+    playerBGBlurMin = await prefs.getDouble('playerBGBlurMin')!;
+    playerBGBlurMax = await prefs.getDouble('playerBGBlurMax')!;
+    playerBGBlur = await prefs.getDouble('playerBGBlur')!;
+    showNextSong = await prefs.getBool('showNextSong')!;
+    stopPlayerOnDeviceDisconnect =
+        await prefs.getBool('stopPlayerOnDeviceDisconnect')!;
+
+    //get custom image url
+    for (var i = 0; i < KStream.streams.length; i++) {
+      KStream.streams[i].customUrlImage = await prefs.getString(
+        KStream.streams[i].title,
+      )!;
+    }
+
+    //get station isFavorite status
+    for (var i = 0; i < KStream.streams.length; i++) {
+      KStream.streams[i].isFavorite = await prefs.getBool(
+        KStream.streams[i].title + 'isFavorite',
+      )!;
+    }
   }
 
-  void saveSettings() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  static void saveSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    showNextSong = await prefs.getBool('showNextSong')!
-        ? await prefs.getBool('showNextSong')!
-        : true;
-    stopPlayerOnDeviceDisconnect =
-        await prefs.getBool('stopPlayerOnDeviceDisconnect')!
-            ? await prefs.getBool('stopPlayerOnDeviceDisconnect')!
-            : true;
+    prefs.setDouble('bgOpacityMin', bgOpacityMin);
+    prefs.setDouble('bgOpacityMax', bgOpacityMax);
+    prefs.setDouble('bgOpacity', bgOpacity);
+    prefs.setBool('playerButtonsBG', playerButtonsBG);
+    prefs.setDouble('playerBGBlurMin', playerBGBlurMin);
+    prefs.setDouble('playerBGBlurMax', playerBGBlurMax);
+    prefs.setDouble('playerBGBlur', playerBGBlur);
+    prefs.setBool('showNextSong', showNextSong);
+    prefs.setBool('stopPlayerOnDeviceDisconnect', stopPlayerOnDeviceDisconnect);
+
+    //save custom image url
+    for (var i = 0; i < KStream.streams.length; i++) {
+      prefs.setString(
+        KStream.streams[i].title,
+        KStream.streams[i].customUrlImage.toString(),
+      );
+    }
+    //save station isFavorite status
+    for (var i = 0; i < KStream.streams.length; i++) {
+      prefs.setBool(
+        KStream.streams[i].title + 'isFavorite',
+        KStream.streams[i].isFavorite,
+      );
+    }
   }
 }

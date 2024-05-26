@@ -16,6 +16,7 @@ import 'package:kradio/welcomeScreen.dart';
 import 'package:radio_player/radio_player.dart';
 import 'package:headset_connection_event/headset_event.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xml/xml.dart';
 import 'package:xml/xml_events.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -63,6 +64,9 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
 
+    //load global settings
+    GlobalSettings.loadSettings();
+
     //check for internet listener
     checkForInternet();
 
@@ -97,19 +101,21 @@ class _HomeState extends State<Home> {
       setState(() {
         headsetState = _val;
         if (this.headsetState == HeadsetState.DISCONNECT) {
-          radioPlayer.stop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content:
-                  Text('Audio output device disconnected, stopped playing.'),
-              action: SnackBarAction(
-                label: ('Okay'),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                },
+          if (GlobalSettings.stopPlayerOnDeviceDisconnect) {
+            radioPlayer.stop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content:
+                    Text('Audio output device disconnected, stopped playing.'),
+                action: SnackBarAction(
+                  label: ('Okay'),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                  },
+                ),
               ),
-            ),
-          );
+            );
+          }
         }
       });
     });
@@ -147,7 +153,7 @@ class _HomeState extends State<Home> {
     await radioPlayer.setChannel(
       title: KStream.streams[index].title,
       url: KStream.streams[index].url,
-      imagePath: KStream.streams[index].urlImage,
+      imagePath: KStream.streams[index].customUrlImage,
     );
     await radioPlayer.play();
   }
@@ -294,7 +300,8 @@ class _HomeState extends State<Home> {
                                 borderRadius: BorderRadius.circular(20),
                                 child: Image.network(
                                   fit: BoxFit.fitWidth,
-                                  KStream.streams[index].urlImage.toString(),
+                                  KStream.streams[index].customUrlImage
+                                      .toString(),
                                 ),
                               ),
                               onTap: () {
@@ -312,6 +319,7 @@ class _HomeState extends State<Home> {
                                     KStream.streams[index].isFavorite =
                                         !KStream.streams[index].isFavorite;
                                   });
+                                  GlobalSettings.saveSettings();
                                 },
                                 icon: Icon(KStream.streams[index].isFavorite
                                     ? Icons.favorite_rounded
@@ -352,6 +360,7 @@ class _HomeState extends State<Home> {
                       title: Text('Share'),
                       subtitle: Text('Share the vibes with someone.'),
                       onTap: () async {
+                        Navigator.pop(context);
                         await Share.share(
                             KStream.streams[currentStationIndex].url);
                       },
@@ -366,12 +375,117 @@ class _HomeState extends State<Home> {
                         modalSleepTimer();
                       },
                     ),
+                    ListTile(
+                      leading: Icon(Icons.image_outlined),
+                      title: Text('Custom image'),
+                      subtitle: Text('Change currents station image/gif url.'),
+                      onTap: () {
+                        changeImageAlertDialog();
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.copy_rounded),
+                      title: Text('Copy current song'),
+                      subtitle: Text(
+                          'Copies the title and artist of the current song.'),
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(
+                            text: '${metadata?[0]} - ${metadata?[1]}'));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Current song copied.',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.copy_all_rounded),
+                      title: Text('Copy next song'),
+                      subtitle:
+                          Text('Copies the title and artist of the next song.'),
+                      onTap: () {
+                        Clipboard.setData(
+                            ClipboardData(text: '${nextSong} - ${nextArtist}'));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Next song copied.',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      },
+                    ),
                   ],
                 ),
               ),
             );
           });
         });
+  }
+
+  void changeImageAlertDialog() {
+    TextEditingController controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('Custom background'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: [
+                    Text('Image/gif URL'),
+                    Text(
+                        'Please note that the higher the quality of the image the longer it will take to load.'),
+                    TextField(
+                      controller: controller,
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text('Revert'),
+                  onPressed: () {
+                    setState(() {
+                      KStream.streams[currentStationIndex].customUrlImage =
+                          KStream.streams[currentStationIndex].urlImage;
+                    });
+                    Navigator.pop(context);
+                    GlobalSettings.saveSettings();
+                  },
+                ),
+                TextButton(
+                  child: const Text('Done'),
+                  onPressed: () async {
+                    setState(() {
+                      KStream.streams[currentStationIndex].customUrlImage =
+                          controller.text;
+                      // GlobalSettings.saveSettings();
+                    });
+                    GlobalSettings.saveSettings();
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   void modalSleepTimer() {
@@ -474,8 +588,6 @@ class _HomeState extends State<Home> {
             child: IconButton(
               tooltip: 'Sleep Timer',
               onPressed: () {
-                // modalSleepTimer();
-
                 ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
                     content: Text(
                         'The player will stop at ${sleepTimerDT.hour}:${sleepTimerDT.minute}'),
@@ -541,14 +653,14 @@ class _HomeState extends State<Home> {
             fit: BoxFit.cover,
             opacity: GlobalSettings.bgOpacity,
             image: NetworkImage(
-              KStream.streams[currentStationIndex].urlImage.toString(),
+              KStream.streams[currentStationIndex].customUrlImage.toString(),
             ),
           ),
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(
-              sigmaX: GlobalSettings.playerBGBlurValue,
-              sigmaY: GlobalSettings.playerBGBlurValue),
+              sigmaX: GlobalSettings.playerBGBlur,
+              sigmaY: GlobalSettings.playerBGBlur),
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.0),
@@ -556,31 +668,34 @@ class _HomeState extends State<Home> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: 30.0, horizontal: 30.0),
                         child: Center(
-                          child: Container(
-                            width: double.infinity,
-                            child: Material(
-                              elevation: 50,
-                              borderRadius: BorderRadius.circular(20),
-                              child: ClipRRect(
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Container(
+                              width: double.infinity,
+                              child: Material(
+                                elevation: 50,
                                 borderRadius: BorderRadius.circular(20),
-                                child: Image.network(
-                                  fit: BoxFit.cover,
-                                  KStream.streams[currentStationIndex].urlImage
-                                      .toString(),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Image.network(
+                                    fit: BoxFit.cover,
+                                    KStream.streams[currentStationIndex]
+                                        .customUrlImage
+                                        .toString(),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                      ListView(
-                        shrinkWrap: true,
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Center(
                             child: GestureDetector(
@@ -635,7 +750,7 @@ class _HomeState extends State<Home> {
                             height: 10,
                           ),
                           Visibility(
-                            visible: showNextSong,
+                            visible: GlobalSettings.showNextSong,
                             child: Center(
                               child: GestureDetector(
                                 onLongPress: () {
@@ -693,6 +808,7 @@ class _HomeState extends State<Home> {
                                       !KStream.streams[currentStationIndex]
                                           .isFavorite;
                                 });
+                                GlobalSettings.saveSettings();
                               },
                               icon: Icon(
                                 KStream.streams[currentStationIndex].isFavorite
