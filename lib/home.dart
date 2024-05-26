@@ -564,10 +564,8 @@ class _HomeState extends State<Home> {
                         child: Center(
                           child: Container(
                             width: double.infinity,
-                            height: 300,
                             child: Material(
                               elevation: 50,
-                              shadowColor: Color.fromARGB(255, 145, 57, 183),
                               borderRadius: BorderRadius.circular(20),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
@@ -581,8 +579,8 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                       ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
+                      ListView(
+                        shrinkWrap: true,
                         children: [
                           Center(
                             child: GestureDetector(
