@@ -4,6 +4,7 @@ class KStream {
   String urlNext;
   String? description;
   String? urlImage;
+  String? customUrlImage;
   bool isFavorite;
 
   KStream({
@@ -12,6 +13,7 @@ class KStream {
     required this.urlNext,
     this.description,
     this.urlImage,
+    this.customUrlImage,
     required this.isFavorite,
   });
 
@@ -23,6 +25,8 @@ class KStream {
           'https://deliver.siliconweb.com/kissfm/Webradios/60s/AirPlayNext.xml',
       urlImage:
           'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExODc1c3FqdGRlMjQyYXgwYXJrYWpzdjZpdzYxOWZudHE1d3NoM3VmZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gjgWQA5QBuBmUZahOP/giphy.gif',
+      customUrlImage:
+          'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExODc1c3FqdGRlMjQyYXgwYXJrYWpzdjZpdzYxOWZudHE1d3NoM3VmZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gjgWQA5QBuBmUZahOP/giphy.gif',
       isFavorite: false,
     ),
     KStream(
@@ -31,6 +35,8 @@ class KStream {
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/70s/AirPlayNext.xml',
       urlImage:
+          'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExODc1c3FqdGRlMjQyYXgwYXJrYWpzdjZpdzYxOWZudHE1d3NoM3VmZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gjgWQA5QBuBmUZahOP/giphy.gif',
+      customUrlImage:
           'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExODc1c3FqdGRlMjQyYXgwYXJrYWpzdjZpdzYxOWZudHE1d3NoM3VmZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gjgWQA5QBuBmUZahOP/giphy.gif',
       isFavorite: false,
     ),
@@ -41,6 +47,8 @@ class KStream {
           'https://deliver.siliconweb.com/kissfm/Webradios/80s/AirPlayNext.xml',
       urlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
     KStream(
@@ -49,6 +57,8 @@ class KStream {
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/90s/AirPlayNext.xml',
       urlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
@@ -59,6 +69,8 @@ class KStream {
           'https://deliver.siliconweb.com/kissfm/Webradios/00s/AirPlayNext.xml',
       urlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
     KStream(
@@ -67,6 +79,8 @@ class KStream {
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/Disco/AirPlayNext.xml',
       urlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
@@ -77,6 +91,8 @@ class KStream {
           'https://deliver.siliconweb.com/kissfm/Webradios/Latin/AirPlayNext.xml',
       urlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
     KStream(
@@ -85,6 +101,8 @@ class KStream {
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/Chill/AirPlayNext.xml',
       urlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
@@ -95,6 +113,8 @@ class KStream {
           'https://deliver.siliconweb.com/kissfm/Webradios/Ballads/AirPlayNext.xml',
       urlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
     KStream(
@@ -103,6 +123,8 @@ class KStream {
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/KissMas/AirPlayNext.xml',
       urlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
@@ -113,6 +135,8 @@ class KStream {
           'https://deliver.siliconweb.com/kissfm/Webradios/Jazz/AirPlayNext.xml',
       urlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
     KStream(
@@ -121,6 +145,8 @@ class KStream {
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/Rebel/AirPlayNext.xml',
       urlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
@@ -131,6 +157,8 @@ class KStream {
           'https://deliver.siliconweb.com/kissfm/Webradios/NRG/AirPlayNext.xml',
       urlImage:
           'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+      customUrlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
       isFavorite: false,
     ),
     KStream(
@@ -140,7 +168,9 @@ class KStream {
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/Caviar/AirPlayNext.xml',
       urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+          'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2N5ejVkejJ1bmJkZ3Q0bXBuZTN6ZG8ydnZjNWVma3Q5dTdiZTF0ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TZf4ZyXb0lXXi/giphy.gif',
+      customUrlImage:
+          'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2N5ejVkejJ1bmJkZ3Q0bXBuZTN6ZG8ydnZjNWVma3Q5dTdiZTF0ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TZf4ZyXb0lXXi/giphy.gif',
       isFavorite: false,
     ),
     KStream(
@@ -150,7 +180,9 @@ class KStream {
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/HotFM/AirPlayNext.xml',
       urlImage:
-          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWdrdXNsYWFhbzV2YjlwNzl0ZXVjdHE3YTliNGt1YnV3YjVmMTh6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHIRLHtNwxpjIFqPdV/giphy.gif',
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMm9xb3hpbm5pdDJlbGwxeW5kbnJxM2hsZGM3OXFmYm5ycWJ5OGZqciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GysdFYBr7roOc/giphy.gif',
+      customUrlImage:
+          'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMm9xb3hpbm5pdDJlbGwxeW5kbnJxM2hsZGM3OXFmYm5ycWJ5OGZqciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GysdFYBr7roOc/giphy.gif',
       isFavorite: false,
     ),
   ];
