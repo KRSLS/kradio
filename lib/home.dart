@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:kradio/globalSettings.dart';
 import 'package:kradio/kstream.dart';
 import 'package:kradio/playerScreen.dart';
 import 'package:kradio/settings.dart';
@@ -509,7 +510,7 @@ class _HomeState extends State<Home> {
           ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          filter: ImageFilter.blur(sigmaX: GlobalSettings.playerBGBlurValue, sigmaY: GlobalSettings.playerBGBlurValue),
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.0),
