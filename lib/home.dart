@@ -306,8 +306,8 @@ class _HomeState extends State<Home> {
                               trailing: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    KStream.streams[currentStationIndex].isFavorite =
-                                        !KStream.streams[currentStationIndex]
+                                    KStream.streams[index].isFavorite =
+                                        !KStream.streams[index]
                                             .isFavorite;
                                   });
                                 },
