@@ -29,21 +29,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         padding: EdgeInsets.all(12.0),
         child: Column(
           children: [
-            Container(
-              width: 54,
-              height: 54,
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                shape: BoxShape.circle,
-              ),
-              child: ClipOval(
-                child: Image.network(
-                  'https://docs.flutter.dev/cookbook'
-                  '/img-files/effects/split-check/Avatar1.jpg',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
             Text(
               'Pick a radio stream to start!',
               style: TextStyle(fontSize: 18),
