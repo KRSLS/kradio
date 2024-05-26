@@ -201,17 +201,17 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
 
-    //Check for internet listener
+    //check for internet listener
     checkForInternet();
 
-    //Initialize radio player
+    //initialize radio player
     initRadioPlayer();
 
-    //Load the next song information
+    //load the next song information
     //xml parsing //run every 5 seconds
     loadNextSongInformation();
 
-    //Start radio with the users selected radio station
+    //start radio with the users selected radio station
     //passed from the previous screen
     changeRadioStation(widget.startWithStation);
 
@@ -353,7 +353,7 @@ class _HomeState extends State<Home> {
   void loadNextSongInformation() async {
     //this function runes every 2 seconds
     Timer.periodic(Duration(milliseconds: 2000), (timer) async {
-      //Next
+      //next
       final urlNext = Uri.parse(kstream[currentStationIndex].urlNext);
       final requestNext = await HttpClient().getUrl(urlNext);
       final responseNext = await requestNext.close();
@@ -373,7 +373,8 @@ class _HomeState extends State<Home> {
         nextSong = nextSong.substring(14, nextSong.indexOf(">") - 1);
         //replace html code to text
         nextSong = nextSong.replaceAll("&amp;", '&');
-        //Arist
+
+        //arist
         var tempNextArtist = XmlDocument.parse(nextArtist);
         //find all elements that uses the name Song
         nextArtist = tempNextArtist.findAllElements('Artist').toString();
@@ -655,12 +656,6 @@ class _HomeState extends State<Home> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Center(
-                  //   child: Text(
-                  //     kstream[currentStationIndex].title,
-                  //     style: TextStyle(fontSize: 24),
-                  //   ),
-                  // ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -674,7 +669,6 @@ class _HomeState extends State<Home> {
                             child: Material(
                               elevation: 50,
                               shadowColor: Color.fromARGB(255, 145, 57, 183),
-                              // shadowColor: Colors.purple,
                               borderRadius: BorderRadius.circular(20),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
@@ -712,7 +706,6 @@ class _HomeState extends State<Home> {
                                 metadata?[0] ?? 'Loading...',
                                 overflow: TextOverflow.fade,
                                 style: TextStyle(fontSize: 24),
-                                // maxLines: 1,
                               ),
                             ),
                           ),
@@ -739,7 +732,6 @@ class _HomeState extends State<Home> {
                                 metadata?[1] ?? 'Loading...',
                                 overflow: TextOverflow.fade,
                                 style: TextStyle(fontSize: 18),
-                                // maxLines: 1,
                               ),
                             ),
                           ),
@@ -769,7 +761,6 @@ class _HomeState extends State<Home> {
                                   style: TextStyle(
                                     fontSize: 18,
                                   ),
-                                  // maxLines: 1,
                                   overflow: TextOverflow.fade,
                                 ),
                               ),
