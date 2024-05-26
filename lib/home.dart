@@ -254,6 +254,8 @@ class _HomeState extends State<Home> {
   }
 
   void initRadioPlayer() {
+    //set a listener for the radio player
+    //this will change the isPlaying bool if the radio stops or starts
     radioPlayer.stateStream.listen((value) {
       setState(() {
         isPlaying = value;
@@ -261,6 +263,7 @@ class _HomeState extends State<Home> {
       });
     });
 
+    //set a listener to get metadata from the radio url (icy)
     radioPlayer.metadataStream.listen((value) {
       setState(() {
         metadata = value;
@@ -268,10 +271,16 @@ class _HomeState extends State<Home> {
     });
   }
 
+  //change the current radio station with the provided index
+  //index will be used for the radio list
   void changeRadioStation(int index) async {
     setState(() {
+      //set the current station to the index
       currentStationIndex = index;
     });
+
+    //it's important to wait for the player to stop and then change the channel
+    //then start the player again
     await radioPlayer.stop();
     await radioPlayer.setChannel(
       title: kstream[index].title,
@@ -281,26 +290,33 @@ class _HomeState extends State<Home> {
     await radioPlayer.play();
   }
 
+  //go to previous station
   void previousStation() {
+    //handle out of range index
     if (currentStationIndex - 1 < 0) {
       changeRadioStation(kstream.length - 1);
     } else
       changeRadioStation(currentStationIndex - 1);
   }
 
+  //go the next station
   void nextStation() {
+    //handle out of range index
     if (currentStationIndex + 1 > kstream.length - 1) {
       changeRadioStation(0);
     } else
       changeRadioStation(currentStationIndex + 1);
   }
 
+  //check for internet connection and provide info to the end user
+  //this might help in situations when the user is wondering why the radio stop
+  //wifi - data
   void checkForInternet() async {
     final listener =
         InternetConnection().onStatusChange.listen((InternetStatus status) {
       switch (status) {
         case InternetStatus.connected:
-          // The internet is now connected
+          //if connected
           MaterialBanner(
             content: Text('Connected to the internet.'),
             actions: [
@@ -314,7 +330,7 @@ class _HomeState extends State<Home> {
           );
           break;
         case InternetStatus.disconnected:
-          // The internet is now disconnected
+          //if disconnected
           ScaffoldMessenger.of(context).showMaterialBanner(
             MaterialBanner(
               content: Text('Not connected to the internet.'),
@@ -333,12 +349,11 @@ class _HomeState extends State<Home> {
     });
   }
 
+  //this handles the next song information from xml
   void loadNextSongInformation() async {
-    const HtmlEscape htmlEscape = HtmlEscape();
-    //10 seconds
+    //this function runes every 2 seconds
     Timer.periodic(Duration(milliseconds: 2000), (timer) async {
       //Next
-      //Need to create diff urls in the future
       final urlNext = Uri.parse(kstream[currentStationIndex].urlNext);
       final requestNext = await HttpClient().getUrl(urlNext);
       final responseNext = await requestNext.close();
@@ -349,18 +364,23 @@ class _HomeState extends State<Home> {
           .forEach((event) => nextArtist = event.toString());
 
       setState(() {
-        //Song
+        //song
+        //parse the data from the url
         var tempNextSong = XmlDocument.parse(nextArtist);
+        //find all elements that uses the name Song
         nextSong = tempNextSong.findAllElements('Song').toString();
+        //cut the string 14 characters ahead until it finds the character ">"
         nextSong = nextSong.substring(14, nextSong.indexOf(">") - 1);
+        //replace html code to text
         nextSong = nextSong.replaceAll("&amp;", '&');
-        print(nextSong);
         //Arist
         var tempNextArtist = XmlDocument.parse(nextArtist);
+        //find all elements that uses the name Song
         nextArtist = tempNextArtist.findAllElements('Artist').toString();
+        //cut the string 14 characters ahead until it finds the character ">"
         nextArtist = nextArtist.substring(15, nextArtist.indexOf("ID") - 2);
+        //replace html code to text
         nextArtist = nextArtist.replaceAll("&amp;", '&');
-        print(nextArtist);
 
         //change current title for the appbar
         currentStreamTitle = kstream[currentStationIndex].title;
@@ -368,11 +388,11 @@ class _HomeState extends State<Home> {
     });
   }
 
+  //handle sleep timer
   void sleep() {
-    //Star a timer with the time that the user selects
-    //Double to int
+    //start a timer with the time that the user selects
     Timer t = Timer(Duration(minutes: sleepTimer.toInt()), () async {
-      //Only run the code bellow if the option is still enabled
+      //only run the code bellow if the option is still enabled
       if (enableSleepTimer) {
         print('Sleep timer execution.');
         await radioPlayer.stop();
