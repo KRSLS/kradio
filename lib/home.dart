@@ -279,7 +279,7 @@ class _HomeState extends State<Home> {
                     Padding(
                       padding: EdgeInsets.all(6.0),
                       child: Text(
-                        'Radio List',
+                        'Station List',
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
@@ -341,7 +341,7 @@ class _HomeState extends State<Home> {
                     Padding(
                       padding: EdgeInsets.all(6.0),
                       child: Text(
-                        'Menu',
+                        'Station Properties',
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
