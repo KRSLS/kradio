@@ -391,6 +391,27 @@ class _HomeState extends State<Home> {
                       },
                     ),
                     ListTile(
+                      leading: Icon(Icons.image_search_rounded),
+                      title: Text('Copy image'),
+                      subtitle: Text('Copy the current station image/gif url.'),
+                      onTap: () {
+                        Clipboard.setData(
+                          ClipboardData(
+                              text:
+                                  '${KStream.streams[currentStationIndex].customUrlImage}'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Station image/gif url copied.',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
                       leading: Icon(Icons.copy_rounded),
                       title: Text('Copy current song'),
                       subtitle: Text(
@@ -529,7 +550,8 @@ class _HomeState extends State<Home> {
                                   .add(Duration(minutes: sleepTimer.toInt()));
                             } else {
                               enableSleepTimer = false;
-                              ScaffoldMessenger.of(context).clearMaterialBanners();
+                              ScaffoldMessenger.of(context)
+                                  .clearMaterialBanners();
                               t!.cancel();
                             }
                           });
@@ -555,7 +577,8 @@ class _HomeState extends State<Home> {
                             // then just disable the sleep feature
                             if (value == 0) {
                               setState(() {
-                                ScaffoldMessenger.of(context).clearMaterialBanners();
+                                ScaffoldMessenger.of(context)
+                                    .clearMaterialBanners();
                                 enableSleepTimer = false;
                                 t!.cancel();
                               });
