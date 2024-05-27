@@ -355,6 +355,10 @@ class _HomeState extends State<Home> {
                       GlobalSettings.radioListIndex = value;
                       GlobalSettings.saveSettings();
                     },
+                    splashBorderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
                     tabs: [
                       Tab(
                         icon: Icon(Icons.list_alt_rounded),
@@ -1003,7 +1007,11 @@ class _HomeState extends State<Home> {
                                 Visibility(
                                   visible: GlobalSettings.showProgressBar,
                                   child: LinearProgressIndicator(
-                                    color: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.white : Colors.black,
+                                    color: MediaQuery.of(context)
+                                                .platformBrightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
                                     backgroundColor: Colors.transparent,
                                     minHeight: 4,
                                     borderRadius: BorderRadius.circular(
