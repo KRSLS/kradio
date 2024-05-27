@@ -807,7 +807,7 @@ class _HomeState extends State<Home> {
                     Container(
                       child: Column(
                         mainAxisAlignment: orientation == Orientation.portrait
-                            ? MainAxisAlignment.spaceBetween
+                            ? MainAxisAlignment.spaceEvenly
                             : MainAxisAlignment.spaceAround,
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -906,7 +906,7 @@ class _HomeState extends State<Home> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8.0,
                                 vertical: orientation == Orientation.portrait
-                                    ? 30.0
+                                    ? 0.0
                                     : 8.0),
                             child: Container(
                               decoration: BoxDecoration(
