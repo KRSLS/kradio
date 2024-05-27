@@ -5,7 +5,7 @@ class GlobalSettings {
   //Player Settings
   static int radioListIndex = 1;
   static double bgOpacityMin = 0.0;
-  static double bgOpacityMax = 0.5;
+  static double bgOpacityMax = 0.7;
   static double bgOpacity = 0.4;
   static bool playerButtonsBG = true;
   static double playerBGBlurMin = 1.0;
