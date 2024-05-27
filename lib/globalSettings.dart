@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class GlobalSettings {
   //Player Settings
   static int radioListIndex = 1;
+  static bool appBarTitle = true;
   static double bgOpacityMin = 0.0;
   static double bgOpacityMax = 0.7;
   static double bgOpacity = 0.4;
@@ -22,6 +23,7 @@ class GlobalSettings {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     radioListIndex = await prefs.getInt('radioListIndex')!;
+    appBarTitle = await prefs.getBool('appBarTitle')!;
     bgOpacityMin = await prefs.getDouble('bgOpacityMin')!;
     bgOpacityMax = await prefs.getDouble('bgOpacityMax')!;
     bgOpacity = await prefs.getDouble('bgOpacity')!;
@@ -54,6 +56,7 @@ class GlobalSettings {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setInt('radioListIndex', radioListIndex);
+    prefs.setBool('appBarTitle', appBarTitle);
     prefs.setDouble('bgOpacityMin', bgOpacityMin);
     prefs.setDouble('bgOpacityMax', bgOpacityMax);
     prefs.setDouble('bgOpacity', bgOpacity);

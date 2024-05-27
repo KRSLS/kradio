@@ -368,8 +368,7 @@ class _HomeState extends State<Home> {
                                       GlobalSettings.borderRadius),
                                   child: Image.network(
                                     fit: BoxFit.fitWidth,
-                                    favorites[index].customUrlImage
-                                        .toString(),
+                                    favorites[index].customUrlImage.toString(),
                                   ),
                                 ),
                                 onTap: () {
@@ -377,8 +376,7 @@ class _HomeState extends State<Home> {
                                   Navigator.pop(context);
                                 },
                                 title: Text(favorites[index].title),
-                                subtitle: favorites[index].description !=
-                                        null
+                                subtitle: favorites[index].description != null
                                     ? Text(favorites[index].description!)
                                     : Text('TBA'),
                                 trailing: IconButton(
@@ -679,7 +677,9 @@ class _HomeState extends State<Home> {
             );
           },
         ),
-        title: Text(currentStreamTitle),
+        title: Visibility(
+            visible: GlobalSettings.appBarTitle,
+            child: Text(currentStreamTitle)),
         actions: [
           Visibility(
             visible: enableSleepTimer,

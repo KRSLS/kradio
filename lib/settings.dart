@@ -39,9 +39,20 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             CheckboxListTile(
+                title: Text('App bar title'),
+                subtitle: Text('Show the station title on the app bar.'),
+                value: GlobalSettings.appBarTitle,
+                onChanged: (value) {
+                  setState(() {
+                    GlobalSettings.appBarTitle = value!;
+                  });
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
+            CheckboxListTile(
                 title: Text('Notify internet loss'),
-                subtitle: Text(
-                    'Notify when internet connection is not available.'),
+                subtitle:
+                    Text('Notify when internet connection is not available.'),
                 value: GlobalSettings.notifyInternetLoss,
                 onChanged: (value) {
                   setState(() {
@@ -75,7 +86,8 @@ class _SettingsState extends State<Settings> {
             Divider(),
             ListTile(
               title: Text('Background image opacity'),
-              subtitle: Text('Increasing opacity might make the controller buttons harder to see.'),
+              subtitle: Text(
+                  'Increasing opacity might make the controller buttons harder to see.'),
               trailing: Text(GlobalSettings.bgOpacity.toStringAsFixed(2) + ''),
             ),
             Slider(
@@ -172,7 +184,8 @@ class _SettingsState extends State<Settings> {
                           ScaffoldMessenger.of(context).clearMaterialBanners();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Deleted all local stored data, please restart your application.'),
+                              content: Text(
+                                  'Deleted all local stored data, please restart your application.'),
                             ),
                           );
                         },
