@@ -37,14 +37,11 @@ class _HomeState extends State<Home> {
   RadioPlayer radioPlayer = RadioPlayer();
   bool isPlaying = false;
   List<String>? metadata;
-  String currentStreamTitle = '';
 
   final headsetPlugin = HeadsetEvent();
   HeadsetState? headsetState;
 
   int currentStationIndex = 0;
-  String currentStreamNextURL = KStream.streams[0].urlNext.toString();
-  String currentImageURL = KStream.streams[0].customUrlImage.toString();
 
   bool showNextSong = false;
   String nextSong = '';
@@ -85,8 +82,6 @@ class _HomeState extends State<Home> {
 
     //set the csi to the data passed from previous screen
     currentStationIndex = widget.startWithStation;
-    //set the app bar title to the current station title
-    currentStreamTitle = KStream.streams[currentStationIndex].title;
 
     //request permissions for the package
     headsetPlugin.requestPermission();
@@ -146,31 +141,24 @@ class _HomeState extends State<Home> {
   void changeRadioStation(bool isFavorite, int index) async {
     setState(() {
       //set the current station to the index
-      currentStationIndex = index;
+      if(isFavorite)
+      {
+        currentStationIndex = favorites[index].index!;
+      }
+      else {
+        currentStationIndex = index;
+      }
     });
 
     //it's important to wait for the player to stop and then change the channel
     //then start the player again
     await radioPlayer.stop();
-    if (isFavorite) {
-      currentImageURL = favorites[index].customUrlImage.toString();
-      currentStreamNextURL = favorites[index].urlNext.toString();
-      currentStreamTitle = favorites[index].title;
-      await radioPlayer.setChannel(
-        title: favorites[index].title,
-        url: favorites[index].url,
-        imagePath: currentImageURL,
-      );
-    } else {
-      currentImageURL = KStream.streams[index].customUrlImage.toString();
-      currentStreamNextURL = KStream.streams[index].urlNext.toString();
-      currentStreamTitle = KStream.streams[index].title;
-      await radioPlayer.setChannel(
-        title: KStream.streams[index].title,
-        url: KStream.streams[index].url,
-        imagePath: currentImageURL,
-      );
-    }
+    await radioPlayer.setChannel(
+      title: KStream.streams[currentStationIndex].title,
+      url: KStream.streams[currentStationIndex].url,
+      imagePath: KStream.streams[currentStationIndex].customUrlImage,
+    );
+
     await radioPlayer.play();
   }
 
@@ -243,7 +231,7 @@ class _HomeState extends State<Home> {
     //this function runes every 2 seconds
     Timer.periodic(Duration(milliseconds: 2000), (timer) async {
       //next
-      final urlNext = Uri.parse(currentStreamNextURL);
+      final urlNext = Uri.parse(KStream.streams[currentStationIndex].urlNext);
       final requestNext = await HttpClient().getUrl(urlNext);
       final responseNext = await requestNext.close();
       await responseNext
@@ -443,8 +431,7 @@ class _HomeState extends State<Home> {
                       subtitle: Text('Share the vibes with someone.'),
                       onTap: () async {
                         Navigator.pop(context);
-                        await Share.share(
-                            KStream.streams[currentStationIndex].url);
+                        await Share.share(KStream.streams[currentStationIndex].url);
                       },
                     ),
                     ListTile(
@@ -471,9 +458,7 @@ class _HomeState extends State<Home> {
                       subtitle: Text('Copy the current station image/gif url.'),
                       onTap: () {
                         Clipboard.setData(
-                          ClipboardData(
-                              text:
-                                  '${KStream.streams[currentStationIndex].customUrlImage}'),
+                          ClipboardData(text: KStream.streams[currentStationIndex].customUrlImage.toString()),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -691,8 +676,11 @@ class _HomeState extends State<Home> {
           },
         ),
         title: Visibility(
-            visible: GlobalSettings.appBarTitle,
-            child: Text(currentStreamTitle)),
+          visible: GlobalSettings.appBarTitle,
+          child: Text(
+            KStream.streams[currentStationIndex].title,
+          ),
+        ),
         actions: [
           Visibility(
             visible: enableSleepTimer,
@@ -765,7 +753,7 @@ class _HomeState extends State<Home> {
             fit: BoxFit.cover,
             opacity: GlobalSettings.bgOpacity,
             image: NetworkImage(
-              currentImageURL,
+              KStream.streams[currentStationIndex].urlImage.toString(),
             ),
           ),
         ),
@@ -799,7 +787,8 @@ class _HomeState extends State<Home> {
                                   GlobalSettings.borderRadius),
                               child: Image.network(
                                 fit: BoxFit.cover,
-                                currentImageURL,
+                                KStream.streams[currentStationIndex].urlImage
+                                    .toString(),
                               ),
                             ),
                           ),
