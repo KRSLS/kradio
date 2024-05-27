@@ -206,6 +206,17 @@ class _SettingsState extends State<Settings> {
               },
             ),
             Divider(),
+            CheckboxListTile(
+                title: Text('Border'),
+                subtitle: Text('Border around cover image/gif and controller.'),
+                value: GlobalSettings.border,
+                onChanged: (value) {
+                  setState(() {
+                    GlobalSettings.border = value!;
+                  });
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
             ListTile(
               title: Text('Border radius'),
               trailing:

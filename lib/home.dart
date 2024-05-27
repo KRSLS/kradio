@@ -228,9 +228,7 @@ class _HomeState extends State<Home> {
   }
 
   //this handles the next song information from xml
-  void loadNextSongInformation() async {
-    
-  }
+  void loadNextSongInformation() async {}
 
   //handle sleep timer
   void sleep() {
@@ -718,7 +716,6 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(),
-                
                 ListTile(
                   shape: RoundedRectangleBorder(
                     borderRadius:
@@ -770,6 +767,20 @@ class _HomeState extends State<Home> {
                       padding:
                           EdgeInsets.symmetric(vertical: 30, horizontal: 30),
                       child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                              GlobalSettings.borderRadius),
+                          border: Border.all(
+                              color:
+                                  MediaQuery.of(context).platformBrightness ==
+                                          Brightness.light
+                                      ? Color.fromARGB(255, 196, 196, 196)
+                                      : Color.fromARGB(255, 97, 97, 97),
+                              width: 1,
+                              style: GlobalSettings.border
+                                  ? BorderStyle.solid
+                                  : BorderStyle.none),
+                        ),
                         child: Material(
                           elevation: 40,
                           borderRadius: BorderRadius.circular(
@@ -906,6 +917,16 @@ class _HomeState extends State<Home> {
                                     sigmaY: GlobalSettings.controllerBGBlur),
                                 child: Container(
                                   decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: MediaQuery.of(context)
+                                                    .platformBrightness ==
+                                                Brightness.light
+                                            ? Color.fromARGB(255, 196, 196, 196)
+                                            : Color.fromARGB(255, 97, 97, 97),
+                                        width: 1,
+                                        style: GlobalSettings.border
+                                            ? BorderStyle.solid
+                                            : BorderStyle.none),
                                     borderRadius: BorderRadius.circular(
                                         GlobalSettings.borderRadius),
                                     color: GlobalSettings.playerButtonsBG

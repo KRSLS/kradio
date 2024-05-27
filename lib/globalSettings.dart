@@ -22,6 +22,7 @@ class GlobalSettings {
   static bool notifyInternetLoss = true;
   static bool showNextSong = true;
   static bool stopPlayerOnDeviceDisconnect = true;
+  static bool border = true;
   static double borderRadiusMin = 0.0;
   static double borderRadiusMax = 40.0;
   static double borderRadius = 20.0;
@@ -49,6 +50,7 @@ class GlobalSettings {
     showNextSong = await prefs.getBool('showNextSong')!;
     stopPlayerOnDeviceDisconnect =
         await prefs.getBool('stopPlayerOnDeviceDisconnect')!;
+    border = await prefs.getBool('border')!;
     borderRadius = await prefs.getDouble('borderRadius')!;
 
     //get custom image url
@@ -88,6 +90,7 @@ class GlobalSettings {
     prefs.setBool('notifyInternetLoss', notifyInternetLoss);
     prefs.setBool('showNextSong', showNextSong);
     prefs.setBool('stopPlayerOnDeviceDisconnect', stopPlayerOnDeviceDisconnect);
+    prefs.setBool('border', border);
     prefs.setDouble('borderRadius', borderRadius);
 
     //save custom image url
