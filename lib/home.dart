@@ -669,20 +669,18 @@ class _HomeState extends State<Home> {
                 builder: (context, orientation) {
                   return GridView.count(
                     physics: orientation == Orientation.portrait ? NeverScrollableScrollPhysics() : ClampingScrollPhysics(),
-                    crossAxisSpacing: 0,
+                    childAspectRatio:  orientation == Orientation.portrait ? 1 : 1 / .65 ,
                     crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(
                             vertical:
-                                orientation == Orientation.portrait ? 30 : 90.0,
-                            horizontal: orientation == Orientation.portrait
-                                ? 30
-                                : 90.0),
+                               30,
+                            horizontal: 30),
                         child: Container(
-
+            
                           child: Material(
-                            elevation: 0,
+                            elevation: 40,
                             borderRadius: BorderRadius.circular(20),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
@@ -700,7 +698,7 @@ class _HomeState extends State<Home> {
                         child: Column(
                           mainAxisAlignment: orientation == Orientation.portrait
                               ? MainAxisAlignment.spaceBetween
-                              : MainAxisAlignment.spaceEvenly,
+                              : MainAxisAlignment.spaceAround,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Padding(
@@ -795,7 +793,7 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
