@@ -567,6 +567,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      extendBody: true,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -663,210 +664,231 @@ class _HomeState extends State<Home> {
               sigmaY: GlobalSettings.playerBGBlur),
           child: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
+              padding: EdgeInsets.symmetric(horizontal: 0.0),
+              child: OrientationBuilder(
+                builder: (context, orientation) {
+                  return GridView.count(
+                    crossAxisSpacing: 0,
+                    crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(
-                            vertical: 30.0, horizontal: 30.0),
-                        child: Center(
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: double.infinity,
-                              child: Material(
-                                elevation: 50,
-                                borderRadius: BorderRadius.circular(20),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Image.network(
-                                    fit: BoxFit.cover,
-                                    KStream.streams[currentStationIndex]
-                                        .customUrlImage
-                                        .toString(),
-                                  ),
-                                ),
+                            vertical:
+                                orientation == Orientation.portrait ? 30 : 90.0,
+                            horizontal: orientation == Orientation.portrait
+                                ? 30
+                                : 90.0),
+                        child: Container(
+                          width: 30,
+                          child: Material(
+                            elevation: 40,
+                            borderRadius: BorderRadius.circular(20),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                fit: BoxFit.cover,
+                                KStream
+                                    .streams[currentStationIndex].customUrlImage
+                                    .toString(),
                               ),
                             ),
                           ),
                         ),
                       ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Center(
-                            child: GestureDetector(
-                              onLongPress: () {
-                                HapticFeedback.lightImpact();
-                                Clipboard.setData(
-                                    ClipboardData(text: '${metadata?[0]}'));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Artist copied.',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                metadata?[0] ?? 'Loading...',
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(fontSize: 24),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(
-                            child: GestureDetector(
-                              onLongPress: () {
-                                HapticFeedback.lightImpact();
-                                Clipboard.setData(
-                                    ClipboardData(text: '${metadata?[1]}'));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Title copied.',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                metadata?[1] ?? 'Loading...',
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Visibility(
-                            visible: GlobalSettings.showNextSong,
-                            child: Center(
-                              child: GestureDetector(
-                                onLongPress: () {
-                                  HapticFeedback.lightImpact();
-                                  Clipboard.setData(ClipboardData(
-                                      text: '${nextSong} - ${nextArtist}'));
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Next song copied.',
-                                        style: TextStyle(fontSize: 16),
+                      Container(
+                        child: Column(
+                          mainAxisAlignment: orientation == Orientation.portrait
+                              ? MainAxisAlignment.spaceBetween
+                              : MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Column(
+                                children: [
+                                  Center(
+                                    child: GestureDetector(
+                                      onLongPress: () {
+                                        HapticFeedback.lightImpact();
+                                        Clipboard.setData(ClipboardData(
+                                            text: '${metadata?[0]}'));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Artist copied.',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        textAlign: TextAlign.center,
+                                        metadata?[0] ?? 'Loading...',
+                                        overflow: TextOverflow.fade,
+                                        style: TextStyle(fontSize: 24),
                                       ),
                                     ),
-                                  );
-                                },
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  'Next: ${nextSong} by ${nextArtist}',
-                                  style: TextStyle(
-                                    fontSize: 18,
                                   ),
-                                  overflow: TextOverflow.fade,
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Center(
+                                    child: GestureDetector(
+                                      onLongPress: () {
+                                        HapticFeedback.lightImpact();
+                                        Clipboard.setData(ClipboardData(
+                                            text: '${metadata?[1]}'));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Title copied.',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        textAlign: TextAlign.center,
+                                        metadata?[1] ?? 'Loading...',
+                                        overflow: TextOverflow.fade,
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Visibility(
+                                    visible: GlobalSettings.showNextSong,
+                                    child: Center(
+                                      child: GestureDetector(
+                                        onLongPress: () {
+                                          HapticFeedback.lightImpact();
+                                          Clipboard.setData(ClipboardData(
+                                              text:
+                                                  '${nextSong} - ${nextArtist}'));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Next song copied.',
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                          textAlign: TextAlign.center,
+                                          'Next: ${nextSong} by ${nextArtist}',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                          overflow: TextOverflow.fade,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: GlobalSettings.playerButtonsBG
+                                      ? MediaQuery.of(context)
+                                                  .platformBrightness ==
+                                              Brightness.light
+                                          ? Color.fromARGB(40, 0, 0, 0)
+                                          : Color.fromARGB(40, 255, 255, 255)
+                                      : Colors.transparent,
                                 ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: GlobalSettings.playerButtonsBG
-                            ? MediaQuery.of(context).platformBrightness ==
-                                    Brightness.light
-                                ? Color.fromARGB(40, 0, 0, 0)
-                                : Color.fromARGB(40, 255, 255, 255)
-                            : Colors.transparent,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 20.0, horizontal: 4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            IconButton(
-                              tooltip: 'Favorite',
-                              onPressed: () {
-                                setState(() {
-                                  KStream.streams[currentStationIndex]
-                                          .isFavorite =
-                                      !KStream.streams[currentStationIndex]
-                                          .isFavorite;
-                                });
-                                GlobalSettings.saveSettings();
-                              },
-                              icon: Icon(
-                                KStream.streams[currentStationIndex].isFavorite
-                                    ? Icons.favorite_rounded
-                                    : Icons.favorite_outline_rounded,
-                                size: 38,
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: 'Previous',
-                              onPressed: () {
-                                previousStation();
-                              },
-                              icon: Icon(
-                                Icons.arrow_circle_left_rounded,
-                                size: 52,
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: isPlaying ? 'Stop' : 'Play',
-                              onPressed: () {
-                                isPlaying
-                                    ? radioPlayer.stop()
-                                    : radioPlayer.play();
-                              },
-                              icon: Icon(
-                                !isPlaying
-                                    ? Icons.play_circle_rounded
-                                    : Icons.pause_circle_rounded,
-                                size: 86,
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: 'Next',
-                              onPressed: () {
-                                nextStation();
-                              },
-                              icon: Icon(
-                                Icons.arrow_circle_right_rounded,
-                                size: 52,
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: 'Radio List',
-                              onPressed: () {
-                                modalRadioList();
-                              },
-                              icon: Icon(
-                                Icons.list_alt_rounded,
-                                size: 38,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 0.0, horizontal: 4.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      IconButton(
+                                        tooltip: 'Favorite',
+                                        onPressed: () {
+                                          setState(() {
+                                            KStream.streams[currentStationIndex]
+                                                    .isFavorite =
+                                                !KStream
+                                                    .streams[
+                                                        currentStationIndex]
+                                                    .isFavorite;
+                                          });
+                                          GlobalSettings.saveSettings();
+                                        },
+                                        icon: Icon(
+                                          KStream.streams[currentStationIndex]
+                                                  .isFavorite
+                                              ? Icons.favorite_rounded
+                                              : Icons.favorite_outline_rounded,
+                                          size: 38,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        tooltip: 'Previous',
+                                        onPressed: () {
+                                          previousStation();
+                                        },
+                                        icon: Icon(
+                                          Icons.arrow_circle_left_rounded,
+                                          size: 52,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        tooltip: isPlaying ? 'Stop' : 'Play',
+                                        onPressed: () {
+                                          isPlaying
+                                              ? radioPlayer.stop()
+                                              : radioPlayer.play();
+                                        },
+                                        icon: Icon(
+                                          !isPlaying
+                                              ? Icons.play_circle_rounded
+                                              : Icons.pause_circle_rounded,
+                                          size: 86,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        tooltip: 'Next',
+                                        onPressed: () {
+                                          nextStation();
+                                        },
+                                        icon: Icon(
+                                          Icons.arrow_circle_right_rounded,
+                                          size: 52,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        tooltip: 'Radio List',
+                                        onPressed: () {
+                                          modalRadioList();
+                                        },
+                                        icon: Icon(
+                                          Icons.list_alt_rounded,
+                                          size: 38,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               ),
             ),
           ),
