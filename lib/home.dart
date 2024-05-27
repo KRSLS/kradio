@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:KRadio/globalSettings.dart';
@@ -362,7 +363,10 @@ class _HomeState extends State<Home> {
                         //Favorite radio list
                         favorites.isEmpty
                             ? Center(
-                                child: Text('Nothing found. 💔', style: TextStyle(fontSize: 20),),
+                                child: Text(
+                                  'Nothing found. 💔',
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               )
                             : ListView.builder(
                                 itemCount: favorites.length,
@@ -702,7 +706,7 @@ class _HomeState extends State<Home> {
                           onPressed: () {
                             modalSleepTimer();
                             ScaffoldMessenger.of(context)
-                                  .clearMaterialBanners();
+                                .clearMaterialBanners();
                           },
                           child: Text('Change')),
                       TextButton(
@@ -906,91 +910,100 @@ class _HomeState extends State<Home> {
                                 vertical: orientation == Orientation.portrait
                                     ? 0.0
                                     : 8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    GlobalSettings.borderRadius),
-                                color: GlobalSettings.playerButtonsBG
-                                    ? MediaQuery.of(context)
-                                                .platformBrightness ==
-                                            Brightness.light
-                                        ? Color.fromARGB(40, 0, 0, 0)
-                                        : Color.fromARGB(40, 255, 255, 255)
-                                    : Colors.transparent,
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 4.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    IconButton(
-                                      tooltip: 'Favorite',
-                                      onPressed: () {
-                                        setState(() {
-                                          KStream.streams[currentStationIndex]
-                                                  .isFavorite =
-                                              !KStream
-                                                  .streams[
-                                                      currentStationIndex]
-                                                  .isFavorite;
-                                        });
-                                        GlobalSettings.saveSettings();
-                                      },
-                                      icon: Icon(
-                                        KStream.streams[currentStationIndex]
-                                                .isFavorite
-                                            ? Icons.favorite_rounded
-                                            : Icons.favorite_outline_rounded,
-                                        size: 38,
-                                      ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(GlobalSettings.borderRadius),
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: GlobalSettings.controllerBGBlur, sigmaY: GlobalSettings.controllerBGBlur),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        GlobalSettings.borderRadius),
+                                    color: GlobalSettings.playerButtonsBG
+                                        ? MediaQuery.of(context)
+                                                    .platformBrightness ==
+                                                Brightness.light
+                                            ? Color.fromARGB(40, 0, 0, 0)
+                                            : Color.fromARGB(40, 255, 255, 255)
+                                        : Colors.transparent,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 0.0, horizontal: 4.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconButton(
+                                          tooltip: 'Favorite',
+                                          onPressed: () {
+                                            setState(() {
+                                              KStream
+                                                      .streams[currentStationIndex]
+                                                      .isFavorite =
+                                                  !KStream
+                                                      .streams[
+                                                          currentStationIndex]
+                                                      .isFavorite;
+                                            });
+                                            GlobalSettings.saveSettings();
+                                          },
+                                          icon: Icon(
+                                            KStream.streams[currentStationIndex]
+                                                    .isFavorite
+                                                ? Icons.favorite_rounded
+                                                : Icons
+                                                    .favorite_outline_rounded,
+                                            size: 38,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          tooltip: 'Previous',
+                                          onPressed: () {
+                                            previousStation();
+                                          },
+                                          icon: Icon(
+                                            Icons.arrow_circle_left_rounded,
+                                            size: 52,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          tooltip: isPlaying ? 'Stop' : 'Play',
+                                          onPressed: () {
+                                            isPlaying
+                                                ? radioPlayer.stop()
+                                                : radioPlayer.play();
+                                          },
+                                          icon: Icon(
+                                            !isPlaying
+                                                ? Icons.play_circle_rounded
+                                                : Icons.pause_circle_rounded,
+                                            size: 86,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          tooltip: 'Next',
+                                          onPressed: () {
+                                            nextStation();
+                                          },
+                                          icon: Icon(
+                                            Icons.arrow_circle_right_rounded,
+                                            size: 52,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          tooltip: 'Radio List',
+                                          onPressed: () {
+                                            modalRadioList();
+                                          },
+                                          icon: Icon(
+                                            Icons.list_alt_rounded,
+                                            size: 38,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    IconButton(
-                                      tooltip: 'Previous',
-                                      onPressed: () {
-                                        previousStation();
-                                      },
-                                      icon: Icon(
-                                        Icons.arrow_circle_left_rounded,
-                                        size: 52,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      tooltip: isPlaying ? 'Stop' : 'Play',
-                                      onPressed: () {
-                                        isPlaying
-                                            ? radioPlayer.stop()
-                                            : radioPlayer.play();
-                                      },
-                                      icon: Icon(
-                                        !isPlaying
-                                            ? Icons.play_circle_rounded
-                                            : Icons.pause_circle_rounded,
-                                        size: 86,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      tooltip: 'Next',
-                                      onPressed: () {
-                                        nextStation();
-                                      },
-                                      icon: Icon(
-                                        Icons.arrow_circle_right_rounded,
-                                        size: 52,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      tooltip: 'Radio List',
-                                      onPressed: () {
-                                        modalRadioList();
-                                      },
-                                      icon: Icon(
-                                        Icons.list_alt_rounded,
-                                        size: 38,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),

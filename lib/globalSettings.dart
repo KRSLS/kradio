@@ -9,9 +9,12 @@ class GlobalSettings {
   static double bgOpacityMax = 0.7;
   static double bgOpacity = 0.4;
   static bool playerButtonsBG = true;
-  static double playerBGBlurMin = 1.0;
+  static double playerBGBlurMin = 0.0;
   static double playerBGBlurMax = 80.0;
   static double playerBGBlur = 10.0;
+  static double controllerBGBlurMin = 0.0;
+  static double controllerBGBlurMax = 80.0;
+  static double controllerBGBlur = 10.0;
   static bool notifyInternetLoss = true;
   static bool showNextSong = true;
   static bool stopPlayerOnDeviceDisconnect = true;
@@ -31,6 +34,9 @@ class GlobalSettings {
     playerBGBlurMin = await prefs.getDouble('playerBGBlurMin')!;
     playerBGBlurMax = await prefs.getDouble('playerBGBlurMax')!;
     playerBGBlur = await prefs.getDouble('playerBGBlur')!;
+    controllerBGBlurMin = await prefs.getDouble('controllerBGBlurMin')!;
+    controllerBGBlurMax = await prefs.getDouble('controllerBGBlurMax')!;
+    controllerBGBlur = await prefs.getDouble('controllerBGBlur')!;
     notifyInternetLoss = await prefs.getBool('notifyInternetLoss')!;
     showNextSong = await prefs.getBool('showNextSong')!;
     stopPlayerOnDeviceDisconnect =
@@ -64,6 +70,9 @@ class GlobalSettings {
     prefs.setDouble('playerBGBlurMin', playerBGBlurMin);
     prefs.setDouble('playerBGBlurMax', playerBGBlurMax);
     prefs.setDouble('playerBGBlur', playerBGBlur);
+    prefs.setDouble('controllerBGBlurMin', controllerBGBlurMin);
+    prefs.setDouble('controllerBGBlurMax', controllerBGBlurMax);
+    prefs.setDouble('controllerBGBlur', controllerBGBlur);
     prefs.setBool('notifyInternetLoss', notifyInternetLoss);
     prefs.setBool('showNextSong', showNextSong);
     prefs.setBool('stopPlayerOnDeviceDisconnect', stopPlayerOnDeviceDisconnect);

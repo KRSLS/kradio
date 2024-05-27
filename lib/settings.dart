@@ -123,6 +123,35 @@ class _SettingsState extends State<Settings> {
               },
             ),
             Divider(),
+            CheckboxListTile(
+                title: Text('Controller background'),
+                value: GlobalSettings.playerButtonsBG,
+                onChanged: (value) {
+                  setState(() {
+                    GlobalSettings.playerButtonsBG = value!;
+                  });
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
+            ListTile(
+              title: Text('Controller blur amount'),
+              trailing: Text(
+                  GlobalSettings.controllerBGBlur.toInt().toString() + 'px'),
+            ),
+            Slider(
+              min: GlobalSettings.controllerBGBlurMin,
+              max: GlobalSettings.controllerBGBlurMax,
+              value: GlobalSettings.controllerBGBlur,
+              divisions: GlobalSettings.controllerBGBlurMax.toInt(),
+              label: GlobalSettings.controllerBGBlur.round().toString() + 'px',
+              onChanged: (value) {
+                setState(() {
+                  GlobalSettings.controllerBGBlur = value;
+                });
+                GlobalSettings.saveSettings();
+              },
+            ),
+            Divider(),
             ListTile(
               title: Text('Border radius'),
               trailing:
@@ -141,16 +170,6 @@ class _SettingsState extends State<Settings> {
                 GlobalSettings.saveSettings();
               },
             ),
-            Divider(),
-            CheckboxListTile(
-                title: Text('Controller background'),
-                value: GlobalSettings.playerButtonsBG,
-                onChanged: (value) {
-                  setState(() {
-                    GlobalSettings.playerButtonsBG = value!;
-                  });
-                  GlobalSettings.saveSettings();
-                }),
             Divider(),
             Padding(
               padding: EdgeInsets.all(6.0),
