@@ -185,6 +185,7 @@ class _HomeState extends State<Home> {
       switch (status) {
         case InternetStatus.connected:
           //if connected
+          ScaffoldMessenger.of(context).clearMaterialBanners();
           if (GlobalSettings.notifyInternetLoss) {
             MaterialBanner(
               content: Text('Connected to the internet.'),
