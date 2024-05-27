@@ -143,11 +143,9 @@ class _HomeState extends State<Home> {
       //set the current station to the index
       //if its favorite then take the index of the favorite station class
       //easy fix
-      if(isFavorite)
-      {
+      if (isFavorite) {
         currentStationIndex = favorites[index].index!;
-      }
-      else {
+      } else {
         currentStationIndex = index;
       }
     });
@@ -362,40 +360,47 @@ class _HomeState extends State<Home> {
                               );
                             }),
                         //Favorite radio list
-                        ListView.builder(
-                            itemCount: favorites.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                leading: ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      GlobalSettings.borderRadius),
-                                  child: Image.network(
-                                    fit: BoxFit.fitWidth,
-                                    favorites[index].customUrlImage.toString(),
-                                  ),
-                                ),
-                                onTap: () {
-                                  changeRadioStation(true, index);
-                                  Navigator.pop(context);
-                                },
-                                title: Text(favorites[index].title),
-                                subtitle: favorites[index].description != null
-                                    ? Text(favorites[index].description!)
-                                    : Text('TBA'),
-                                trailing: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      favorites[index].isFavorite = false;
-                                    });
-                                    loadFavorites();
-                                    GlobalSettings.saveSettings();
-                                  },
-                                  icon: Icon(favorites[index].isFavorite
-                                      ? Icons.favorite_rounded
-                                      : Icons.favorite_outline_rounded),
-                                ),
-                              );
-                            }),
+                        favorites.isEmpty
+                            ? Center(
+                                child: Text('Nothing found. 💔', style: TextStyle(fontSize: 20),),
+                              )
+                            : ListView.builder(
+                                itemCount: favorites.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          GlobalSettings.borderRadius),
+                                      child: Image.network(
+                                        fit: BoxFit.fitWidth,
+                                        favorites[index]
+                                            .customUrlImage
+                                            .toString(),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      changeRadioStation(true, index);
+                                      Navigator.pop(context);
+                                    },
+                                    title: Text(favorites[index].title),
+                                    subtitle: favorites[index].description !=
+                                            null
+                                        ? Text(favorites[index].description!)
+                                        : Text('TBA'),
+                                    trailing: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          favorites[index].isFavorite = false;
+                                        });
+                                        loadFavorites();
+                                        GlobalSettings.saveSettings();
+                                      },
+                                      icon: Icon(favorites[index].isFavorite
+                                          ? Icons.favorite_rounded
+                                          : Icons.favorite_outline_rounded),
+                                    ),
+                                  );
+                                }),
                       ]),
                     ),
                   ),
@@ -433,7 +438,8 @@ class _HomeState extends State<Home> {
                       subtitle: Text('Share the vibes with someone.'),
                       onTap: () async {
                         Navigator.pop(context);
-                        await Share.share(KStream.streams[currentStationIndex].url);
+                        await Share.share(
+                            KStream.streams[currentStationIndex].url);
                       },
                     ),
                     ListTile(
@@ -460,7 +466,10 @@ class _HomeState extends State<Home> {
                       subtitle: Text('Copy the current station image/gif url.'),
                       onTap: () {
                         Clipboard.setData(
-                          ClipboardData(text: KStream.streams[currentStationIndex].customUrlImage.toString()),
+                          ClipboardData(
+                              text: KStream
+                                  .streams[currentStationIndex].customUrlImage
+                                  .toString()),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -763,236 +772,237 @@ class _HomeState extends State<Home> {
           filter: ImageFilter.blur(
               sigmaX: GlobalSettings.playerBGBlur,
               sigmaY: GlobalSettings.playerBGBlur),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0.0),
-              child: OrientationBuilder(
-                builder: (context, orientation) {
-                  return GridView.count(
-                    physics: orientation == Orientation.portrait
-                        ? NeverScrollableScrollPhysics()
-                        : ClampingScrollPhysics(),
-                    childAspectRatio:
-                        orientation == Orientation.portrait ? 1 : 1 / .65,
-                    crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-                        child: Container(
-                          child: Material(
-                            elevation: 40,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 0.0),
+            child: OrientationBuilder(
+              builder: (context, orientation) {
+                return GridView.count(
+                  physics: orientation == Orientation.portrait
+                      ? NeverScrollableScrollPhysics()
+                      : ClampingScrollPhysics(),
+                  childAspectRatio:
+                      orientation == Orientation.portrait ? 1 : 1 / .65,
+                  crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                      child: Container(
+                        child: Material(
+                          elevation: 40,
+                          borderRadius: BorderRadius.circular(
+                              GlobalSettings.borderRadius),
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(
                                 GlobalSettings.borderRadius),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  GlobalSettings.borderRadius),
-                              child: Image.network(
-                                fit: BoxFit.cover,
-                                KStream.streams[currentStationIndex].urlImage
-                                    .toString(),
-                              ),
+                            child: Image.network(
+                              fit: BoxFit.cover,
+                              KStream.streams[currentStationIndex].urlImage
+                                  .toString(),
                             ),
                           ),
                         ),
                       ),
-                      Container(
-                        child: Column(
-                          mainAxisAlignment: orientation == Orientation.portrait
-                              ? MainAxisAlignment.spaceBetween
-                              : MainAxisAlignment.spaceAround,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Column(
-                                children: [
-                                  Center(
-                                    child: GestureDetector(
-                                      onLongPress: () {
-                                        HapticFeedback.lightImpact();
-                                        Clipboard.setData(ClipboardData(
-                                            text: '${metadata?[0]}'));
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Artist copied.',
-                                              style: TextStyle(fontSize: 16),
-                                            ),
+                    ),
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: orientation == Orientation.portrait
+                            ? MainAxisAlignment.spaceBetween
+                            : MainAxisAlignment.spaceAround,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Column(
+                              children: [
+                                Center(
+                                  child: GestureDetector(
+                                    onLongPress: () {
+                                      HapticFeedback.lightImpact();
+                                      Clipboard.setData(ClipboardData(
+                                          text: '${metadata?[0]}'));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Artist copied.',
+                                            style: TextStyle(fontSize: 16),
                                           ),
-                                        );
-                                      },
-                                      child: Text(
-                                        textAlign: TextAlign.center,
-                                        metadata?[0] ?? 'Loading...',
-                                        overflow: TextOverflow.fade,
-                                        style: TextStyle(fontSize: 24),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Center(
-                                    child: GestureDetector(
-                                      onLongPress: () {
-                                        HapticFeedback.lightImpact();
-                                        Clipboard.setData(ClipboardData(
-                                            text: '${metadata?[1]}'));
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Title copied.',
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      child: Text(
-                                        textAlign: TextAlign.center,
-                                        metadata?[1] ?? 'Loading...',
-                                        overflow: TextOverflow.fade,
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Visibility(
-                                    visible: GlobalSettings.showNextSong,
-                                    child: Center(
-                                      child: GestureDetector(
-                                        onLongPress: () {
-                                          HapticFeedback.lightImpact();
-                                          Clipboard.setData(ClipboardData(
-                                              text:
-                                                  '${nextSong} - ${nextArtist}'));
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Next song copied.',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: Text(
-                                          textAlign: TextAlign.center,
-                                          'Next: ${nextSong} by ${nextArtist}',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                          ),
-                                          overflow: TextOverflow.fade,
                                         ),
+                                      );
+                                    },
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      metadata?[0] ?? 'Loading...',
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(fontSize: 24),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Center(
+                                  child: GestureDetector(
+                                    onLongPress: () {
+                                      HapticFeedback.lightImpact();
+                                      Clipboard.setData(ClipboardData(
+                                          text: '${metadata?[1]}'));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Title copied.',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      metadata?[1] ?? 'Loading...',
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Visibility(
+                                  visible: GlobalSettings.showNextSong,
+                                  child: Center(
+                                    child: GestureDetector(
+                                      onLongPress: () {
+                                        HapticFeedback.lightImpact();
+                                        Clipboard.setData(ClipboardData(
+                                            text:
+                                                '${nextSong} - ${nextArtist}'));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Next song copied.',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        textAlign: TextAlign.center,
+                                        'Next: ${nextSong} by ${nextArtist}',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                        overflow: TextOverflow.fade,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: orientation == Orientation.portrait ? 8.0 : 28.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      GlobalSettings.borderRadius),
-                                  color: GlobalSettings.playerButtonsBG
-                                      ? MediaQuery.of(context)
-                                                  .platformBrightness ==
-                                              Brightness.light
-                                          ? Color.fromARGB(40, 0, 0, 0)
-                                          : Color.fromARGB(40, 255, 255, 255)
-                                      : Colors.transparent,
                                 ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 0.0, horizontal: 4.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      IconButton(
-                                        tooltip: 'Favorite',
-                                        onPressed: () {
-                                          setState(() {
-                                            KStream.streams[currentStationIndex]
-                                                    .isFavorite =
-                                                !KStream
-                                                    .streams[
-                                                        currentStationIndex]
-                                                    .isFavorite;
-                                          });
-                                          GlobalSettings.saveSettings();
-                                        },
-                                        icon: Icon(
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                                vertical: orientation == Orientation.portrait
+                                    ? 30.0
+                                    : 8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    GlobalSettings.borderRadius),
+                                color: GlobalSettings.playerButtonsBG
+                                    ? MediaQuery.of(context)
+                                                .platformBrightness ==
+                                            Brightness.light
+                                        ? Color.fromARGB(40, 0, 0, 0)
+                                        : Color.fromARGB(40, 255, 255, 255)
+                                    : Colors.transparent,
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0.0, horizontal: 4.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    IconButton(
+                                      tooltip: 'Favorite',
+                                      onPressed: () {
+                                        setState(() {
                                           KStream.streams[currentStationIndex]
-                                                  .isFavorite
-                                              ? Icons.favorite_rounded
-                                              : Icons.favorite_outline_rounded,
-                                          size: 38,
-                                        ),
+                                                  .isFavorite =
+                                              !KStream
+                                                  .streams[
+                                                      currentStationIndex]
+                                                  .isFavorite;
+                                        });
+                                        GlobalSettings.saveSettings();
+                                      },
+                                      icon: Icon(
+                                        KStream.streams[currentStationIndex]
+                                                .isFavorite
+                                            ? Icons.favorite_rounded
+                                            : Icons.favorite_outline_rounded,
+                                        size: 38,
                                       ),
-                                      IconButton(
-                                        tooltip: 'Previous',
-                                        onPressed: () {
-                                          previousStation();
-                                        },
-                                        icon: Icon(
-                                          Icons.arrow_circle_left_rounded,
-                                          size: 52,
-                                        ),
+                                    ),
+                                    IconButton(
+                                      tooltip: 'Previous',
+                                      onPressed: () {
+                                        previousStation();
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_circle_left_rounded,
+                                        size: 52,
                                       ),
-                                      IconButton(
-                                        tooltip: isPlaying ? 'Stop' : 'Play',
-                                        onPressed: () {
-                                          isPlaying
-                                              ? radioPlayer.stop()
-                                              : radioPlayer.play();
-                                        },
-                                        icon: Icon(
-                                          !isPlaying
-                                              ? Icons.play_circle_rounded
-                                              : Icons.pause_circle_rounded,
-                                          size: 86,
-                                        ),
+                                    ),
+                                    IconButton(
+                                      tooltip: isPlaying ? 'Stop' : 'Play',
+                                      onPressed: () {
+                                        isPlaying
+                                            ? radioPlayer.stop()
+                                            : radioPlayer.play();
+                                      },
+                                      icon: Icon(
+                                        !isPlaying
+                                            ? Icons.play_circle_rounded
+                                            : Icons.pause_circle_rounded,
+                                        size: 86,
                                       ),
-                                      IconButton(
-                                        tooltip: 'Next',
-                                        onPressed: () {
-                                          nextStation();
-                                        },
-                                        icon: Icon(
-                                          Icons.arrow_circle_right_rounded,
-                                          size: 52,
-                                        ),
+                                    ),
+                                    IconButton(
+                                      tooltip: 'Next',
+                                      onPressed: () {
+                                        nextStation();
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_circle_right_rounded,
+                                        size: 52,
                                       ),
-                                      IconButton(
-                                        tooltip: 'Radio List',
-                                        onPressed: () {
-                                          modalRadioList();
-                                        },
-                                        icon: Icon(
-                                          Icons.list_alt_rounded,
-                                          size: 38,
-                                        ),
+                                    ),
+                                    IconButton(
+                                      tooltip: 'Radio List',
+                                      onPressed: () {
+                                        modalRadioList();
+                                      },
+                                      icon: Icon(
+                                        Icons.list_alt_rounded,
+                                        size: 38,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  );
-                },
-              ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
