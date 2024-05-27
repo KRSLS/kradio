@@ -248,7 +248,7 @@ class _HomeState extends State<Home> {
         //find all elements that uses the name Song
         nextSong = tempNextSong.findAllElements('Song').toString();
         //cut the string 14 characters ahead until it finds the character ">"
-        nextSong = nextSong.substring(14, nextSong.indexOf(">") - 1);
+        nextSong = nextSong.substring(14, nextSong.indexOf('">'));
         //replace html code to text
         nextSong = nextSong.replaceAll("&amp;", '&');
 
@@ -257,7 +257,16 @@ class _HomeState extends State<Home> {
         //find all elements that uses the name Song
         nextArtist = tempNextArtist.findAllElements('Artist').toString();
         //cut the string 14 characters ahead until it finds the character ">"
-        nextArtist = nextArtist.substring(15, nextArtist.indexOf("ID") - 2);
+        nextArtist = nextArtist.substring(15, nextArtist.indexOf('" ID="'));
+        //replace html code to text
+        nextArtist = nextArtist.replaceAll("&amp;", '&');
+        
+        //length
+        var tempLength = XmlDocument.parse(nextArtist);
+        //find all elements that uses the name Song
+        nextArtist = tempNextArtist.findAllElements('Artist').toString();
+        //cut the string 14 characters ahead until it finds the character ">"
+        nextArtist = nextArtist.substring(15, nextArtist.indexOf('" ID="'));
         //replace html code to text
         nextArtist = nextArtist.replaceAll("&amp;", '&');
       });
@@ -911,10 +920,12 @@ class _HomeState extends State<Home> {
                                     ? 0.0
                                     : 8.0),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(GlobalSettings.borderRadius),
+                              borderRadius: BorderRadius.circular(
+                                  GlobalSettings.borderRadius),
                               child: BackdropFilter(
-                                filter:
-                                    ImageFilter.blur(sigmaX: GlobalSettings.controllerBGBlur, sigmaY: GlobalSettings.controllerBGBlur),
+                                filter: ImageFilter.blur(
+                                    sigmaX: GlobalSettings.controllerBGBlur,
+                                    sigmaY: GlobalSettings.controllerBGBlur),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(
