@@ -896,7 +896,7 @@ class _HomeState extends State<Home> {
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 28.0),
+                                  horizontal: 8.0, vertical: orientation == Orientation.portrait ? 8.0 : 28.0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(
