@@ -39,6 +39,18 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             CheckboxListTile(
+                title: Text('Notify internet loss'),
+                subtitle: Text(
+                    'Notify when internet connection is not available.'),
+                value: GlobalSettings.notifyInternetLoss,
+                onChanged: (value) {
+                  setState(() {
+                    GlobalSettings.notifyInternetLoss = value!;
+                  });
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
+            CheckboxListTile(
                 title: Text('Stop player on output disconnect'),
                 subtitle: Text(
                     'When disconnecting an audio output like bluetooth speaker or headphones etc, the radio player will stop.'),
@@ -97,6 +109,26 @@ class _SettingsState extends State<Settings> {
                 GlobalSettings.saveSettings();
               },
             ),
+            Divider(),
+            ListTile(
+              title: Text('Border radious'),
+              trailing:
+                  Text(GlobalSettings.borderRadius.toInt().toString() + 'px'),
+            ),
+            Slider(
+              min: GlobalSettings.borderRadiusMin,
+              max: GlobalSettings.borderRadiusMax,
+              value: GlobalSettings.borderRadius,
+              divisions: GlobalSettings.borderRadiusMax.toInt(),
+              label: GlobalSettings.borderRadius.round().toString() + 'px',
+              onChanged: (value) {
+                setState(() {
+                  GlobalSettings.borderRadius = value;
+                });
+                GlobalSettings.saveSettings();
+              },
+            ),
+            Divider(),
             CheckboxListTile(
                 title: Text('Controller background'),
                 value: GlobalSettings.playerButtonsBG,

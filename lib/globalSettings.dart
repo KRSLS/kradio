@@ -10,8 +10,12 @@ class GlobalSettings {
   static double playerBGBlurMin = 1.0;
   static double playerBGBlurMax = 40.0;
   static double playerBGBlur = 10.0;
+  static bool notifyInternetLoss = true;
   static bool showNextSong = true;
   static bool stopPlayerOnDeviceDisconnect = true;
+  static double borderRadiusMin = 0.0;
+  static double borderRadiusMax = 40.0;
+  static double borderRadius = 20.0;
 
   static void loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -25,9 +29,11 @@ class GlobalSettings {
     playerBGBlurMin = await prefs.getDouble('playerBGBlurMin')!;
     playerBGBlurMax = await prefs.getDouble('playerBGBlurMax')!;
     playerBGBlur = await prefs.getDouble('playerBGBlur')!;
+    notifyInternetLoss = await prefs.getBool('notifyInternetLoss')!;
     showNextSong = await prefs.getBool('showNextSong')!;
     stopPlayerOnDeviceDisconnect =
         await prefs.getBool('stopPlayerOnDeviceDisconnect')!;
+    borderRadius = await prefs.getDouble('borderRadius')!;
 
     //get custom image url
     for (var i = 0; i < KStream.streams.length; i++) {
@@ -54,8 +60,10 @@ class GlobalSettings {
     prefs.setDouble('playerBGBlurMin', playerBGBlurMin);
     prefs.setDouble('playerBGBlurMax', playerBGBlurMax);
     prefs.setDouble('playerBGBlur', playerBGBlur);
+    prefs.setBool('notifyInternetLoss', notifyInternetLoss);
     prefs.setBool('showNextSong', showNextSong);
     prefs.setBool('stopPlayerOnDeviceDisconnect', stopPlayerOnDeviceDisconnect);
+    prefs.setDouble('borderRadius', borderRadius);
 
     //save custom image url
     for (var i = 0; i < KStream.streams.length; i++) {

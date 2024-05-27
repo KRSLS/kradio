@@ -185,23 +185,9 @@ class _HomeState extends State<Home> {
       switch (status) {
         case InternetStatus.connected:
           //if connected
-          MaterialBanner(
-            content: Text('Connected to the internet.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).clearMaterialBanners();
-                },
-                child: Text('Okay'),
-              ),
-            ],
-          );
-          break;
-        case InternetStatus.disconnected:
-          //if disconnected
-          ScaffoldMessenger.of(context).showMaterialBanner(
+          if (GlobalSettings.notifyInternetLoss) {
             MaterialBanner(
-              content: Text('Not connected to the internet.'),
+              content: Text('Connected to the internet.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -210,8 +196,26 @@ class _HomeState extends State<Home> {
                   child: Text('Okay'),
                 ),
               ],
-            ),
-          );
+            );
+          }
+          break;
+        case InternetStatus.disconnected:
+          //if disconnected
+          if (GlobalSettings.notifyInternetLoss) {
+            ScaffoldMessenger.of(context).showMaterialBanner(
+              MaterialBanner(
+                content: Text('Not connected to the internet.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).clearMaterialBanners();
+                    },
+                    child: Text('Okay'),
+                  ),
+                ],
+              ),
+            );
+          }
           break;
       }
     });
@@ -297,7 +301,8 @@ class _HomeState extends State<Home> {
                           itemBuilder: (context, index) {
                             return ListTile(
                               leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(
+                                    GlobalSettings.borderRadius),
                                 child: Image.network(
                                   fit: BoxFit.fitWidth,
                                   KStream.streams[index].customUrlImage
@@ -350,9 +355,11 @@ class _HomeState extends State<Home> {
                   children: [
                     Padding(
                       padding: EdgeInsets.all(6.0),
-                      child: Text(
-                        'Station Properties',
-                        style: TextStyle(fontSize: 20),
+                      child: Center(
+                        child: Text(
+                          'Station Properties',
+                          style: TextStyle(fontSize: 20),
+                        ),
                       ),
                     ),
                     ListTile(
@@ -630,7 +637,8 @@ class _HomeState extends State<Home> {
                 SizedBox(),
                 ListTile(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius:
+                        BorderRadius.circular(GlobalSettings.borderRadius / 2),
                   ),
                   onTap: () {
                     Navigator.push(context,
@@ -681,9 +689,11 @@ class _HomeState extends State<Home> {
                         child: Container(
                           child: Material(
                             elevation: 40,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(
+                                GlobalSettings.borderRadius),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(
+                                  GlobalSettings.borderRadius),
                               child: Image.network(
                                 fit: BoxFit.cover,
                                 KStream
@@ -797,7 +807,8 @@ class _HomeState extends State<Home> {
                                   horizontal: 8.0, vertical: 8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(
+                                      GlobalSettings.borderRadius),
                                   color: GlobalSettings.playerButtonsBG
                                       ? MediaQuery.of(context)
                                                   .platformBrightness ==
