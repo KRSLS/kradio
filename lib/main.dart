@@ -31,6 +31,8 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+        progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
@@ -40,6 +42,8 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+        progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,

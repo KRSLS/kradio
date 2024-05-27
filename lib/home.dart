@@ -1003,7 +1003,9 @@ class _HomeState extends State<Home> {
                                 Visibility(
                                   visible: GlobalSettings.showProgressBar,
                                   child: LinearProgressIndicator(
-                                    minHeight: 10,
+                                    color: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.white : Colors.black,
+                                    backgroundColor: Colors.transparent,
+                                    minHeight: 4,
                                     borderRadius: BorderRadius.circular(
                                         GlobalSettings.borderRadius),
                                     value: runetimePercentage,
