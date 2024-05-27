@@ -282,7 +282,7 @@ class _HomeState extends State<Home> {
             return Container(
               child: Padding(
                 padding: EdgeInsets.all(12.0),
-                child: Column(
+                child: ListView(
                   children: [
                     Padding(
                       padding: EdgeInsets.all(6.0),
@@ -346,7 +346,7 @@ class _HomeState extends State<Home> {
               width: double.infinity,
               child: Padding(
                 padding: EdgeInsets.all(12.0),
-                child: Column(
+                child: ListView(
                   children: [
                     Padding(
                       padding: EdgeInsets.all(6.0),
@@ -668,6 +668,7 @@ class _HomeState extends State<Home> {
               child: OrientationBuilder(
                 builder: (context, orientation) {
                   return GridView.count(
+                    physics: orientation == Orientation.portrait ? NeverScrollableScrollPhysics() : ClampingScrollPhysics(),
                     crossAxisSpacing: 0,
                     crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
                     children: [
@@ -679,9 +680,9 @@ class _HomeState extends State<Home> {
                                 ? 30
                                 : 90.0),
                         child: Container(
-                          width: 30,
+
                           child: Material(
-                            elevation: 40,
+                            elevation: 0,
                             borderRadius: BorderRadius.circular(20),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
