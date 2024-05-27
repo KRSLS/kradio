@@ -9,7 +9,7 @@ class GlobalSettings {
   static bool showRunTime = true;
   static bool showProgressBar = true;
   static double bgOpacityMin = 0.0;
-  static double bgOpacityMax = 0.7;
+  static double bgOpacityMax = 1;
   static double bgOpacity = 0.4;
   static double controllerBGOpacityMin = 0.0;
   static double controllerBGOpacityMax = 1.0;
