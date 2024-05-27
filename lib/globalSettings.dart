@@ -6,6 +6,8 @@ class GlobalSettings {
   static int radioListIndex = 1;
   static bool appBarTitle = true;
   static bool statusBarBackground = false;
+  static bool showRunTime = true;
+  static bool showProgressBar = true;
   static double bgOpacityMin = 0.0;
   static double bgOpacityMax = 0.7;
   static double bgOpacity = 0.4;
@@ -33,6 +35,8 @@ class GlobalSettings {
     radioListIndex = await prefs.getInt('radioListIndex')!;
     statusBarBackground = await prefs.getBool('statusBarBackground')!;
     appBarTitle = await prefs.getBool('appBarTitle')!;
+    showRunTime = await prefs.getBool('showRunTime')!;
+    showProgressBar = await prefs.getBool('showProgressBar')!;
     bgOpacityMin = await prefs.getDouble('bgOpacityMin')!;
     bgOpacityMax = await prefs.getDouble('bgOpacityMax')!;
     bgOpacity = await prefs.getDouble('bgOpacity')!;
@@ -74,6 +78,8 @@ class GlobalSettings {
     prefs.setInt('radioListIndex', radioListIndex);
     prefs.setBool('statusBarBackground', statusBarBackground);
     prefs.setBool('appBarTitle', appBarTitle);
+    prefs.setBool('showRunTime', showRunTime);
+    prefs.setBool('showProgressBar', showProgressBar);
     prefs.setDouble('bgOpacityMin', bgOpacityMin);
     prefs.setDouble('bgOpacityMax', bgOpacityMax);
     prefs.setDouble('bgOpacity', bgOpacity);

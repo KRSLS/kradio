@@ -110,6 +110,28 @@ class _SettingsState extends State<Settings> {
                   GlobalSettings.saveSettings();
                 }),
             Divider(),
+            CheckboxListTile(
+                title: Text('Show song run time'),
+                subtitle: Text("Display song's run time information."),
+                value: GlobalSettings.showRunTime,
+                onChanged: (value) {
+                  setState(() {
+                    GlobalSettings.showRunTime = value!;
+                  });
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
+            CheckboxListTile(
+                title: Text('Show progress bar'),
+                subtitle: Text("Display song's run time progress bar."),
+                value: GlobalSettings.showProgressBar,
+                onChanged: (value) {
+                  setState(() {
+                    GlobalSettings.showProgressBar = value!;
+                  });
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
             ListTile(
               title: Text('Background image opacity'),
               subtitle: Text(

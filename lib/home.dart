@@ -21,6 +21,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xml/xml.dart';
 import 'package:xml/xml_events.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:http/http.dart' as http;
+import 'dart:math' as math;
 
 class Home extends StatefulWidget {
   const Home({
@@ -46,7 +48,10 @@ class _HomeState extends State<Home> {
 
   bool showNextSong = false;
   String nextSong = '';
-  String nextArtist = '';
+  String songRuntime = '';
+  DateTime songStartTime = DateTime.now();
+  DateTime songEndTime = DateTime.now();
+  double runetimePercentage = 0.0;
 
   String previousSong = '';
   String previousArtist = '';
@@ -55,7 +60,7 @@ class _HomeState extends State<Home> {
   double sleepTimer = 60.0;
   double maxSleepTimer = 120;
   DateTime sleepTimerDT = DateTime.now();
-  Timer? t;
+  Timer? timer;
 
   @override
   void initState() {
@@ -74,8 +79,11 @@ class _HomeState extends State<Home> {
     initRadioPlayer();
 
     //load the next song information
-    //xml parsing //run every 5 seconds
     loadNextSongInformation();
+
+    //get currents song information, startTime, endTime and
+    //calculate the difference as a percentage, clamped 0 to 1
+    getCurrentSongRuntime();
 
     //start radio with the users selected radio station
     //passed from the previous screen
@@ -228,12 +236,83 @@ class _HomeState extends State<Home> {
   }
 
   //this handles the next song information from xml
-  void loadNextSongInformation() async {}
+  void loadNextSongInformation() async {
+    Timer.periodic(Duration(seconds: 1), (timer) async {
+      String url = KStream.streams[currentStationIndex].urlNext;
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final document = XmlDocument.parse(response.body);
+        final tempNextSongInformation = document
+            .findAllElements('Announcement')
+            .first
+            .attributes
+            .first
+            .value;
+
+        setState(() {
+          nextSong = tempNextSongInformation.toString();
+        });
+      }
+    });
+  }
+
+  void getCurrentSongRuntime() async {
+    Timer timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      String url = KStream.streams[currentStationIndex].urlOnAir;
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final document = XmlDocument.parse(response.body);
+
+        String tempRuntime =
+            document.findAllElements('Media').first.attributes.first.value;
+        String tempEnd =
+            document.findAllElements('Expire').first.attributes.first.value;
+
+        String runtimeMinuteString = tempRuntime[0] + tempRuntime[1];
+        int runtimeMinute = int.parse(runtimeMinuteString);
+        String runtimeSecondString = tempRuntime[3] + tempRuntime[4];
+        int runtimeSecond = int.parse(runtimeSecondString);
+
+        DateTime endTime = DateTime.now();
+        String endHourString = tempEnd[0] + tempEnd[1];
+        int endHour = int.parse(endHourString);
+        String endMinuteString = tempEnd[3] + tempEnd[4];
+        int endMinute = int.parse(endMinuteString);
+        String endSecondString = tempEnd[6] + tempEnd[7];
+        int endSecond = int.parse(endSecondString);
+        songEndTime = DateTime(endTime.year, endTime.month, endTime.day,
+            endHour, endMinute, endSecond);
+
+        setState(() {
+          songRuntime = tempRuntime;
+          songStartTime = songEndTime.subtract(
+              Duration(minutes: runtimeMinute, seconds: runtimeSecond));
+          runetimePercentage = calculatePercentage(songStartTime, songEndTime);
+        });
+      }
+    });
+  }
+
+  //handle the percentage of the time elapsed
+  double calculatePercentage(DateTime startTime, DateTime endTime) {
+    //calculate the difference between 2 date times
+    Duration totalDuration = endTime.difference(startTime);
+
+    //dont divide by 0
+    if (totalDuration.inSeconds == 0) return 0.0;
+
+    DateTime now = DateTime.now();
+    //calculate the differnece between now and a datetime
+    Duration elapsedTime = now.difference(startTime);
+
+    //clamp 0 to 1 for the percentage
+    return math.min((elapsedTime.inSeconds / totalDuration.inSeconds), 1.0);
+  }
 
   //handle sleep timer
   void sleep() {
     //start a timer with the time that the user selects
-    t = Timer(Duration(minutes: sleepTimer.toInt()), () async {
+    timer = Timer(Duration(minutes: sleepTimer.toInt()), () async {
       //only run the code bellow if the option is still enabled
       if (enableSleepTimer) {
         print('Sleep timer execution.');
@@ -488,8 +567,7 @@ class _HomeState extends State<Home> {
                       subtitle:
                           Text('Copies the title and artist of the next song.'),
                       onTap: () {
-                        Clipboard.setData(
-                            ClipboardData(text: '${nextSong} - ${nextArtist}'));
+                        Clipboard.setData(ClipboardData(text: '${nextSong}'));
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
@@ -602,7 +680,7 @@ class _HomeState extends State<Home> {
                                   .add(Duration(minutes: sleepTimer.toInt()));
                             } else {
                               enableSleepTimer = false;
-                              t!.cancel();
+                              timer!.cancel();
                             }
                           });
                         }),
@@ -615,7 +693,7 @@ class _HomeState extends State<Home> {
                           label: sleepTimer.round().toString() + ' min',
                           value: sleepTimer,
                           onChanged: (value) {
-                            t!.cancel();
+                            timer!.cancel();
                             setState(() {
                               sleepTimer = value;
                               sleepTimerDT = DateTime.now()
@@ -628,10 +706,10 @@ class _HomeState extends State<Home> {
                             if (value == 0) {
                               setState(() {
                                 enableSleepTimer = false;
-                                t!.cancel();
+                                timer!.cancel();
                               });
                             } else {
-                              t!.cancel;
+                              timer!.cancel;
                               sleep();
                             }
                           },
@@ -670,6 +748,12 @@ class _HomeState extends State<Home> {
           ),
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              getCurrentSongRuntime();
+            },
+            icon: Icon(Icons.refresh),
+          ),
           Visibility(
             visible: enableSleepTimer,
             child: IconButton(
@@ -875,9 +959,8 @@ class _HomeState extends State<Home> {
                                     child: GestureDetector(
                                       onLongPress: () {
                                         HapticFeedback.lightImpact();
-                                        Clipboard.setData(ClipboardData(
-                                            text:
-                                                '${nextSong} - ${nextArtist}'));
+                                        Clipboard.setData(
+                                            ClipboardData(text: '${nextSong}'));
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
@@ -890,13 +973,46 @@ class _HomeState extends State<Home> {
                                       },
                                       child: Text(
                                         textAlign: TextAlign.center,
-                                        'Next: ${nextSong} by ${nextArtist}',
+                                        'Next: ${nextSong}',
                                         style: TextStyle(
                                           fontSize: 18,
                                         ),
                                         overflow: TextOverflow.fade,
                                       ),
                                     ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 18),
+                            child: Column(
+                              children: [
+                                Visibility(
+                                  visible: GlobalSettings.showRunTime,
+                                  child: Text(
+                                    textAlign: TextAlign.center,
+                                    songRuntime,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: GlobalSettings.showRunTime,
+                                  child: SizedBox(
+                                    height: 10,
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: GlobalSettings.showProgressBar,
+                                  child: LinearProgressIndicator(
+                                    minHeight: 10,
+                                    borderRadius: BorderRadius.circular(
+                                        GlobalSettings.borderRadius),
+                                    value: runetimePercentage,
                                   ),
                                 ),
                               ],
