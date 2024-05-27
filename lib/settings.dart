@@ -111,7 +111,7 @@ class _SettingsState extends State<Settings> {
             ),
             Divider(),
             ListTile(
-              title: Text('Border radious'),
+              title: Text('Border radius'),
               trailing:
                   Text(GlobalSettings.borderRadius.toInt().toString() + 'px'),
             ),
