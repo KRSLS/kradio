@@ -139,6 +139,15 @@ class _SettingsState extends State<Settings> {
                   GlobalSettings.saveSettings();
                 }),
             Divider(),
+            Padding(
+              padding: EdgeInsets.all(6.0),
+              child: Center(
+                child: Text(
+                  'Data',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
             ListTile(
               title: Text('Delete local stored data'),
               subtitle: Text(
