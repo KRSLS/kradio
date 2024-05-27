@@ -621,8 +621,6 @@ class _HomeState extends State<Home> {
                                   .add(Duration(minutes: sleepTimer.toInt()));
                             } else {
                               enableSleepTimer = false;
-                              ScaffoldMessenger.of(context)
-                                  .clearMaterialBanners();
                               t!.cancel();
                             }
                           });
@@ -648,8 +646,6 @@ class _HomeState extends State<Home> {
                             // then just disable the sleep feature
                             if (value == 0) {
                               setState(() {
-                                ScaffoldMessenger.of(context)
-                                    .clearMaterialBanners();
                                 enableSleepTimer = false;
                                 t!.cancel();
                               });
@@ -705,6 +701,8 @@ class _HomeState extends State<Home> {
                       TextButton(
                           onPressed: () {
                             modalSleepTimer();
+                            ScaffoldMessenger.of(context)
+                                  .clearMaterialBanners();
                           },
                           child: Text('Change')),
                       TextButton(
