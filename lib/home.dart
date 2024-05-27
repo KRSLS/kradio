@@ -748,12 +748,6 @@ class _HomeState extends State<Home> {
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              getCurrentSongRuntime();
-            },
-            icon: Icon(Icons.refresh),
-          ),
           Visibility(
             visible: enableSleepTimer,
             child: IconButton(
