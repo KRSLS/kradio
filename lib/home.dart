@@ -127,6 +127,12 @@ class _HomeState extends State<Home> {
     });
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   void initRadioPlayer() {
     //set a listener for the radio player
     //this will change the isPlaying bool if the radio stops or starts
