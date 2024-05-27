@@ -278,64 +278,127 @@ class _HomeState extends State<Home> {
     });
   }
 
+  List<KStream> favorites = [];
+
+  void loadFavorites() {
+    //clear the list before populating it
+    favorites = [];
+    //populate the list
+    for (var i = 0; i < KStream.streams.length; i++) {
+      if (KStream.streams[i].isFavorite) {
+        favorites.add(KStream.streams[i]);
+      }
+    }
+  }
+
   void modalRadioList() {
+    loadFavorites();
     showModalBottomSheet(
         context: context,
         builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(6.0),
-                      child: Text(
-                        'Station List',
-                        style: TextStyle(fontSize: 20),
+            return DefaultTabController(
+              initialIndex: GlobalSettings.radioListIndex,
+              length: 2,
+              child: Column(
+                children: [
+                  TabBar(
+                    onTap: (value) {
+                      GlobalSettings.radioListIndex = value;
+                      GlobalSettings.saveSettings();
+                    },
+                    tabs: [
+                      Tab(
+                        icon: Icon(Icons.list_alt_rounded),
                       ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                          itemCount: KStream.streams.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(
-                                    GlobalSettings.borderRadius),
-                                child: Image.network(
-                                  fit: BoxFit.fitWidth,
-                                  KStream.streams[index].customUrlImage
-                                      .toString(),
+                      Tab(
+                        icon: Icon(Icons.favorite_rounded),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Container(
+                      child: TabBarView(children: [
+                        //Radio list
+                        ListView.builder(
+                            itemCount: KStream.streams.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      GlobalSettings.borderRadius),
+                                  child: Image.network(
+                                    fit: BoxFit.fitWidth,
+                                    KStream.streams[index].customUrlImage
+                                        .toString(),
+                                  ),
                                 ),
-                              ),
-                              onTap: () {
-                                changeRadioStation(index);
-                                Navigator.pop(context);
-                              },
-                              title: Text(KStream.streams[index].title),
-                              subtitle: KStream.streams[index].description !=
-                                      null
-                                  ? Text(KStream.streams[index].description!)
-                                  : Text('TBA'),
-                              trailing: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    KStream.streams[index].isFavorite =
-                                        !KStream.streams[index].isFavorite;
-                                  });
-                                  GlobalSettings.saveSettings();
+                                onTap: () {
+                                  changeRadioStation(index);
+                                  Navigator.pop(context);
                                 },
-                                icon: Icon(KStream.streams[index].isFavorite
-                                    ? Icons.favorite_rounded
-                                    : Icons.favorite_outline_rounded),
-                              ),
-                            );
-                          }),
+                                title: Text(KStream.streams[index].title),
+                                subtitle: KStream.streams[index].description !=
+                                        null
+                                    ? Text(KStream.streams[index].description!)
+                                    : Text('TBA'),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      KStream.streams[index].isFavorite =
+                                          !KStream.streams[index].isFavorite;
+                                    });
+                                    loadFavorites();
+                                    GlobalSettings.saveSettings();
+                                  },
+                                  icon: Icon(KStream.streams[index].isFavorite
+                                      ? Icons.favorite_rounded
+                                      : Icons.favorite_outline_rounded),
+                                ),
+                              );
+                            }),
+                        //Favorite radio list
+                        ListView.builder(
+                            itemCount: favorites.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      GlobalSettings.borderRadius),
+                                  child: Image.network(
+                                    fit: BoxFit.fitWidth,
+                                    favorites[index].customUrlImage
+                                        .toString(),
+                                  ),
+                                ),
+                                onTap: () {
+                                  changeRadioStation(index);
+                                  Navigator.pop(context);
+                                },
+                                title: Text(favorites[index].title),
+                                subtitle: favorites[index].description !=
+                                        null
+                                    ? Text(favorites[index].description!)
+                                    : Text('TBA'),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      favorites[index].isFavorite = false;
+                                    });
+                                    loadFavorites();
+                                    GlobalSettings.saveSettings();
+                                  },
+                                  icon: Icon(favorites[index].isFavorite
+                                      ? Icons.favorite_rounded
+                                      : Icons.favorite_outline_rounded),
+                                ),
+                              );
+                            }),
+                      ]),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           });
