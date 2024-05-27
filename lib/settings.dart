@@ -75,6 +75,7 @@ class _SettingsState extends State<Settings> {
             Divider(),
             ListTile(
               title: Text('Background image opacity'),
+              subtitle: Text('Increasing opacity might make the controller buttons harder to see.'),
               trailing: Text(GlobalSettings.bgOpacity.toStringAsFixed(2) + ''),
             ),
             Slider(
