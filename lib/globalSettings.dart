@@ -5,9 +5,13 @@ class GlobalSettings {
   //Player Settings
   static int radioListIndex = 1;
   static bool appBarTitle = true;
+  static bool statusBarBackground = false;
   static double bgOpacityMin = 0.0;
   static double bgOpacityMax = 0.7;
   static double bgOpacity = 0.4;
+  static double controllerBGOpacityMin = 0.0;
+  static double controllerBGOpacityMax = 1.0;
+  static double controllerBGOpacity = 0.3;
   static bool playerButtonsBG = true;
   static double playerBGBlurMin = 0.0;
   static double playerBGBlurMax = 80.0;
@@ -26,10 +30,14 @@ class GlobalSettings {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     radioListIndex = await prefs.getInt('radioListIndex')!;
+    statusBarBackground = await prefs.getBool('statusBarBackground')!;
     appBarTitle = await prefs.getBool('appBarTitle')!;
     bgOpacityMin = await prefs.getDouble('bgOpacityMin')!;
     bgOpacityMax = await prefs.getDouble('bgOpacityMax')!;
     bgOpacity = await prefs.getDouble('bgOpacity')!;
+    controllerBGOpacityMin = await prefs.getDouble('controllerBGOpacityMin')!;
+    controllerBGOpacityMax = await prefs.getDouble('controllerBGOpacityMax')!;
+    controllerBGOpacity = await prefs.getDouble('controllerBGOpacity')!;
     playerButtonsBG = await prefs.getBool('playerButtonsBG')!;
     playerBGBlurMin = await prefs.getDouble('playerBGBlurMin')!;
     playerBGBlurMax = await prefs.getDouble('playerBGBlurMax')!;
@@ -62,10 +70,14 @@ class GlobalSettings {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setInt('radioListIndex', radioListIndex);
+    prefs.setBool('statusBarBackground', statusBarBackground);
     prefs.setBool('appBarTitle', appBarTitle);
     prefs.setDouble('bgOpacityMin', bgOpacityMin);
     prefs.setDouble('bgOpacityMax', bgOpacityMax);
     prefs.setDouble('bgOpacity', bgOpacity);
+    prefs.setDouble('controllerBGOpacityMin', controllerBGOpacityMin);
+    prefs.setDouble('controllerBGOpacityMax', controllerBGOpacityMax);
+    prefs.setDouble('controllerBGOpacity', controllerBGOpacity);
     prefs.setBool('playerButtonsBG', playerButtonsBG);
     prefs.setDouble('playerBGBlurMin', playerBGBlurMin);
     prefs.setDouble('playerBGBlurMax', playerBGBlurMax);

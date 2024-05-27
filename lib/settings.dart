@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:KRadio/globalSettings.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings extends StatefulWidget {
@@ -45,6 +46,31 @@ class _SettingsState extends State<Settings> {
                 onChanged: (value) {
                   setState(() {
                     GlobalSettings.appBarTitle = value!;
+                  });
+                  GlobalSettings.saveSettings();
+                }),
+            Divider(),
+            CheckboxListTile(
+                title: Text('Status bar background'),
+                subtitle: Text(
+                    "Darken the status bar, can help when icons aren't visible."),
+                value: GlobalSettings.statusBarBackground,
+                onChanged: (value) {
+                  setState(() {
+                    GlobalSettings.statusBarBackground = value!;
+                    if (GlobalSettings.statusBarBackground) {
+                      SystemChrome.setSystemUIOverlayStyle(
+                        const SystemUiOverlayStyle(
+                          systemStatusBarContrastEnforced: true,
+                        ),
+                      );
+                    } else {
+                      SystemChrome.setSystemUIOverlayStyle(
+                        const SystemUiOverlayStyle(
+                          systemStatusBarContrastEnforced: false,
+                        ),
+                      );
+                    }
                   });
                   GlobalSettings.saveSettings();
                 }),
@@ -132,6 +158,34 @@ class _SettingsState extends State<Settings> {
                   });
                   GlobalSettings.saveSettings();
                 }),
+            Visibility(
+              visible: GlobalSettings.playerButtonsBG,
+              child: Column(
+                children: [
+                  Divider(),
+                  ListTile(
+                    title: Text('Controller background opacity'),
+                    trailing: Text(
+                        GlobalSettings.controllerBGOpacity.toStringAsFixed(2)),
+                  ),
+                  Slider(
+                    min: GlobalSettings.controllerBGOpacityMin,
+                    max: GlobalSettings.controllerBGOpacityMax,
+                    value: GlobalSettings.controllerBGOpacity,
+                    divisions: 10,
+                    label:
+                        GlobalSettings.controllerBGOpacity.toStringAsFixed(2) +
+                            '',
+                    onChanged: (value) {
+                      setState(() {
+                        GlobalSettings.controllerBGOpacity = value;
+                      });
+                      GlobalSettings.saveSettings();
+                    },
+                  ),
+                ],
+              ),
+            ),
             Divider(),
             ListTile(
               title: Text('Controller blur amount'),

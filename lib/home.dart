@@ -229,48 +229,7 @@ class _HomeState extends State<Home> {
 
   //this handles the next song information from xml
   void loadNextSongInformation() async {
-    //this function runes every 2 seconds
-    Timer.periodic(Duration(milliseconds: 2000), (timer) async {
-      //next
-      final urlNext = Uri.parse(KStream.streams[currentStationIndex].urlNext);
-      final requestNext = await HttpClient().getUrl(urlNext);
-      final responseNext = await requestNext.close();
-      await responseNext
-          .transform(utf8.decoder)
-          .toXmlEvents()
-          .normalizeEvents()
-          .forEach((event) => nextArtist = event.toString());
-
-      setState(() {
-        //song
-        //parse the data from the url
-        var tempNextSong = XmlDocument.parse(nextArtist);
-        //find all elements that uses the name Song
-        nextSong = tempNextSong.findAllElements('Song').toString();
-        //cut the string 14 characters ahead until it finds the character ">"
-        nextSong = nextSong.substring(14, nextSong.indexOf('">'));
-        //replace html code to text
-        nextSong = nextSong.replaceAll("&amp;", '&');
-
-        //arist
-        var tempNextArtist = XmlDocument.parse(nextArtist);
-        //find all elements that uses the name Song
-        nextArtist = tempNextArtist.findAllElements('Artist').toString();
-        //cut the string 14 characters ahead until it finds the character ">"
-        nextArtist = nextArtist.substring(15, nextArtist.indexOf('" ID="'));
-        //replace html code to text
-        nextArtist = nextArtist.replaceAll("&amp;", '&');
-        
-        //length
-        var tempLength = XmlDocument.parse(nextArtist);
-        //find all elements that uses the name Song
-        nextArtist = tempNextArtist.findAllElements('Artist').toString();
-        //cut the string 14 characters ahead until it finds the character ">"
-        nextArtist = nextArtist.substring(15, nextArtist.indexOf('" ID="'));
-        //replace html code to text
-        nextArtist = nextArtist.replaceAll("&amp;", '&');
-      });
-    });
+    
   }
 
   //handle sleep timer
@@ -343,6 +302,11 @@ class _HomeState extends State<Home> {
                                     fit: BoxFit.fitWidth,
                                     KStream.streams[index].customUrlImage
                                         .toString(),
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return CircularProgressIndicator();
+                                    },
                                   ),
                                 ),
                                 onTap: () {
@@ -389,6 +353,12 @@ class _HomeState extends State<Home> {
                                         favorites[index]
                                             .customUrlImage
                                             .toString(),
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return CircularProgressIndicator();
+                                        },
                                       ),
                                     ),
                                     onTap: () {
@@ -748,6 +718,7 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(),
+                
                 ListTile(
                   shape: RoundedRectangleBorder(
                     borderRadius:
@@ -775,7 +746,7 @@ class _HomeState extends State<Home> {
             fit: BoxFit.cover,
             opacity: GlobalSettings.bgOpacity,
             image: NetworkImage(
-              KStream.streams[currentStationIndex].urlImage.toString(),
+              KStream.streams[currentStationIndex].customUrlImage.toString(),
             ),
           ),
         ),
@@ -808,8 +779,15 @@ class _HomeState extends State<Home> {
                                 GlobalSettings.borderRadius),
                             child: Image.network(
                               fit: BoxFit.cover,
-                              KStream.streams[currentStationIndex].urlImage
+                              KStream
+                                  .streams[currentStationIndex].customUrlImage
                                   .toString(),
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              },
                             ),
                           ),
                         ),
@@ -933,9 +911,19 @@ class _HomeState extends State<Home> {
                                     color: GlobalSettings.playerButtonsBG
                                         ? MediaQuery.of(context)
                                                     .platformBrightness ==
-                                                Brightness.light
-                                            ? Color.fromARGB(40, 0, 0, 0)
-                                            : Color.fromARGB(40, 255, 255, 255)
+                                                Brightness.dark
+                                            ? Color.fromRGBO(
+                                                0,
+                                                0,
+                                                0,
+                                                GlobalSettings
+                                                    .controllerBGOpacity)
+                                            : Color.fromRGBO(
+                                                255,
+                                                255,
+                                                255,
+                                                GlobalSettings
+                                                    .controllerBGOpacity)
                                         : Colors.transparent,
                                   ),
                                   child: Padding(
