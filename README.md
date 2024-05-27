@@ -8,7 +8,7 @@ Radio player that streams music from KISS FM, a clean and minimalistic design wi
 
 Next song info, good looking, sleep timer, favorite stations, custom station image/gif and highly customizable.
 
-Some images:
+Some images (UI might differ from current release):
 
 <div>
   <img src="https://krsls.github.io/Assets/projectPresentation/kradio/kradio_01.png" width="200"/>
