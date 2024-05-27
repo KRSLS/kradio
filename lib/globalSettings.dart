@@ -8,7 +8,7 @@ class GlobalSettings {
   static double bgOpacity = 0.4;
   static bool playerButtonsBG = true;
   static double playerBGBlurMin = 1.0;
-  static double playerBGBlurMax = 40.0;
+  static double playerBGBlurMax = 80.0;
   static double playerBGBlur = 10.0;
   static bool notifyInternetLoss = true;
   static bool showNextSong = true;
