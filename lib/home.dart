@@ -141,6 +141,8 @@ class _HomeState extends State<Home> {
   void changeRadioStation(bool isFavorite, int index) async {
     setState(() {
       //set the current station to the index
+      //if its favorite then take the index of the favorite station class
+      //easy fix
       if(isFavorite)
       {
         currentStationIndex = favorites[index].index!;
