@@ -282,7 +282,7 @@ class _HomeState extends State<Home> {
             return Container(
               child: Padding(
                 padding: EdgeInsets.all(12.0),
-                child: ListView(
+                child: Column(
                   children: [
                     Padding(
                       padding: EdgeInsets.all(6.0),
@@ -668,17 +668,17 @@ class _HomeState extends State<Home> {
               child: OrientationBuilder(
                 builder: (context, orientation) {
                   return GridView.count(
-                    physics: orientation == Orientation.portrait ? NeverScrollableScrollPhysics() : ClampingScrollPhysics(),
-                    childAspectRatio:  orientation == Orientation.portrait ? 1 : 1 / .65 ,
+                    physics: orientation == Orientation.portrait
+                        ? NeverScrollableScrollPhysics()
+                        : ClampingScrollPhysics(),
+                    childAspectRatio:
+                        orientation == Orientation.portrait ? 1 : 1 / .65,
                     crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
                     children: [
                       Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical:
-                               30,
-                            horizontal: 30),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 30, horizontal: 30),
                         child: Container(
-            
                           child: Material(
                             elevation: 40,
                             borderRadius: BorderRadius.circular(20),
@@ -793,7 +793,8 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 8.0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
