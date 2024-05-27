@@ -43,6 +43,8 @@ class _HomeState extends State<Home> {
   HeadsetState? headsetState;
 
   int currentStationIndex = 0;
+  String currentStreamNextURL = KStream.streams[0].urlNext.toString();
+  String currentImageURL = KStream.streams[0].customUrlImage.toString();
 
   bool showNextSong = false;
   String nextSong = '';
@@ -79,7 +81,7 @@ class _HomeState extends State<Home> {
 
     //start radio with the users selected radio station
     //passed from the previous screen
-    changeRadioStation(widget.startWithStation);
+    changeRadioStation(false, widget.startWithStation);
 
     //set the csi to the data passed from previous screen
     currentStationIndex = widget.startWithStation;
@@ -141,7 +143,7 @@ class _HomeState extends State<Home> {
 
   //change the current radio station with the provided index
   //index will be used for the radio list
-  void changeRadioStation(int index) async {
+  void changeRadioStation(bool isFavorite, int index) async {
     setState(() {
       //set the current station to the index
       currentStationIndex = index;
@@ -150,11 +152,25 @@ class _HomeState extends State<Home> {
     //it's important to wait for the player to stop and then change the channel
     //then start the player again
     await radioPlayer.stop();
-    await radioPlayer.setChannel(
-      title: KStream.streams[index].title,
-      url: KStream.streams[index].url,
-      imagePath: KStream.streams[index].customUrlImage,
-    );
+    if (isFavorite) {
+      currentImageURL = favorites[index].customUrlImage.toString();
+      currentStreamNextURL = favorites[index].urlNext.toString();
+      currentStreamTitle = favorites[index].title;
+      await radioPlayer.setChannel(
+        title: favorites[index].title,
+        url: favorites[index].url,
+        imagePath: currentImageURL,
+      );
+    } else {
+      currentImageURL = KStream.streams[index].customUrlImage.toString();
+      currentStreamNextURL = KStream.streams[index].urlNext.toString();
+      currentStreamTitle = KStream.streams[index].title;
+      await radioPlayer.setChannel(
+        title: KStream.streams[index].title,
+        url: KStream.streams[index].url,
+        imagePath: currentImageURL,
+      );
+    }
     await radioPlayer.play();
   }
 
@@ -162,18 +178,18 @@ class _HomeState extends State<Home> {
   void previousStation() {
     //handle out of range index
     if (currentStationIndex - 1 < 0) {
-      changeRadioStation(KStream.streams.length - 1);
+      changeRadioStation(false, KStream.streams.length - 1);
     } else
-      changeRadioStation(currentStationIndex - 1);
+      changeRadioStation(false, currentStationIndex - 1);
   }
 
   //go the next station
   void nextStation() {
     //handle out of range index
     if (currentStationIndex + 1 > KStream.streams.length - 1) {
-      changeRadioStation(0);
+      changeRadioStation(false, 0);
     } else
-      changeRadioStation(currentStationIndex + 1);
+      changeRadioStation(false, currentStationIndex + 1);
   }
 
   //check for internet connection and provide info to the end user
@@ -227,7 +243,7 @@ class _HomeState extends State<Home> {
     //this function runes every 2 seconds
     Timer.periodic(Duration(milliseconds: 2000), (timer) async {
       //next
-      final urlNext = Uri.parse(KStream.streams[currentStationIndex].urlNext);
+      final urlNext = Uri.parse(currentStreamNextURL);
       final requestNext = await HttpClient().getUrl(urlNext);
       final responseNext = await requestNext.close();
       await responseNext
@@ -255,9 +271,6 @@ class _HomeState extends State<Home> {
         nextArtist = nextArtist.substring(15, nextArtist.indexOf("ID") - 2);
         //replace html code to text
         nextArtist = nextArtist.replaceAll("&amp;", '&');
-
-        //change current title for the appbar
-        currentStreamTitle = KStream.streams[currentStationIndex].title;
       });
     });
   }
@@ -335,7 +348,7 @@ class _HomeState extends State<Home> {
                                   ),
                                 ),
                                 onTap: () {
-                                  changeRadioStation(index);
+                                  changeRadioStation(false, index);
                                   Navigator.pop(context);
                                 },
                                 title: Text(KStream.streams[index].title),
@@ -372,7 +385,7 @@ class _HomeState extends State<Home> {
                                   ),
                                 ),
                                 onTap: () {
-                                  changeRadioStation(index);
+                                  changeRadioStation(true, index);
                                   Navigator.pop(context);
                                 },
                                 title: Text(favorites[index].title),
@@ -752,7 +765,7 @@ class _HomeState extends State<Home> {
             fit: BoxFit.cover,
             opacity: GlobalSettings.bgOpacity,
             image: NetworkImage(
-              KStream.streams[currentStationIndex].customUrlImage.toString(),
+              currentImageURL,
             ),
           ),
         ),
@@ -786,9 +799,7 @@ class _HomeState extends State<Home> {
                                   GlobalSettings.borderRadius),
                               child: Image.network(
                                 fit: BoxFit.cover,
-                                KStream
-                                    .streams[currentStationIndex].customUrlImage
-                                    .toString(),
+                                currentImageURL,
                               ),
                             ),
                           ),
