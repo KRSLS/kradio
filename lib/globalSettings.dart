@@ -15,10 +15,10 @@ class GlobalSettings {
   static double controllerBGOpacityMax = 1.0;
   static double controllerBGOpacity = 0.3;
   static bool playerButtonsBG = true;
-  static double playerBGBlurMin = 0.0;
+  static double playerBGBlurMin = 0.1;
   static double playerBGBlurMax = 80.0;
   static double playerBGBlur = 10.0;
-  static double controllerBGBlurMin = 0.0;
+  static double controllerBGBlurMin = 0.1;
   static double controllerBGBlurMax = 80.0;
   static double controllerBGBlur = 10.0;
   static bool notifyInternetLoss = true;
