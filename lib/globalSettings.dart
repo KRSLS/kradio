@@ -1,3 +1,4 @@
+import 'package:KRadio/historyData.dart';
 import 'package:KRadio/kstream.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -70,6 +71,25 @@ class GlobalSettings {
         KStream.streams[i].title + 'isFavorite',
       )!;
     }
+
+    int historySongLength = prefs.getInt('historySongLength')!;
+    //get history
+    for (var i = 0; i < historySongLength; i++) {
+      HistoryData.history.add(
+        HistoryData(
+          id: prefs.getInt('historySongID$i')!,
+          songTitle: prefs.getString('historySongTitle$i')!,
+          station: prefs.getString('historySongStation$i')!,
+        ),
+      );
+    }
+
+    // //save history
+    // for (var i = 0; i < HistoryData.history.length; i++) {
+    //   prefs.setInt('historySongID$i', i);
+    //   prefs.setString('historySongTitle$i', HistoryData.history[i].songTitle);
+    //   prefs.setString('historySongStation$i', HistoryData.history[i].station);
+    // }
   }
 
   static void saveSettings() async {
@@ -112,6 +132,14 @@ class GlobalSettings {
         KStream.streams[i].title + 'isFavorite',
         KStream.streams[i].isFavorite,
       );
+    }
+
+    //save history
+    prefs.setInt('historySongLength', HistoryData.history.length);
+    for (var i = 0; i < HistoryData.history.length; i++) {
+      prefs.setInt('historySongID$i', i);
+      prefs.setString('historySongTitle$i', HistoryData.history[i].songTitle);
+      prefs.setString('historySongStation$i', HistoryData.history[i].station);
     }
   }
 }
