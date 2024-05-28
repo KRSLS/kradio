@@ -20,10 +20,33 @@ class _HistoryState extends State<History> {
           IconButton(
               tooltip: 'Delete history',
               onPressed: () {
-                setState(() {
-                  HistoryData.history = [];
-                });
-                GlobalSettings.saveSettings();
+                ScaffoldMessenger.of(context).clearMaterialBanners();
+                ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+                    content:
+                        Text('Are you sure you want to delete the history?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            HistoryData.history = [];
+                            ScaffoldMessenger.of(context)
+                                .clearMaterialBanners();
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Deleted history.')));
+                          });
+
+                          GlobalSettings.saveSettings();
+                        },
+                        child: Text('Yes'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).clearMaterialBanners();
+                        },
+                        child: Text('No'),
+                      ),
+                    ]));
               },
               icon: Icon(Icons.delete_outline_rounded)),
         ],
