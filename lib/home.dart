@@ -114,6 +114,7 @@ class _HomeState extends State<Home> {
         if (this.headsetState == HeadsetState.DISCONNECT) {
           if (GlobalSettings.stopPlayerOnDeviceDisconnect) {
             radioPlayer.stop();
+            ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content:
@@ -227,6 +228,7 @@ class _HomeState extends State<Home> {
         case InternetStatus.disconnected:
           //if disconnected
           if (GlobalSettings.notifyInternetLoss) {
+            ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showMaterialBanner(
               MaterialBanner(
                 content: Text('Not connected to the internet.'),
@@ -528,6 +530,7 @@ class _HomeState extends State<Home> {
                             for (var i = 0; i < SavedData.saved.length; i++) {
                               if (SavedData.saved[i].songTitle ==
                                   metadata![1] + " - " + metadata![0]) {
+                                    ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text('Song already saved.')));
@@ -536,6 +539,7 @@ class _HomeState extends State<Home> {
                                     id: i,
                                     songTitle:
                                         metadata![1] + " - " + metadata![0]));
+                                        ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text('Song saved.')));
                               }
@@ -545,6 +549,7 @@ class _HomeState extends State<Home> {
                                 id: 0,
                                 songTitle:
                                     metadata![1] + " - " + metadata![0]));
+                                    ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text('Song saved.')));
                           }
@@ -592,6 +597,7 @@ class _HomeState extends State<Home> {
                                   .streams[currentStationIndex].customUrlImage
                                   .toString()),
                         );
+                        ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
@@ -611,6 +617,7 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Clipboard.setData(ClipboardData(
                             text: '${metadata?[0]} - ${metadata?[1]}'));
+                            ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
@@ -629,6 +636,7 @@ class _HomeState extends State<Home> {
                           Text('Copies the title and artist of the next song.'),
                       onTap: () {
                         Clipboard.setData(ClipboardData(text: '${nextSong}'));
+                        ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
@@ -993,6 +1001,7 @@ class _HomeState extends State<Home> {
                                       HapticFeedback.lightImpact();
                                       Clipboard.setData(ClipboardData(
                                           text: '${metadata?[0]}'));
+                                          ScaffoldMessenger.of(context).clearSnackBars();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -1020,6 +1029,7 @@ class _HomeState extends State<Home> {
                                       HapticFeedback.lightImpact();
                                       Clipboard.setData(ClipboardData(
                                           text: '${metadata?[1]}'));
+                                          ScaffoldMessenger.of(context).clearSnackBars();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -1049,6 +1059,7 @@ class _HomeState extends State<Home> {
                                         HapticFeedback.lightImpact();
                                         Clipboard.setData(
                                             ClipboardData(text: '${nextSong}'));
+                                            ScaffoldMessenger.of(context).clearSnackBars();
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(

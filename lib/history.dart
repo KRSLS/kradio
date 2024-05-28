@@ -38,6 +38,7 @@ class _HistoryState extends State<History> {
               HapticFeedback.lightImpact();
               Clipboard.setData(
                   ClipboardData(text: HistoryData.history[index].songTitle));
+              ScaffoldMessenger.of(context).clearSnackBars();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(

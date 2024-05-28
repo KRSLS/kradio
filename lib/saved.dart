@@ -38,6 +38,7 @@ class _SavedState extends State<Saved> {
               HapticFeedback.lightImpact();
               Clipboard.setData(
                   ClipboardData(text: SavedData.saved[index].songTitle));
+                  ScaffoldMessenger.of(context).clearSnackBars();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(

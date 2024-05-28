@@ -288,6 +288,7 @@ class _SettingsState extends State<Settings> {
                           await prefs.clear();
                           GlobalSettings.loadSettings();
                           ScaffoldMessenger.of(context).clearMaterialBanners();
+                          ScaffoldMessenger.of(context).clearSnackBars();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
