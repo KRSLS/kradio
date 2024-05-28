@@ -5,6 +5,8 @@ import 'dart:ui';
 
 import 'package:KRadio/historyData.dart';
 import 'package:KRadio/history.dart';
+import 'package:KRadio/profile.dart';
+import 'package:KRadio/saved.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -263,11 +265,11 @@ class _HomeState extends State<Home> {
           if (tempCurrentSong != metadata![1]) {
             tempCurrentSong = metadata![1];
             HistoryData.history.add(HistoryData(
+                id: HistoryData.history.length + 1,
                 songTitle: metadata![1] + ' - ' + metadata![0],
                 station: KStream.streams[currentStationIndex].title));
-            for (var i = 0; i < 50; i++) {
-              print('Song added to history');
-            }
+
+            GlobalSettings.saveSettings();
           }
         });
       }
@@ -821,11 +823,31 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
+                          return Profile();
+                        }));
+                      },
+                      title: Text('Profile'),
+                      leading: Icon(Icons.person_rounded),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
                           return History();
                         }));
                       },
                       title: Text('History'),
                       leading: Icon(Icons.history_rounded),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return Saved();
+                        }));
+                      },
+                      title: Text('Saved'),
+                      leading: Icon(Icons.save_alt_outlined),
                     ),
                   ],
                 ),
