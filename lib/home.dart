@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:KRadio/historyData.dart';
+import 'package:KRadio/history.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -243,6 +245,7 @@ class _HomeState extends State<Home> {
 
   //this handles the next song information from xml
   void loadNextSongInformation() async {
+    String tempCurrentSong = '';
     Timer.periodic(Duration(seconds: 1), (timer) async {
       String url = KStream.streams[currentStationIndex].urlNext;
       final response = await http.get(Uri.parse(url));
@@ -257,6 +260,15 @@ class _HomeState extends State<Home> {
 
         setState(() {
           nextSong = tempNextSongInformation.toString();
+          if (tempCurrentSong != metadata![1]) {
+            tempCurrentSong = metadata![1];
+            HistoryData.history.add(HistoryData(
+                songTitle: metadata![1] + ' - ' + metadata![0],
+                station: KStream.streams[currentStationIndex].title));
+            for (var i = 0; i < 50; i++) {
+              print('Song added to history');
+            }
+          }
         });
       }
     });
@@ -803,7 +815,20 @@ class _HomeState extends State<Home> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(),
+                Column(
+                  children: [
+                    ListTile(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return History();
+                        }));
+                      },
+                      title: Text('History'),
+                      leading: Icon(Icons.history_rounded),
+                    ),
+                  ],
+                ),
                 ListTile(
                   shape: RoundedRectangleBorder(
                     borderRadius:
@@ -818,7 +843,7 @@ class _HomeState extends State<Home> {
                   title: Text(
                     'Settings',
                   ),
-                  trailing: Icon(Icons.settings_rounded),
+                  leading: Icon(Icons.settings_rounded),
                 ),
               ],
             ),
