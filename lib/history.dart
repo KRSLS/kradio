@@ -56,6 +56,7 @@ class _HistoryState extends State<History> {
                           setState(() {
                             HistoryData.history.removeAt(index);
                           });
+                          ScaffoldMessenger.of(context).clearSnackBars();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
