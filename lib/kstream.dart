@@ -229,9 +229,9 @@ class KStream {
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/HotFM/AirPlayNext.xml',
       urlImage:
-          'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmF3eGwxaHg0MmJscHdpbXFwd3kycXQyZm9kMXVocDE2ODlpcTN5YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oEduW9Vw1C4tYG7te/giphy.gif',
+          'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGZhd3M5MTBnaWdidGg1eXk5c3h3anJ0a3VycW04cHljaWJhMTgxNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9JxkPTP3alOykb8PmQ/giphy.gif',
       customUrlImage:
-          'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmF3eGwxaHg0MmJscHdpbXFwd3kycXQyZm9kMXVocDE2ODlpcTN5YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oEduW9Vw1C4tYG7te/giphy.gif',
+          'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGZhd3M5MTBnaWdidGg1eXk5c3h3anJ0a3VycW04cHljaWJhMTgxNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9JxkPTP3alOykb8PmQ/giphy.gif',
       isFavorite: false,
     ),
   ];
