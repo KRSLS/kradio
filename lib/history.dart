@@ -32,7 +32,7 @@ class _HistoryState extends State<History> {
         itemCount: HistoryData.history.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(HistoryData.history[index].songTitle + HistoryData.history[index].id.toString()),
+            title: Text(HistoryData.history[index].songTitle),
             subtitle: Text('Station: ' + HistoryData.history[index].station),
             onTap: () {
               HapticFeedback.lightImpact();
@@ -61,7 +61,7 @@ class _HistoryState extends State<History> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Song delete from history.',
+                                'Song deleted from history.',
                                 style: TextStyle(fontSize: 16),
                               ),
                             ),

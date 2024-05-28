@@ -1,5 +1,6 @@
 import 'package:KRadio/historyData.dart';
 import 'package:KRadio/kstream.dart';
+import 'package:KRadio/savedData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GlobalSettings {
@@ -84,12 +85,16 @@ class GlobalSettings {
       );
     }
 
-    // //save history
-    // for (var i = 0; i < HistoryData.history.length; i++) {
-    //   prefs.setInt('historySongID$i', i);
-    //   prefs.setString('historySongTitle$i', HistoryData.history[i].songTitle);
-    //   prefs.setString('historySongStation$i', HistoryData.history[i].station);
-    // }
+    int savedSongLength = prefs.getInt('savedSongLength')!;
+    //get saved
+    for (var i = 0; i < savedSongLength; i++) {
+      SavedData.saved.add(
+        SavedData(
+          id: prefs.getInt('savedSongID$i')!,
+          songTitle: prefs.getString('savedSongTitle$i')!,
+        ),
+      );
+    }
   }
 
   static void saveSettings() async {
@@ -140,6 +145,13 @@ class GlobalSettings {
       prefs.setInt('historySongID$i', i);
       prefs.setString('historySongTitle$i', HistoryData.history[i].songTitle);
       prefs.setString('historySongStation$i', HistoryData.history[i].station);
+    }
+
+    //save saved
+    prefs.setInt('savedSongLength', SavedData.saved.length);
+    for (var i = 0; i < SavedData.saved.length; i++) {
+      prefs.setInt('savedSongID$i', i);
+      prefs.setString('savedSongTitle$i', SavedData.saved[i].songTitle);
     }
   }
 }

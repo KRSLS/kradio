@@ -49,7 +49,7 @@ class _SavedState extends State<Saved> {
             },
             onLongPress: () {
               ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-                  content: Text('Delete song from history?'),
+                  content: Text('Remove song from saved?'),
                   actions: [
                     TextButton(
                         onPressed: () {
@@ -60,7 +60,7 @@ class _SavedState extends State<Saved> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Song delete from history.',
+                                'Song removed from saved.',
                                 style: TextStyle(fontSize: 16),
                               ),
                             ),

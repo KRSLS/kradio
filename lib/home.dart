@@ -7,6 +7,7 @@ import 'package:KRadio/historyData.dart';
 import 'package:KRadio/history.dart';
 import 'package:KRadio/profile.dart';
 import 'package:KRadio/saved.dart';
+import 'package:KRadio/savedData.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -515,6 +516,42 @@ class _HomeState extends State<Home> {
                           style: TextStyle(fontSize: 20),
                         ),
                       ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.favorite_border_rounded),
+                      title: Text('Save song'),
+                      subtitle:
+                          Text('Save the song to a list and always find it.'),
+                      onTap: () {
+                        setState(() {
+                          if (SavedData.saved.length > 0) {
+                            for (var i = 0; i < SavedData.saved.length; i++) {
+                              if (SavedData.saved[i].songTitle ==
+                                  metadata![1] + " - " + metadata![0]) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text('Song already saved.')));
+                              } else {
+                                SavedData.saved.add(SavedData(
+                                    id: i,
+                                    songTitle:
+                                        metadata![1] + " - " + metadata![0]));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Song saved.')));
+                              }
+                            }
+                          } else {
+                            SavedData.saved.add(SavedData(
+                                id: 0,
+                                songTitle:
+                                    metadata![1] + " - " + metadata![0]));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Song saved.')));
+                          }
+                        });
+                        GlobalSettings.saveSettings();
+                        Navigator.pop(context);
+                      },
                     ),
                     ListTile(
                       leading: Icon(Icons.share_rounded),
