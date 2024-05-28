@@ -525,36 +525,34 @@ class _HomeState extends State<Home> {
                       subtitle:
                           Text('Save the song to a list and always find it.'),
                       onTap: () {
-                        setState(() {
-                          if (SavedData.saved.length > 0) {
-                            for (var i = 0; i < SavedData.saved.length; i++) {
-                              if (SavedData.saved[i].songTitle ==
-                                  metadata![1] + " - " + metadata![0]) {
-                                    ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text('Song already saved.')));
-                              } else {
-                                SavedData.saved.add(SavedData(
-                                    id: i,
-                                    songTitle:
-                                        metadata![1] + " - " + metadata![0]));
-                                        ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Song saved.')));
-                              }
-                            }
+                        bool add = false;
+
+                        // check if theres another song saved with the same name
+                        for (var i = 0; i < SavedData.saved.length; i++) {
+                          // if there is not the allow the save
+                          if (SavedData.saved[i].songTitle !=
+                              metadata![1] + " - " + metadata![0]) {
+                            add = true;
                           } else {
+                            // if there is then don't allow and break the loop
+                            add = false;
+                            break;
+                          }
+                        }
+
+                        if (add) {
+                          setState(() {
                             SavedData.saved.add(SavedData(
-                                id: 0,
+                                id: SavedData.saved.length + 1,
                                 songTitle:
                                     metadata![1] + " - " + metadata![0]));
-                                    ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Song saved.')));
-                          }
-                        });
-                        GlobalSettings.saveSettings();
+                          });
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Song saved.')));
+                          GlobalSettings.saveSettings();
+                        }
+
                         Navigator.pop(context);
                       },
                     ),
@@ -617,7 +615,7 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Clipboard.setData(ClipboardData(
                             text: '${metadata?[0]} - ${metadata?[1]}'));
-                            ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
@@ -1001,7 +999,8 @@ class _HomeState extends State<Home> {
                                       HapticFeedback.lightImpact();
                                       Clipboard.setData(ClipboardData(
                                           text: '${metadata?[0]}'));
-                                          ScaffoldMessenger.of(context).clearSnackBars();
+                                      ScaffoldMessenger.of(context)
+                                          .clearSnackBars();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -1029,7 +1028,8 @@ class _HomeState extends State<Home> {
                                       HapticFeedback.lightImpact();
                                       Clipboard.setData(ClipboardData(
                                           text: '${metadata?[1]}'));
-                                          ScaffoldMessenger.of(context).clearSnackBars();
+                                      ScaffoldMessenger.of(context)
+                                          .clearSnackBars();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -1059,7 +1059,8 @@ class _HomeState extends State<Home> {
                                         HapticFeedback.lightImpact();
                                         Clipboard.setData(
                                             ClipboardData(text: '${nextSong}'));
-                                            ScaffoldMessenger.of(context).clearSnackBars();
+                                        ScaffoldMessenger.of(context)
+                                            .clearSnackBars();
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
