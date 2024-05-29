@@ -173,7 +173,7 @@ class _HomeState extends State<Home> {
 
     //it's important to wait for the player to stop and then change the channel
     //then start the player again
-    await radioPlayer.stop();
+    // await radioPlayer.stop(); //this is not needed since we change stations .dah.
     await radioPlayer.setChannel(
       title: KStream.streams[currentStationIndex].title,
       url: KStream.streams[currentStationIndex].url,
