@@ -207,6 +207,9 @@ class _HomeState extends State<Home> {
           print("Can't get a response from the api");
         }
       }
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('API limit reached.')));
+      }
     }
   }
 
