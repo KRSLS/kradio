@@ -2,6 +2,7 @@ import 'package:KRadio/globalSettings.dart';
 import 'package:KRadio/historyData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class History extends StatefulWidget {
   const History({super.key});
@@ -32,8 +33,8 @@ class _HistoryState extends State<History> {
                             ScaffoldMessenger.of(context)
                                 .clearMaterialBanners();
                             ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text('Deleted history.')));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Deleted history.')));
                           });
 
                           GlobalSettings.saveSettings();
@@ -58,48 +59,70 @@ class _HistoryState extends State<History> {
             title: Text(HistoryData.history[index].songTitle),
             subtitle: Text('Station: ' + HistoryData.history[index].station),
             onTap: () {
-              HapticFeedback.lightImpact();
-              Clipboard.setData(
-                  ClipboardData(text: HistoryData.history[index].songTitle));
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Song copied.',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              );
-            },
-            onLongPress: () {
-              ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-                  content: Text('Delete song from history?'),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            HistoryData.history.removeAt(index);
-                          });
-                          GlobalSettings.saveSettings();
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Song deleted from history.',
-                                style: TextStyle(fontSize: 16),
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Center(
+                              child: Text(
+                                'Song properties',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
-                          );
-                          ScaffoldMessenger.of(context).clearMaterialBanners();
-                        },
-                        child: Text('Yes')),
-                    TextButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).clearMaterialBanners();
-                      },
-                      child: Text('No'),
-                    ),
-                  ]));
+                          ),
+                          ListTile(
+                            title: Text(
+                              HistoryData.history[index].songTitle,
+                            ),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.open_in_browser_rounded),
+                            title: Text('Open with YouTube'),
+                            onTap: () async {
+                              final searchFor =
+                                  HistoryData.history[index].songTitle;
+                              final Uri url = Uri.parse(
+                                  'https://www.youtube.com/results?search_query=$searchFor');
+                              await launchUrl(url);
+                            },
+                            trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.copy_rounded),
+                            title: Text('Copy'),
+                            onTap: () {
+                              Clipboard.setData(
+                                ClipboardData(
+                                  text: HistoryData.history[index].songTitle,
+                                ),
+                              );
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.delete_rounded),
+                            title: Text('Delete'),
+                            onTap: () {
+                              setState(() {
+                                HistoryData.history.removeAt(index);
+                              });
+                              Navigator.pop(context);
+                            },
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    );
+                  });
             },
           );
         },
