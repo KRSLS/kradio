@@ -782,9 +782,15 @@ class _HomeState extends State<Home> {
                   child: const Text('Done'),
                   onPressed: () async {
                     setState(() {
-                      KStream.streams[currentStationIndex].customUrlImage =
-                          controller.text;
-                      // GlobalSettings.saveSettings();
+                      if (!controller.text.contains('.mp4')) {
+                        KStream.streams[currentStationIndex].customUrlImage =
+                            controller.text;
+                      } else {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                'Wrong format. Only images and gifs are allowed.')));
+                      }
                     });
                     GlobalSettings.saveSettings();
                     Navigator.pop(context);
