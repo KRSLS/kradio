@@ -448,8 +448,8 @@ class _HomeState extends State<Home> {
             return DefaultTabController(
               initialIndex: GlobalSettings.radioListIndex,
               length: 2,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: ListView(
+                shrinkWrap: true,
                 children: [
                   TabBar(
                     onTap: (value) {
@@ -587,6 +587,7 @@ class _HomeState extends State<Home> {
               child: Padding(
                 padding: EdgeInsets.all(12.0),
                 child: ListView(
+                  shrinkWrap: true,
                   children: [
                     Padding(
                       padding: EdgeInsets.all(6.0),
@@ -595,6 +596,12 @@ class _HomeState extends State<Home> {
                           'Station Properties',
                           style: TextStyle(fontSize: 20),
                         ),
+                      ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.headset_rounded),
+                      title: Text(
+                        KStream.streams[currentStationIndex].title,
                       ),
                     ),
                     ListTile(
@@ -651,7 +658,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.share_rounded),
                       title: Text('Share'),
-                      subtitle: Text('Share the vibe with someone'),
+                      subtitle: Text('Share the vibe'),
                       onTap: () async {
                         Navigator.pop(context);
                         await Share.share(
@@ -837,8 +844,8 @@ class _HomeState extends State<Home> {
               width: double.infinity,
               child: Padding(
                 padding: EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                child: ListView(
+                  shrinkWrap: true,
                   children: [
                     Padding(
                       padding: EdgeInsets.all(6.0),

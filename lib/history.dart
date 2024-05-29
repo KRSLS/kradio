@@ -78,8 +78,8 @@ class _HistoryState extends State<History> {
                     context: context,
                     builder: (context) {
                       return Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                        child: ListView(
+                          shrinkWrap: true,
                           children: [
                             Padding(
                               padding: EdgeInsets.all(16.0),
@@ -93,9 +93,11 @@ class _HistoryState extends State<History> {
                               ),
                             ),
                             ListTile(
+                              leading: Icon(Icons.headset_rounded),
                               title: Text(
                                 HistoryData.history[index].songTitle,
                               ),
+                              subtitle: Text(HistoryData.history[index].station),
                             ),
                             ListTile(
                               leading: Icon(Icons.open_in_browser_rounded),

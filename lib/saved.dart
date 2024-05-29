@@ -78,8 +78,8 @@ class _SavedState extends State<Saved> {
                     context: context,
                     builder: (context) {
                       return Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                        child: ListView(
+                          shrinkWrap: true,
                           children: [
                             Padding(
                               padding: EdgeInsets.all(16.0),
@@ -93,6 +93,7 @@ class _SavedState extends State<Saved> {
                               ),
                             ),
                             ListTile(
+                              leading: Icon(Icons.headset_rounded),
                               title: Text(
                                 SavedData.saved[index].songTitle,
                               ),
