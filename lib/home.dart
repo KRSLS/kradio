@@ -26,6 +26,7 @@ import 'package:radio_player/radio_player.dart';
 import 'package:headset_connection_event/headset_event.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:xml/xml.dart';
 import 'package:xml/xml_events.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -208,9 +209,9 @@ class _HomeState extends State<Home> {
         } else {
           print("Can't get a response from the api");
         }
-      }
-      else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('API limit reached.')));
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('API limit reached.')));
       }
     }
   }
@@ -636,6 +637,18 @@ class _HomeState extends State<Home> {
                       },
                     ),
                     ListTile(
+                      leading: Icon(Icons.open_in_browser_rounded),
+                      title: Text('Open with YouTube'),
+                      subtitle: Text('Search for the song on YouTube.'),
+                      onTap: () async {
+                        final searchFor = metadata![1] + ' - ' + metadata![0];
+                        final Uri url = Uri.parse(
+                            'https://www.youtube.com/results?search_query=$searchFor');
+                        await launchUrl(url);
+                      },
+                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                    ),
+                    ListTile(
                       leading: Icon(Icons.share_rounded),
                       title: Text('Share'),
                       subtitle: Text('Share the vibe with someone.'),
@@ -880,6 +893,9 @@ class _HomeState extends State<Home> {
                             }
                           },
                         )),
+                    SizedBox(
+                      height: 20,
+                    ),
                   ],
                 ),
               ),
