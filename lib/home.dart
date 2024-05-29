@@ -639,7 +639,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.open_in_browser_rounded),
                       title: Text('Open with YouTube'),
-                      subtitle: Text('Search for the song on YouTube.'),
+                      subtitle: Text('Search for the song on YouTube'),
                       onTap: () async {
                         final searchFor = metadata![1] + ' - ' + metadata![0];
                         final Uri url = Uri.parse(
@@ -651,7 +651,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.share_rounded),
                       title: Text('Share'),
-                      subtitle: Text('Share the vibe with someone.'),
+                      subtitle: Text('Share the vibe with someone'),
                       onTap: () async {
                         Navigator.pop(context);
                         await Share.share(
@@ -663,7 +663,7 @@ class _HomeState extends State<Home> {
                           ? Icons.mode_night_rounded
                           : Icons.mode_night_outlined),
                       title: Text('Sleep timer'),
-                      subtitle: Text('Stop the player after some time.'),
+                      subtitle: Text('Stop the player after some time'),
                       onTap: () {
                         modalSleepTimer();
                       },
@@ -671,7 +671,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.image_outlined),
                       title: Text('Custom cover'),
-                      subtitle: Text("Change current's station cover url."),
+                      subtitle: Text("Change current's station cover url"),
                       onTap: () {
                         changeImageAlertDialog();
                       },
@@ -679,7 +679,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.image_search_rounded),
                       title: Text('Random cover'),
-                      subtitle: Text("Try holding me."),
+                      subtitle: Text("Try holding me"),
                       onTap: () {
                         fetchRandomGif(false);
                         Navigator.pop(context);
@@ -692,7 +692,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.restore_outlined),
                       title: Text('Reset cover'),
-                      subtitle: Text('Revert covert to original.'),
+                      subtitle: Text('Revert covert to original'),
                       onTap: () {
                         setState(() {
                           KStream.streams[currentStationIndex].customUrlImage =
@@ -704,7 +704,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.copy_rounded),
                       title: Text('Copy cover'),
-                      subtitle: Text("Get the url from the cover."),
+                      subtitle: Text("Get the url from the cover"),
                       onTap: () {
                         Clipboard.setData(
                           ClipboardData(
@@ -727,7 +727,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.copy_rounded),
                       title: Text('Copy current song'),
-                      subtitle: Text('Copies the current song.'),
+                      subtitle: Text('Copies the current song'),
                       onTap: () {
                         Clipboard.setData(ClipboardData(
                             text: '${metadata?[0]} - ${metadata?[1]}'));
@@ -746,7 +746,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.copy_all_rounded),
                       title: Text('Copy next song'),
-                      subtitle: Text('Copies the next song.'),
+                      subtitle: Text('Copies the next song'),
                       onTap: () {
                         Clipboard.setData(ClipboardData(text: '${nextSong}'));
                         ScaffoldMessenger.of(context).clearSnackBars();
