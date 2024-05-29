@@ -525,7 +525,7 @@ class _HomeState extends State<Home> {
                       subtitle:
                           Text('Save the song to a list and always find it.'),
                       onTap: () {
-                        bool add = false;
+                        bool add = true;
 
                         // check if theres another song saved with the same name
                         for (var i = 0; i < SavedData.saved.length; i++) {
@@ -551,6 +551,10 @@ class _HomeState extends State<Home> {
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Song saved.')));
                           GlobalSettings.saveSettings();
+                        } else {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Song already saved.')));
                         }
 
                         Navigator.pop(context);
