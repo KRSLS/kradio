@@ -143,6 +143,7 @@ class _HomeState extends State<Home> {
   Future<void> fetchRandomGif(bool setTag) async {
     final apiKey = Secure.giphyAndroidAPIKey;
     String tag = '';
+    bool cancel = false;
 
     if (setTag) {
       TextEditingController controller = TextEditingController();
@@ -156,7 +157,8 @@ class _HomeState extends State<Home> {
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: [
-                      Text("If it doesn't work then the API reached the limit for today. Sorry :("),
+                      Text(
+                          "If it doesn't work then the API reached the limit for today. Sorry :("),
                       TextField(
                         controller: controller,
                       ),
@@ -167,6 +169,7 @@ class _HomeState extends State<Home> {
                   TextButton(
                     child: Text('Cancel'),
                     onPressed: () {
+                      cancel = true;
                       Navigator.of(context).pop();
                     },
                   ),
@@ -186,21 +189,23 @@ class _HomeState extends State<Home> {
     } else
       tag = 'loop';
 
-    final url = Uri.parse(
-        "https://api.giphy.com/v1/gifs/random?api_key=$apiKey&tag=$tag");
-    final response = await http.get(url);
+    if (cancel != true) {
+      final url = Uri.parse(
+          "https://api.giphy.com/v1/gifs/random?api_key=$apiKey&tag=$tag");
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data['data'] != null) {
-        print(data['data']['id']);
-        setState(() {
-          KStream.streams[currentStationIndex].customUrlImage =
-              'https://i.giphy.com/${data['data']['id']}.webp';
-        });
-        GlobalSettings.saveSettings();
-      } else {
-        print("Can't get a response from the api");
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['data'] != null) {
+          print(data['data']['id']);
+          setState(() {
+            KStream.streams[currentStationIndex].customUrlImage =
+                'https://i.giphy.com/${data['data']['id']}.webp';
+          });
+          GlobalSettings.saveSettings();
+        } else {
+          print("Can't get a response from the api");
+        }
       }
     }
   }
@@ -588,8 +593,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.save_alt_rounded),
                       title: Text('Save song'),
-                      subtitle:
-                          Text('Always remember the vibe.'),
+                      subtitle: Text('Always remember the vibe.'),
                       onTap: () {
                         bool add = true;
 
@@ -704,8 +708,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.copy_rounded),
                       title: Text('Copy current song'),
-                      subtitle: Text(
-                          'Copies the current song.'),
+                      subtitle: Text('Copies the current song.'),
                       onTap: () {
                         Clipboard.setData(ClipboardData(
                             text: '${metadata?[0]} - ${metadata?[1]}'));
@@ -724,8 +727,7 @@ class _HomeState extends State<Home> {
                     ListTile(
                       leading: Icon(Icons.copy_all_rounded),
                       title: Text('Copy next song'),
-                      subtitle:
-                          Text('Copies the next song.'),
+                      subtitle: Text('Copies the next song.'),
                       onTap: () {
                         Clipboard.setData(ClipboardData(text: '${nextSong}'));
                         ScaffoldMessenger.of(context).clearSnackBars();
