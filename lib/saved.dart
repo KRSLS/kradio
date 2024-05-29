@@ -3,6 +3,7 @@ import 'package:KRadio/historyData.dart';
 import 'package:KRadio/savedData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Saved extends StatefulWidget {
   const Saved({super.key});
@@ -23,8 +24,8 @@ class _SavedState extends State<Saved> {
               onPressed: () {
                 ScaffoldMessenger.of(context).clearMaterialBanners();
                 ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-                    content:
-                        Text('Are you sure you want to delete all saved songs?'),
+                    content: Text(
+                        'Are you sure you want to delete all saved songs?'),
                     actions: [
                       TextButton(
                         onPressed: () {
@@ -33,7 +34,8 @@ class _SavedState extends State<Saved> {
                             ScaffoldMessenger.of(context)
                                 .clearMaterialBanners();
                             ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Deleted all saved songs.')));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Deleted all saved songs.')));
                           });
                           GlobalSettings.saveSettings();
                         },
@@ -56,47 +58,70 @@ class _SavedState extends State<Saved> {
           return ListTile(
             title: Text(SavedData.saved[index].songTitle),
             onTap: () {
-              HapticFeedback.lightImpact();
-              Clipboard.setData(
-                  ClipboardData(text: SavedData.saved[index].songTitle));
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Song copied.',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              );
-            },
-            onLongPress: () {
-              ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-                  content: Text('Remove song from saved?'),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            SavedData.saved.removeAt(index);
-                          });
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Song removed from saved.',
-                                style: TextStyle(fontSize: 16),
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Center(
+                              child: Text(
+                                'Song properties',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
-                          );
-                          ScaffoldMessenger.of(context).clearMaterialBanners();
-                        },
-                        child: Text('Yes')),
-                    TextButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).clearMaterialBanners();
-                      },
-                      child: Text('No'),
-                    ),
-                  ]));
+                          ),
+                          ListTile(
+                            title: Text(
+                              SavedData.saved[index].songTitle,
+                            ),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.open_in_browser_rounded),
+                            title: Text('Open with YouTube'),
+                            onTap: () async {
+                              final searchFor =
+                                  SavedData.saved[index].songTitle;
+                              final Uri url = Uri.parse(
+                                  'https://www.youtube.com/results?search_query=$searchFor');
+                              await launchUrl(url);
+                            },
+                            trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.copy_rounded),
+                            title: Text('Copy'),
+                            onTap: () {
+                              Clipboard.setData(
+                                ClipboardData(
+                                  text: SavedData.saved[index].songTitle,
+                                ),
+                              );
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.delete_rounded),
+                            title: Text('Delete'),
+                            onTap: () {
+                              setState(() {
+                                SavedData.saved.removeAt(index);
+                              });
+                              Navigator.pop(context);
+                            },
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    );
+                  });
             },
           );
         },
