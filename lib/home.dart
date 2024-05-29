@@ -448,8 +448,8 @@ class _HomeState extends State<Home> {
             return DefaultTabController(
               initialIndex: GlobalSettings.radioListIndex,
               length: 2,
-              child: ListView(
-                shrinkWrap: true,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   TabBar(
                     onTap: (value) {
