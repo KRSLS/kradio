@@ -8,6 +8,7 @@ import 'package:KRadio/history.dart';
 import 'package:KRadio/profile.dart';
 import 'package:KRadio/saved.dart';
 import 'package:KRadio/savedData.dart';
+import 'package:KRadio/secure/secure.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -137,6 +138,28 @@ class _HomeState extends State<Home> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+  }
+
+  Future<void> fetchRandomGif() async {
+    final apiKey = Secure.giphyAndroidAPIKey;
+    //get a random gif with a tag ''loop''
+    final url = Uri.parse(
+        "https://api.giphy.com/v1/gifs/random?api_key=$apiKey&tag=loop");
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['data'] != null) {
+        print(data['data']['id']);
+        setState(() {
+          KStream.streams[currentStationIndex].customUrlImage =
+              'https://i.giphy.com/${data['data']['id']}.webp';
+        });
+        GlobalSettings.saveSettings();
+      } else {
+        print("Can't get a response from the api");
+      }
+    }
   }
 
   void initRadioPlayer() {
@@ -590,6 +613,27 @@ class _HomeState extends State<Home> {
                     ),
                     ListTile(
                       leading: Icon(Icons.image_search_rounded),
+                      title: Text('Random gif'),
+                      subtitle: Text('Get a random loop gif from Giphy.'),
+                      onTap: () {
+                        fetchRandomGif();
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.restore_outlined),
+                      title: Text('Reset image/gif'),
+                      subtitle: Text('Revert image/gif to original.'),
+                      onTap: () {
+                        setState(() {
+                          KStream.streams[currentStationIndex].customUrlImage =
+                              KStream.streams[currentStationIndex].urlImage;
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.copy_rounded),
                       title: Text('Copy image'),
                       subtitle: Text('Copy the current station image/gif url.'),
                       onTap: () {
@@ -684,17 +728,6 @@ class _HomeState extends State<Home> {
                   child: Text('Cancel'),
                   onPressed: () {
                     Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text('Revert'),
-                  onPressed: () {
-                    setState(() {
-                      KStream.streams[currentStationIndex].customUrlImage =
-                          KStream.streams[currentStationIndex].urlImage;
-                    });
-                    Navigator.pop(context);
-                    GlobalSettings.saveSettings();
                   },
                 ),
                 TextButton(
