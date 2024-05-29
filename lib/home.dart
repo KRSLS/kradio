@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:KRadio/Cover.dart';
+import 'package:KRadio/Covers.dart';
 import 'package:KRadio/historyData.dart';
 import 'package:KRadio/history.dart';
 import 'package:KRadio/profile.dart';
@@ -986,6 +988,16 @@ class _HomeState extends State<Home> {
                       },
                       title: Text('Saved'),
                       leading: Icon(Icons.save_alt_outlined),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return Covers();
+                        }));
+                      },
+                      title: Text('Covers'),
+                      leading: Icon(Icons.image_outlined),
                     ),
                   ],
                 ),
