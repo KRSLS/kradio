@@ -84,6 +84,7 @@ class _SavedState extends State<Saved> {
                           ListTile(
                             leading: Icon(Icons.open_in_browser_rounded),
                             title: Text('Open with YouTube'),
+                            subtitle: Text('Search for the song on YouTube'),
                             onTap: () async {
                               final searchFor =
                                   SavedData.saved[index].songTitle;
@@ -96,6 +97,7 @@ class _SavedState extends State<Saved> {
                           ListTile(
                             leading: Icon(Icons.copy_rounded),
                             title: Text('Copy'),
+                            subtitle: Text('Copy the song'),
                             onTap: () {
                               Clipboard.setData(
                                 ClipboardData(
@@ -108,6 +110,7 @@ class _SavedState extends State<Saved> {
                           ListTile(
                             leading: Icon(Icons.delete_rounded),
                             title: Text('Delete'),
+                            subtitle: Text('Delete song from saved'),
                             onTap: () {
                               setState(() {
                                 SavedData.saved.removeAt(index);

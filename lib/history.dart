@@ -85,6 +85,7 @@ class _HistoryState extends State<History> {
                           ListTile(
                             leading: Icon(Icons.open_in_browser_rounded),
                             title: Text('Open with YouTube'),
+                            subtitle: Text('Search for the song on YouTube'),
                             onTap: () async {
                               final searchFor =
                                   HistoryData.history[index].songTitle;
@@ -97,6 +98,7 @@ class _HistoryState extends State<History> {
                           ListTile(
                             leading: Icon(Icons.copy_rounded),
                             title: Text('Copy'),
+                            subtitle: Text('Copy the song'),
                             onTap: () {
                               Clipboard.setData(
                                 ClipboardData(
@@ -109,6 +111,7 @@ class _HistoryState extends State<History> {
                           ListTile(
                             leading: Icon(Icons.delete_rounded),
                             title: Text('Delete'),
+                            subtitle: Text('Delete song from history'),
                             onTap: () {
                               setState(() {
                                 HistoryData.history.removeAt(index);
