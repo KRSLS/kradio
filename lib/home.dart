@@ -785,6 +785,7 @@ class _HomeState extends State<Home> {
                       if (!controller.text.contains('.mp4')) {
                         KStream.streams[currentStationIndex].customUrlImage =
                             controller.text;
+                        Navigator.pop(context);
                       } else {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
