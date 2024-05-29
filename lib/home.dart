@@ -448,6 +448,7 @@ class _HomeState extends State<Home> {
               initialIndex: GlobalSettings.radioListIndex,
               length: 2,
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   TabBar(
                     onTap: (value) {
@@ -821,6 +822,7 @@ class _HomeState extends State<Home> {
               child: Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
                       padding: EdgeInsets.all(6.0),
