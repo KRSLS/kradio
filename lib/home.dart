@@ -657,6 +657,7 @@ class _HomeState extends State<Home> {
                         await Share.share(
                             KStream.streams[currentStationIndex].url);
                       },
+                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
                     ),
                     ListTile(
                       leading: Icon(enableSleepTimer
@@ -667,6 +668,7 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         modalSleepTimer();
                       },
+                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
                     ),
                     ListTile(
                       leading: Icon(Icons.image_outlined),
@@ -675,6 +677,7 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         changeImageAlertDialog();
                       },
+                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
                     ),
                     ListTile(
                       leading: Icon(Icons.image_search_rounded),
