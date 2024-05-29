@@ -141,7 +141,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> fetchRandomGif(bool setTag) async {
-    final apiKey = Secure.giphyIOSAPIKey;
+    final apiKey = Secure.giphyAndroidAPIKey;
     String tag = '';
 
     if (setTag) {
