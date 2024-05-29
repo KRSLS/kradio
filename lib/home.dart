@@ -140,11 +140,54 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  Future<void> fetchRandomGif() async {
-    final apiKey = Secure.giphyAndroidAPIKey;
-    //get a random gif with a tag ''loop''
+  Future<void> fetchRandomGif(bool setTag) async {
+    final apiKey = Secure.giphyIOSAPIKey;
+    String tag = '';
+
+    if (setTag) {
+      TextEditingController controller = TextEditingController();
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return AlertDialog(
+                title: Text('Search with a tag'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: [
+                      Text("If it doesn't work then the API reached the limit for today. Sorry :("),
+                      TextField(
+                        controller: controller,
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text('Cancel'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('Done'),
+                    onPressed: () async {
+                      tag = controller.text.trim();
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } else
+      tag = 'loop';
+
     final url = Uri.parse(
-        "https://api.giphy.com/v1/gifs/random?api_key=$apiKey&tag=loop");
+        "https://api.giphy.com/v1/gifs/random?api_key=$apiKey&tag=$tag");
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -543,10 +586,10 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     ListTile(
-                      leading: Icon(Icons.favorite_border_rounded),
+                      leading: Icon(Icons.save_alt_rounded),
                       title: Text('Save song'),
                       subtitle:
-                          Text('Save the song to a list and always find it.'),
+                          Text('Always remember the vibe.'),
                       onTap: () {
                         bool add = true;
 
@@ -579,14 +622,13 @@ class _HomeState extends State<Home> {
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Song already saved.')));
                         }
-
                         Navigator.pop(context);
                       },
                     ),
                     ListTile(
                       leading: Icon(Icons.share_rounded),
                       title: Text('Share'),
-                      subtitle: Text('Share the vibes with someone.'),
+                      subtitle: Text('Share the vibe with someone.'),
                       onTap: () async {
                         Navigator.pop(context);
                         await Share.share(
@@ -605,25 +647,29 @@ class _HomeState extends State<Home> {
                     ),
                     ListTile(
                       leading: Icon(Icons.image_outlined),
-                      title: Text('Custom image'),
-                      subtitle: Text('Change currents station image/gif url.'),
+                      title: Text('Custom cover'),
+                      subtitle: Text("Change current's station cover url."),
                       onTap: () {
                         changeImageAlertDialog();
                       },
                     ),
                     ListTile(
                       leading: Icon(Icons.image_search_rounded),
-                      title: Text('Random gif'),
-                      subtitle: Text('Get a random loop gif from Giphy.'),
+                      title: Text('Random cover'),
+                      subtitle: Text("Try holding me."),
                       onTap: () {
-                        fetchRandomGif();
+                        fetchRandomGif(false);
+                        Navigator.pop(context);
+                      },
+                      onLongPress: () async {
+                        await fetchRandomGif(true);
                         Navigator.pop(context);
                       },
                     ),
                     ListTile(
                       leading: Icon(Icons.restore_outlined),
-                      title: Text('Reset image/gif'),
-                      subtitle: Text('Revert image/gif to original.'),
+                      title: Text('Reset cover'),
+                      subtitle: Text('Revert covert to original.'),
                       onTap: () {
                         setState(() {
                           KStream.streams[currentStationIndex].customUrlImage =
@@ -634,8 +680,8 @@ class _HomeState extends State<Home> {
                     ),
                     ListTile(
                       leading: Icon(Icons.copy_rounded),
-                      title: Text('Copy image'),
-                      subtitle: Text('Copy the current station image/gif url.'),
+                      title: Text('Copy cover'),
+                      subtitle: Text("Get the url from the cover."),
                       onTap: () {
                         Clipboard.setData(
                           ClipboardData(
@@ -647,7 +693,7 @@ class _HomeState extends State<Home> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Station image/gif url copied.',
+                              "Copied.",
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -659,7 +705,7 @@ class _HomeState extends State<Home> {
                       leading: Icon(Icons.copy_rounded),
                       title: Text('Copy current song'),
                       subtitle: Text(
-                          'Copies the title and artist of the current song.'),
+                          'Copies the current song.'),
                       onTap: () {
                         Clipboard.setData(ClipboardData(
                             text: '${metadata?[0]} - ${metadata?[1]}'));
@@ -667,7 +713,7 @@ class _HomeState extends State<Home> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Current song copied.',
+                              'Copied.',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -679,14 +725,14 @@ class _HomeState extends State<Home> {
                       leading: Icon(Icons.copy_all_rounded),
                       title: Text('Copy next song'),
                       subtitle:
-                          Text('Copies the title and artist of the next song.'),
+                          Text('Copies the next song.'),
                       onTap: () {
                         Clipboard.setData(ClipboardData(text: '${nextSong}'));
                         ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Next song copied.',
+                              'Copied.',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
