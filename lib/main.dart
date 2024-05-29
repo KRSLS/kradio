@@ -26,17 +26,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         useMaterial3: true,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
         listTileTheme: ListTileThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        progressIndicatorTheme: ProgressIndicatorThemeData(color: Color(0xDD1c1c1c)),
+        progressIndicatorTheme:
+            ProgressIndicatorThemeData(color: Color(0xDD1c1c1c)),
         iconTheme: IconThemeData(color: Color(0xDD1c1c1c)),
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         useMaterial3: true,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
         listTileTheme: ListTileThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -50,5 +53,4 @@ class MyApp extends StatelessWidget {
       home: WelcomeScreen(),
     );
   }
-
 }
