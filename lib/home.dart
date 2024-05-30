@@ -638,7 +638,7 @@ class _HomeState extends State<Home> {
                         } else {
                           ScaffoldMessenger.of(context).clearSnackBars();
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Song already saved.')));
+                              SnackBar(content: Text('Song exists.')));
                         }
                         Navigator.pop(context);
                       },
@@ -697,6 +697,53 @@ class _HomeState extends State<Home> {
                       onLongPress: () async {
                         await fetchRandomGif(true);
                         Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.save_outlined),
+                      title: Text('Save cover'),
+                      subtitle: Text("Save cover for later use"),
+                      onTap: () {
+                        setState(() {
+                          bool add = true;
+
+                          // check if theres another song saved with the same name
+                          for (var i = 0; i < Cover.covers.length; i++) {
+                            // if there is not the allow the save
+                            if (Cover.covers[i].coverUrl !=
+                                KStream
+                                    .streams[currentStationIndex].customUrlImage
+                                    .toString()) {
+                              add = true;
+                            } else {
+                              // if there is then don't allow and break the loop
+                              add = false;
+                              break;
+                            }
+                          }
+
+                          if (add) {
+                            setState(() {
+                              Cover.covers.add(
+                                Cover(
+                                  id: Cover.covers.length + 1,
+                                  coverUrl: KStream.streams[currentStationIndex]
+                                      .customUrlImage
+                                      .toString(),
+                                ),
+                              );
+                            });
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Cover saved.')));
+                            GlobalSettings.saveSettings();
+                          } else {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Cover exists.')));
+                          }
+                          Navigator.pop(context);
+                        });
                       },
                     ),
                     ListTile(
@@ -1021,7 +1068,9 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return Covers();
+                          return Covers(
+                            currentStationIndex: currentStationIndex,
+                          );
                         }));
                       },
                       title: Text('Covers'),

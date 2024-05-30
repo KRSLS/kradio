@@ -1,3 +1,4 @@
+import 'package:KRadio/Cover.dart';
 import 'package:KRadio/historyData.dart';
 import 'package:KRadio/kstream.dart';
 import 'package:KRadio/savedData.dart';
@@ -95,6 +96,24 @@ class GlobalSettings {
         ),
       );
     }
+
+    int savedCoversLength = prefs.getInt('savedCoversLength')!;
+    //get saved covers
+    for (var i = 0; i < savedCoversLength; i++) {
+      Cover.covers.add(
+        Cover(
+          id: prefs.getInt('savedCoverID$i')!,
+          coverUrl: prefs.getString('savedCover$i')!,
+        ),
+      );
+    }
+
+    // //save covers
+    // prefs.setInt('savedCoversLength', Cover.covers.length);
+    // for (var i = 0; i < Cover.covers.length; i++) {
+    //   prefs.setInt('savedCoverID$i', i);
+    //   prefs.setString('savedCover$i', Cover.covers[i].coverUrl);
+    // }
   }
 
   static void saveSettings() async {
@@ -152,6 +171,13 @@ class GlobalSettings {
     for (var i = 0; i < SavedData.saved.length; i++) {
       prefs.setInt('savedSongID$i', i);
       prefs.setString('savedSongTitle$i', SavedData.saved[i].songTitle);
+    }
+
+    //save covers
+    prefs.setInt('savedCoversLength', Cover.covers.length);
+    for (var i = 0; i < Cover.covers.length; i++) {
+      prefs.setInt('savedCoverID$i', i);
+      prefs.setString('savedCover$i', Cover.covers[i].coverUrl);
     }
   }
 }
