@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xml/xml.dart';
@@ -13,7 +15,19 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+        ),
+        title: Text('Profile'),
+      ),
       body: Padding(
         padding: EdgeInsets.all(0.0),
         child: Column(
@@ -44,7 +58,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 icon: Icon(Icons.play_arrow_outlined),
               ),
             ),
-            
           ],
         ),
       ),

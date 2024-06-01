@@ -1,8 +1,14 @@
+import 'dart:ui';
+
+import 'package:KRadio/historyData.dart';
+import 'package:KRadio/savedData.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:KRadio/globalSettings.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -29,13 +35,16 @@ class _SettingsState extends State<Settings> {
         }
       },
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              ScaffoldMessenger.of(context).clearMaterialBanners();
-              Navigator.of(context).pop();
-            },
+          surfaceTintColor: Colors.transparent,
+          flexibleSpace: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
           ),
           title: Text('Settings'),
         ),
@@ -52,25 +61,25 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
               ),
-              CheckboxListTile(
+              SwitchListTile.adaptive(
                   title: Text('App bar title'),
                   subtitle: Text('Show the station title on the app bar.'),
                   value: GlobalSettings.appBarTitle,
                   onChanged: (value) {
                     setState(() {
-                      GlobalSettings.appBarTitle = value!;
+                      GlobalSettings.appBarTitle = value;
                     });
                     GlobalSettings.saveSettings();
                   }),
               Divider(),
-              CheckboxListTile(
+              SwitchListTile.adaptive(
                   title: Text('Status bar background'),
                   subtitle: Text(
                       "Darken the status bar, can help when icons aren't visible."),
                   value: GlobalSettings.statusBarBackground,
                   onChanged: (value) {
                     setState(() {
-                      GlobalSettings.statusBarBackground = value!;
+                      GlobalSettings.statusBarBackground = value;
                       if (GlobalSettings.statusBarBackground) {
                         SystemChrome.setSystemUIOverlayStyle(
                           const SystemUiOverlayStyle(
@@ -88,191 +97,62 @@ class _SettingsState extends State<Settings> {
                     GlobalSettings.saveSettings();
                   }),
               Divider(),
-              CheckboxListTile(
+              SwitchListTile.adaptive(
                   title: Text('Notify internet loss'),
                   subtitle:
                       Text('Notify when internet connection is not available.'),
                   value: GlobalSettings.notifyInternetLoss,
                   onChanged: (value) {
                     setState(() {
-                      GlobalSettings.notifyInternetLoss = value!;
+                      GlobalSettings.notifyInternetLoss = value;
                     });
                     GlobalSettings.saveSettings();
                   }),
               Divider(),
-              CheckboxListTile(
+              SwitchListTile.adaptive(
                   title: Text('Stop player on output disconnect'),
                   subtitle: Text(
                       'When disconnecting an audio output like bluetooth speaker or headphones etc, the radio player will stop.'),
                   value: GlobalSettings.stopPlayerOnDeviceDisconnect,
                   onChanged: (value) {
                     setState(() {
-                      GlobalSettings.stopPlayerOnDeviceDisconnect = value!;
+                      GlobalSettings.stopPlayerOnDeviceDisconnect = value;
                     });
                     GlobalSettings.saveSettings();
                   }),
               Divider(),
-              CheckboxListTile(
+              SwitchListTile.adaptive(
                   title: Text('Show upcoming song'),
                   subtitle: Text('Displays upcoming song information.'),
                   value: GlobalSettings.showNextSong,
                   onChanged: (value) {
                     setState(() {
-                      GlobalSettings.showNextSong = value!;
+                      GlobalSettings.showNextSong = value;
                     });
                     GlobalSettings.saveSettings();
                   }),
               Divider(),
-              CheckboxListTile(
+              SwitchListTile.adaptive(
                   title: Text('Show song run time'),
                   subtitle: Text("Display song's run time information."),
                   value: GlobalSettings.showRunTime,
                   onChanged: (value) {
                     setState(() {
-                      GlobalSettings.showRunTime = value!;
+                      GlobalSettings.showRunTime = value;
                     });
                     GlobalSettings.saveSettings();
                   }),
               Divider(),
-              CheckboxListTile(
+              SwitchListTile.adaptive(
                   title: Text('Show progress bar'),
                   subtitle: Text("Display song's run time progress bar."),
                   value: GlobalSettings.showProgressBar,
                   onChanged: (value) {
                     setState(() {
-                      GlobalSettings.showProgressBar = value!;
+                      GlobalSettings.showProgressBar = value;
                     });
                     GlobalSettings.saveSettings();
                   }),
-              Divider(),
-              ListTile(
-                title: Text('Background image opacity'),
-                subtitle: Text(
-                    'Increasing opacity might make the controller buttons harder to see.'),
-                trailing:
-                    Text(GlobalSettings.bgOpacity.toStringAsFixed(2) + ''),
-              ),
-              Slider(
-                min: GlobalSettings.bgOpacityMin,
-                max: GlobalSettings.bgOpacityMax,
-                value: GlobalSettings.bgOpacity,
-                divisions: 50,
-                label: GlobalSettings.bgOpacity.toStringAsFixed(2),
-                onChanged: (value) {
-                  setState(() {
-                    GlobalSettings.bgOpacity = value;
-                  });
-                  GlobalSettings.saveSettings();
-                },
-              ),
-              Divider(),
-              ListTile(
-                title: Text('Background blur amount'),
-                trailing:
-                    Text(GlobalSettings.playerBGBlur.toInt().toString() + 'px'),
-              ),
-              Slider(
-                min: GlobalSettings.playerBGBlurMin,
-                max: GlobalSettings.playerBGBlurMax,
-                value: GlobalSettings.playerBGBlur,
-                divisions: GlobalSettings.playerBGBlurMax.toInt(),
-                label: GlobalSettings.playerBGBlur.round().toString() + 'px',
-                onChanged: (value) {
-                  setState(() {
-                    GlobalSettings.playerBGBlur = value;
-                  });
-                  GlobalSettings.saveSettings();
-                },
-              ),
-              Divider(),
-              CheckboxListTile(
-                  title: Text('Controller background'),
-                  value: GlobalSettings.playerButtonsBG,
-                  onChanged: (value) {
-                    setState(() {
-                      GlobalSettings.playerButtonsBG = value!;
-                    });
-                    GlobalSettings.saveSettings();
-                  }),
-              Visibility(
-                visible: GlobalSettings.playerButtonsBG,
-                child: Column(
-                  children: [
-                    Divider(),
-                    ListTile(
-                      title: Text('Controller background opacity'),
-                      trailing: Text(GlobalSettings.controllerBGOpacity
-                          .toStringAsFixed(2)),
-                    ),
-                    Slider(
-                      min: GlobalSettings.controllerBGOpacityMin,
-                      max: GlobalSettings.controllerBGOpacityMax,
-                      value: GlobalSettings.controllerBGOpacity,
-                      divisions: 10,
-                      label: GlobalSettings.controllerBGOpacity
-                              .toStringAsFixed(2) +
-                          '',
-                      onChanged: (value) {
-                        setState(() {
-                          GlobalSettings.controllerBGOpacity = value;
-                        });
-                        GlobalSettings.saveSettings();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Divider(),
-              ListTile(
-                title: Text('Controller blur amount'),
-                trailing: Text(
-                    GlobalSettings.controllerBGBlur.toInt().toString() + 'px'),
-              ),
-              Slider(
-                min: GlobalSettings.controllerBGBlurMin,
-                max: GlobalSettings.controllerBGBlurMax,
-                value: GlobalSettings.controllerBGBlur,
-                divisions: GlobalSettings.controllerBGBlurMax.toInt(),
-                label:
-                    GlobalSettings.controllerBGBlur.round().toString() + 'px',
-                onChanged: (value) {
-                  setState(() {
-                    GlobalSettings.controllerBGBlur = value;
-                  });
-                  GlobalSettings.saveSettings();
-                },
-              ),
-              Divider(),
-              CheckboxListTile(
-                  title: Text('Border'),
-                  subtitle:
-                      Text('Border around cover image/gif and controller.'),
-                  value: GlobalSettings.border,
-                  onChanged: (value) {
-                    setState(() {
-                      GlobalSettings.border = value!;
-                    });
-                    GlobalSettings.saveSettings();
-                  }),
-              Divider(),
-              ListTile(
-                title: Text('Border radius'),
-                trailing:
-                    Text(GlobalSettings.borderRadius.toInt().toString() + 'px'),
-              ),
-              Slider(
-                min: GlobalSettings.borderRadiusMin,
-                max: GlobalSettings.borderRadiusMax,
-                value: GlobalSettings.borderRadius,
-                divisions: GlobalSettings.borderRadiusMax.toInt(),
-                label: GlobalSettings.borderRadius.round().toString() + 'px',
-                onChanged: (value) {
-                  setState(() {
-                    GlobalSettings.borderRadius = value;
-                  });
-                  GlobalSettings.saveSettings();
-                },
-              ),
               Divider(),
               Padding(
                 padding: EdgeInsets.all(6.0),
@@ -284,16 +164,100 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               ListTile(
-                title: Text('Delete local stored data'),
+                title: Text('Delete listening history'),
                 subtitle: Text(
-                  'WARNING, this will delete all local stored data.',
+                  'WARNING, this will delete listening history.',
                   style: TextStyle(color: Colors.red),
                 ),
                 onTap: () {
                   ScaffoldMessenger.of(context).showMaterialBanner(
                     MaterialBanner(
                       content: Text(
-                        'Are you sure you want to delete all local stored data?',
+                        'Are you sure you want to delete the listening history?',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+                            HistoryData.history = [];
+                            GlobalSettings.saveSettings();
+                            ScaffoldMessenger.of(context)
+                                .clearMaterialBanners();
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Deleted listening history.'),
+                              ),
+                            );
+                          },
+                          child: Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context)
+                                .clearMaterialBanners();
+                          },
+                          child: Text('No'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Delete saved songs'),
+                subtitle: Text(
+                  'WARNING, this will delete all saved songs.',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showMaterialBanner(
+                    MaterialBanner(
+                      content: Text(
+                        'Are you sure you want to delete all saved songs?',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+                            SavedData.saved = [];
+                            GlobalSettings.saveSettings();
+                            ScaffoldMessenger.of(context)
+                                .clearMaterialBanners();
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Deleted all saved songs from the application.'),
+                              ),
+                            );
+                          },
+                          child: Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context)
+                                .clearMaterialBanners();
+                          },
+                          child: Text('No'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Delete local data'),
+                subtitle: Text(
+                  'WARNING, this will delete all local data.',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showMaterialBanner(
+                    MaterialBanner(
+                      content: Text(
+                        'Are you sure you want to delete all local data?',
                         style: TextStyle(color: Colors.red),
                       ),
                       actions: [
@@ -309,7 +273,7 @@ class _SettingsState extends State<Settings> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                    'Deleted all local stored data, please restart your application.'),
+                                    'Deleted all local data, please restart your application.'),
                               ),
                             );
                           },

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:KRadio/globalSettings.dart';
 import 'package:KRadio/historyData.dart';
 import 'package:KRadio/savedData.dart';
@@ -22,50 +24,20 @@ class _SavedState extends State<Saved> {
         }
       },
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              ScaffoldMessenger.of(context).clearMaterialBanners();
-              Navigator.of(context).pop();
-            },
+          surfaceTintColor: Colors.transparent,
+          flexibleSpace: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
           ),
           title: Text('Saved songs'),
           actions: [
-            IconButton(
-                tooltip: 'Delete history',
-                onPressed: () {
-                  ScaffoldMessenger.of(context).clearMaterialBanners();
-                  ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-                      content: Text(
-                          'Are you sure you want to delete all saved songs?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              SavedData.saved = [];
-                              ScaffoldMessenger.of(context)
-                                  .clearMaterialBanners();
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                          Text('Deleted all saved songs.')));
-                            });
-                            GlobalSettings.saveSettings();
-                          },
-                          child: Text('Yes'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context)
-                                .clearMaterialBanners();
-                          },
-                          child: Text('No'),
-                        ),
-                      ]));
-                },
-                icon: Icon(Icons.delete_outline_rounded)),
+           
           ],
         ),
         body: ListView.builder(

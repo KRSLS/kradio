@@ -12,6 +12,9 @@ void main() {
       systemNavigationBarColor: Colors.transparent,
     ),
   );
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 }
 
@@ -24,31 +27,45 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'KRadio',
       theme: ThemeData(
-        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color.fromARGB(255, 249, 253, 255),
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         listTileTheme: ListTileThemeData(
+          iconColor: Color(0xDD1c1c1c),
+          textColor: Color(0xDD1c1c1c),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
+        iconTheme: IconThemeData(color: Color(0xDD1c1c1c)),
+        primaryIconTheme: IconThemeData(color: Color(0xDD1c1c1c)),
         progressIndicatorTheme:
             ProgressIndicatorThemeData(color: Color(0xDD1c1c1c)),
-        iconTheme: IconThemeData(color: Color(0xDD1c1c1c)),
+        appBarTheme: AppBarTheme(surfaceTintColor: Colors.transparent),
       ),
       darkTheme: ThemeData(
-        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color.fromARGB(255, 249, 253, 255),
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         listTileTheme: ListTileThemeData(
+          iconColor: Colors.white,
+          textColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
+        iconTheme: IconThemeData(color: Colors.white),
+        primaryIconTheme: IconThemeData(color: Colors.white),
         progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.white),
-        // iconTheme: IconThemeData(color: Colors.white),
+        appBarTheme: AppBarTheme(surfaceTintColor: Colors.transparent),
       ),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       home: WelcomeScreen(),
     );

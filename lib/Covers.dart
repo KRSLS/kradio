@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:KRadio/Cover.dart';
 import 'package:KRadio/globalSettings.dart';
 import 'package:KRadio/kstream.dart';
@@ -19,7 +21,17 @@ class _CoversState extends State<Covers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
+          flexibleSpace: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
+          ),
         title: Text('Covers'),
         actions: [
           IconButton(

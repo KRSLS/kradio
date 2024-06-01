@@ -10,7 +10,6 @@ import 'package:KRadio/history.dart';
 import 'package:KRadio/profile.dart';
 import 'package:KRadio/saved.dart';
 import 'package:KRadio/savedData.dart';
-import 'package:KRadio/secure/secure.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -61,6 +60,7 @@ class _HomeState extends State<Home> {
   DateTime songStartTime = DateTime.now();
   DateTime songEndTime = DateTime.now();
   double runetimePercentage = 0.0;
+  String elapsedTimeString = '';
 
   String previousSong = '';
   String previousArtist = '';
@@ -144,7 +144,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> fetchRandomGif(bool setTag) async {
-    final apiKey = Secure.giphyAndroidAPIKey;
+    final apiKey = '';
     String tag = '';
     bool cancel = false;
 
@@ -248,16 +248,12 @@ class _HomeState extends State<Home> {
       }
     });
 
-    //it's important to wait for the player to stop and then change the channel
-    //then start the player again
-    await radioPlayer.stop();
+    await radioPlayer.pause();
     await radioPlayer.setChannel(
       title: KStream.streams[currentStationIndex].title,
       url: KStream.streams[currentStationIndex].url,
       imagePath: KStream.streams[currentStationIndex].customUrlImage,
     );
-
-    await radioPlayer.play();
   }
 
   //go to previous station
@@ -405,6 +401,25 @@ class _HomeState extends State<Home> {
     //calculate the differnece between now and a datetime
     Duration elapsedTime = now.difference(startTime);
 
+    String minElapsed = '';
+    String secElapsed = '';
+    if (elapsedTime.inMinutes.remainder(60) < 10) {
+      minElapsed = '0' + elapsedTime.inMinutes.remainder(60).toString();
+    } else if (elapsedTime.inMinutes.remainder(60) > 10) {
+      minElapsed = elapsedTime.inMinutes.remainder(60).toString();
+    }
+
+    if (elapsedTime.inSeconds.remainder(60) < 10) {
+      secElapsed = '0' + elapsedTime.inSeconds.remainder(60).toString();
+    } else if (elapsedTime.inSeconds.remainder(60) > 10) {
+      secElapsed = elapsedTime.inSeconds.remainder(60).toString();
+    }
+
+    setState(() {
+      elapsedTimeString =
+          minElapsed + ':' + secElapsed;
+    });
+
     //clamp 0 to 1 for the percentage
     return math.min((elapsedTime.inSeconds / totalDuration.inSeconds), 1.0);
   }
@@ -477,25 +492,11 @@ class _HomeState extends State<Home> {
                             itemCount: KStream.streams.length,
                             itemBuilder: (context, index) {
                               return ListTile(
-                                leading: ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      GlobalSettings.borderRadius),
-                                  child: Image.network(
-                                    fit: BoxFit.fitWidth,
-                                    KStream.streams[index].customUrlImage
-                                        .toString(),
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return CircularProgressIndicator();
-                                    },
-                                  ),
-                                ),
                                 onTap: () {
                                   changeRadioStation(false, index);
                                   Navigator.pop(context);
                                 },
-                                title: Text(KStream.streams[index].title),
+                                title: Text('Station: ' + KStream.streams[index].title),
                                 subtitle: KStream.streams[index].description !=
                                         null
                                     ? Text(KStream.streams[index].description!)
@@ -527,27 +528,11 @@ class _HomeState extends State<Home> {
                                 itemCount: favorites.length,
                                 itemBuilder: (context, index) {
                                   return ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          GlobalSettings.borderRadius),
-                                      child: Image.network(
-                                        fit: BoxFit.fitWidth,
-                                        favorites[index]
-                                            .customUrlImage
-                                            .toString(),
-                                        loadingBuilder:
-                                            (context, child, loadingProgress) {
-                                          if (loadingProgress == null)
-                                            return child;
-                                          return CircularProgressIndicator();
-                                        },
-                                      ),
-                                    ),
                                     onTap: () {
                                       changeRadioStation(true, index);
                                       Navigator.pop(context);
                                     },
-                                    title: Text(favorites[index].title),
+                                    title: Text('Station: ' + favorites[index].title),
                                     subtitle: favorites[index].description !=
                                             null
                                         ? Text(favorites[index].description!)
@@ -963,9 +948,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    double coverHeight = MediaQuery.of(context).size.width / 1.1;
+    double coverWidth = MediaQuery.of(context).size.width / 1.1;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
-      extendBody: true,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -1080,8 +1067,7 @@ class _HomeState extends State<Home> {
                 ),
                 ListTile(
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(GlobalSettings.borderRadius / 2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   onTap: () {
                     Navigator.push(context,
@@ -1103,273 +1089,222 @@ class _HomeState extends State<Home> {
         decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.cover,
-            opacity: GlobalSettings.bgOpacity,
+            opacity: .5,
             image: NetworkImage(
               KStream.streams[currentStationIndex].customUrlImage.toString(),
             ),
           ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(
-              sigmaX: GlobalSettings.playerBGBlur,
-              sigmaY: GlobalSettings.playerBGBlur),
-          child: OrientationBuilder(
-            builder: (context, orientation) {
-              return GridView.count(
-                physics: orientation == Orientation.portrait
-                    ? NeverScrollableScrollPhysics()
-                    : ClampingScrollPhysics(),
-                childAspectRatio:
-                    orientation == Orientation.portrait ? 1 : 1 / .65,
-                crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
-                children: [
-                  Padding(
-                    padding: orientation == Orientation.portrait
-                        ? EdgeInsets.symmetric(horizontal: 20, vertical: 20)
-                        : EdgeInsets.symmetric(horizontal: 70, vertical: 0),
+          filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Material(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    elevation: 40,
                     child: Container(
+                      height: coverHeight,
+                      width: coverWidth,
                       decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(GlobalSettings.borderRadius),
-                        border: Border.all(
-                            color: MediaQuery.of(context).platformBrightness ==
-                                    Brightness.light
-                                ? Color.fromARGB(255, 196, 196, 196)
-                                : Color.fromARGB(255, 97, 97, 97),
-                            width: 1,
-                            style: GlobalSettings.border
-                                ? BorderStyle.solid
-                                : BorderStyle.none),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Material(
-                        elevation: 50,
-                        borderRadius:
-                            BorderRadius.circular(GlobalSettings.borderRadius),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              GlobalSettings.borderRadius),
-                          child: Image.network(
-                            fit: BoxFit.cover,
-                            KStream.streams[currentStationIndex].customUrlImage
-                                .toString(),
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Center(child: CircularProgressIndicator());
-                            },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          fit: BoxFit.cover,
+                          KStream.streams[currentStationIndex].customUrlImage
+                              .toString(),
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(child: CircularProgressIndicator());
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        metadata?[1] ?? 'Loading...',
+                        overflow: TextOverflow.fade,
+                        maxLines: 2,
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        metadata?[0] ?? 'Loading...',
+                        overflow: TextOverflow.fade,
+                        maxLines: 2,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Visibility(
+                        visible: GlobalSettings.showNextSong,
+                        child: Text(
+                          'Next: ${nextSong}',
+                          style: TextStyle(
+                            fontSize: 16,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.fade,
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: orientation == Orientation.portrait
-                        ? EdgeInsets.symmetric(horizontal: 20, vertical: 20)
-                        : EdgeInsets.only(right: 50),
-                    child: Column(
-                      mainAxisAlignment: orientation == Orientation.portrait
-                          ? MainAxisAlignment.spaceBetween
-                          : MainAxisAlignment.spaceAround,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Column(
-                          children: [
-                            Center(
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                metadata?[0] ?? 'Loading...',
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(fontSize: 24),
-                              ),
-                            ),
-                            Center(
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                metadata?[1] ?? 'Loading...',
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                            Visibility(
-                              visible: GlobalSettings.showNextSong,
-                              child: Center(
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  'Next: ${nextSong}',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                  overflow: TextOverflow.fade,
-                                ),
-                              ),
-                            ),
-                          ],
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Visibility(
+                      visible: GlobalSettings.showProgressBar,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: LinearProgressIndicator(
+                          backgroundColor: Color.fromRGBO(255, 255, 255, 0.2),
+                          minHeight: 4,
+                          borderRadius: BorderRadius.circular(12),
+                          value: runetimePercentage,
                         ),
-                        Column(
-                          children: [
-                            Visibility(
-                              visible: GlobalSettings.showRunTime,
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                songRuntime,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
-                                overflow: TextOverflow.fade,
-                              ),
-                            ),
-                            Visibility(
-                              visible: GlobalSettings.showRunTime,
-                              child: SizedBox(
-                                height: 10,
-                              ),
-                            ),
-                            Visibility(
-                              visible: GlobalSettings.showProgressBar,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20),
-                                child: LinearProgressIndicator(
-                                  color: MediaQuery.of(context)
-                                              .platformBrightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  backgroundColor: Colors.transparent,
-                                  minHeight: 4,
-                                  borderRadius: BorderRadius.circular(
-                                      GlobalSettings.borderRadius),
-                                  value: runetimePercentage,
-                                ),
-                              ),
-                            ),
-                            Visibility(
-                              visible: GlobalSettings.showProgressBar,
-                              child: SizedBox(
-                                height: 10,
-                              ),
-                            ),
-                            //add padding if the users wants to
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  GlobalSettings.borderRadius),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                    sigmaX: GlobalSettings.controllerBGBlur,
-                                    sigmaY: GlobalSettings.controllerBGBlur),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: MediaQuery.of(context)
-                                                    .platformBrightness ==
-                                                Brightness.light
-                                            ? Color.fromARGB(255, 196, 196, 196)
-                                            : Color.fromARGB(255, 97, 97, 97),
-                                        width: 1,
-                                        style: GlobalSettings.border
-                                            ? BorderStyle.solid
-                                            : BorderStyle.none),
-                                    borderRadius: BorderRadius.circular(
-                                        GlobalSettings.borderRadius),
-                                    color: GlobalSettings.playerButtonsBG
-                                        ? MediaQuery.of(context)
-                                                    .platformBrightness ==
-                                                Brightness.dark
-                                            ? Color.fromRGBO(
-                                                0,
-                                                0,
-                                                0,
-                                                GlobalSettings
-                                                    .controllerBGOpacity)
-                                            : Color.fromRGBO(
-                                                255,
-                                                255,
-                                                255,
-                                                GlobalSettings
-                                                    .controllerBGOpacity)
-                                        : Colors.transparent,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      IconButton(
-                                        tooltip: 'Favorite',
-                                        onPressed: () {
-                                          setState(() {
-                                            KStream.streams[currentStationIndex]
-                                                    .isFavorite =
-                                                !KStream
-                                                    .streams[
-                                                        currentStationIndex]
-                                                    .isFavorite;
-                                          });
-                                          GlobalSettings.saveSettings();
-                                        },
-                                        icon: Icon(
-                                          KStream.streams[currentStationIndex]
-                                                  .isFavorite
-                                              ? Icons.favorite_rounded
-                                              : Icons.favorite_outline_rounded,
-                                          size: 38,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        tooltip: 'Previous',
-                                        onPressed: () {
-                                          previousStation();
-                                        },
-                                        icon: Icon(
-                                          Icons.arrow_circle_left_rounded,
-                                          size: 52,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        tooltip: isPlaying ? 'Stop' : 'Play',
-                                        onPressed: () {
-                                          isPlaying
-                                              ? radioPlayer.stop()
-                                              : radioPlayer.play();
-                                        },
-                                        icon: Icon(
-                                          !isPlaying
-                                              ? Icons.play_circle_rounded
-                                              : Icons.pause_circle_rounded,
-                                          size: 86,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        tooltip: 'Next',
-                                        onPressed: () {
-                                          nextStation();
-                                        },
-                                        icon: Icon(
-                                          Icons.arrow_circle_right_rounded,
-                                          size: 52,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        tooltip: 'Radio List',
-                                        onPressed: () {
-                                          modalRadioList();
-                                        },
-                                        icon: Icon(
-                                          Icons.list_alt_rounded,
-                                          size: 38,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
+                    Visibility(
+                      visible: GlobalSettings.showProgressBar,
+                      child: SizedBox(
+                        height: 10,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Visibility(
+                            visible: GlobalSettings.showRunTime,
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              elapsedTimeString,
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                              overflow: TextOverflow.fade,
+                            ),
+                          ),
+                          Visibility(
+                            visible: GlobalSettings.showRunTime,
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              songRuntime,
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                              overflow: TextOverflow.fade,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Visibility(
+                      visible: GlobalSettings.showRunTime,
+                      child: SizedBox(
+                        height: 10,
+                      ),
+                    ),
+                    //add padding if the users wants to
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            IconButton(
+                              tooltip: 'Favorite',
+                              onPressed: () {
+                                setState(() {
+                                  KStream.streams[currentStationIndex]
+                                          .isFavorite =
+                                      !KStream.streams[currentStationIndex]
+                                          .isFavorite;
+                                });
+                                GlobalSettings.saveSettings();
+                              },
+                              icon: Icon(
+                                KStream.streams[currentStationIndex].isFavorite
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_outline_rounded,
+                                size: 30,
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: 'Previous',
+                              onPressed: () {
+                                previousStation();
+                              },
+                              icon: Icon(
+                                Icons.arrow_circle_left_rounded,
+                                size: 40,
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: isPlaying ? 'Stop' : 'Play',
+                              onPressed: () async {
+                                isPlaying
+                                    ? await radioPlayer.pause()
+                                    : await radioPlayer.play();
+                              },
+                              icon: Icon(
+                                !isPlaying
+                                    ? Icons.play_circle_rounded
+                                    : Icons.pause_circle_rounded,
+                                size: 56,
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: 'Next',
+                              onPressed: () {
+                                nextStation();
+                              },
+                              icon: Icon(
+                                Icons.arrow_circle_right_rounded,
+                                size: 40,
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: 'Radio List',
+                              onPressed: () {
+                                modalRadioList();
+                              },
+                              icon: Icon(
+                                Icons.list_alt_rounded,
+                                size: 30,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
