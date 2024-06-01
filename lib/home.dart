@@ -248,7 +248,7 @@ class _HomeState extends State<Home> {
       }
     });
 
-    await radioPlayer.pause();
+    // await radioPlayer.pause();
     await radioPlayer.setChannel(
       title: KStream.streams[currentStationIndex].title,
       url: KStream.streams[currentStationIndex].url,
