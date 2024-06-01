@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:KRadio/historyData.dart';
@@ -72,31 +73,37 @@ class _SettingsState extends State<Settings> {
                     GlobalSettings.saveSettings();
                   }),
               Divider(),
-              SwitchListTile.adaptive(
-                  title: Text('Status bar background'),
-                  subtitle: Text(
-                      "Darken the status bar, can help when icons aren't visible."),
-                  value: GlobalSettings.statusBarBackground,
-                  onChanged: (value) {
-                    setState(() {
-                      GlobalSettings.statusBarBackground = value;
-                      if (GlobalSettings.statusBarBackground) {
-                        SystemChrome.setSystemUIOverlayStyle(
-                          const SystemUiOverlayStyle(
-                            systemStatusBarContrastEnforced: true,
-                          ),
-                        );
-                      } else {
-                        SystemChrome.setSystemUIOverlayStyle(
-                          const SystemUiOverlayStyle(
-                            systemStatusBarContrastEnforced: false,
-                          ),
-                        );
-                      }
-                    });
-                    GlobalSettings.saveSettings();
-                  }),
-              Divider(),
+              Visibility(
+                visible: Platform.isAndroid,
+                  child: Column(
+                children: [
+                  SwitchListTile.adaptive(
+                      title: Text('Status bar background'),
+                      subtitle: Text(
+                          "Darken the status bar, can help when icons aren't visible."),
+                      value: GlobalSettings.statusBarBackground,
+                      onChanged: (value) {
+                        setState(() {
+                          GlobalSettings.statusBarBackground = value;
+                          if (GlobalSettings.statusBarBackground) {
+                            SystemChrome.setSystemUIOverlayStyle(
+                              const SystemUiOverlayStyle(
+                                systemStatusBarContrastEnforced: true,
+                              ),
+                            );
+                          } else {
+                            SystemChrome.setSystemUIOverlayStyle(
+                              const SystemUiOverlayStyle(
+                                systemStatusBarContrastEnforced: false,
+                              ),
+                            );
+                          }
+                        });
+                        GlobalSettings.saveSettings();
+                      }),
+                  Divider(),
+                ],
+              )),
               SwitchListTile.adaptive(
                   title: Text('Notify internet loss'),
                   subtitle:
@@ -186,8 +193,7 @@ class _SettingsState extends State<Settings> {
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(
-                                    'Deleted listening history.'),
+                                content: Text('Deleted listening history.'),
                               ),
                             );
                           },
