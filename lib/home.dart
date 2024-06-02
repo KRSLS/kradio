@@ -1136,7 +1136,7 @@ class _HomeState extends State<Home> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        metadata?[1] ?? 'Loading...',
+                        metadata?[1] ?? '',
                         overflow: TextOverflow.fade,
                         maxLines: 2,
                         style: TextStyle(fontSize: 24),
@@ -1145,7 +1145,7 @@ class _HomeState extends State<Home> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        metadata?[0] ?? 'Loading...',
+                        metadata?[0] ?? '',
                         overflow: TextOverflow.fade,
                         maxLines: 2,
                         style: TextStyle(fontSize: 16),
