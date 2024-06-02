@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:KRadio/globalSettings.dart';
-import 'package:KRadio/home.dart';
 import 'package:flutter/services.dart';
 import 'package:KRadio/welcomeScreen.dart';
 
@@ -28,27 +26,27 @@ class MyApp extends StatelessWidget {
       title: 'KRadio',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Color.fromARGB(255, 249, 253, 255),
+          seedColor: const Color.fromARGB(255, 249, 253, 255),
           brightness: Brightness.light,
         ),
         useMaterial3: true,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         listTileTheme: ListTileThemeData(
-          iconColor: Color(0xDD1c1c1c),
-          textColor: Color(0xDD1c1c1c),
+          iconColor: const Color(0xDD1c1c1c),
+          textColor: const Color(0xDD1c1c1c),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        iconTheme: IconThemeData(color: Color(0xDD1c1c1c)),
-        primaryIconTheme: IconThemeData(color: Color(0xDD1c1c1c)),
+        iconTheme: const IconThemeData(color: Color(0xDD1c1c1c)),
+        primaryIconTheme: const IconThemeData(color: Color(0xDD1c1c1c)),
         progressIndicatorTheme:
-            ProgressIndicatorThemeData(color: Color(0xDD1c1c1c)),
-        appBarTheme: AppBarTheme(surfaceTintColor: Colors.transparent),
+            const ProgressIndicatorThemeData(color: Color(0xDD1c1c1c)),
+        appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Color.fromARGB(255, 249, 253, 255),
+          seedColor: const Color.fromARGB(255, 249, 253, 255),
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
@@ -60,14 +58,15 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.white),
-        primaryIconTheme: IconThemeData(color: Colors.white),
-        progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.white),
-        appBarTheme: AppBarTheme(surfaceTintColor: Colors.transparent),
+        iconTheme: const IconThemeData(color: Colors.white),
+        primaryIconTheme: const IconThemeData(color: Colors.white),
+        progressIndicatorTheme:
+            const ProgressIndicatorThemeData(color: Colors.white),
+        appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
       ),
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
-      home: WelcomeScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }

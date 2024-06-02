@@ -1,8 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:xml/xml.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
@@ -26,17 +24,18 @@ class _PlayerScreenState extends State<PlayerScreen> {
             ),
           ),
         ),
-        title: Text('Profile'),
+        title: const Text('Profile'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(0.0),
+        padding: const EdgeInsets.all(0.0),
         child: Column(
           children: [
-            Center(
+            const Center(
               child: Text('KISS HOT'),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 52.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 52.0),
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
@@ -46,16 +45,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 ),
               ),
             ),
-            Center(
+            const Center(
               child: Text('SONG NAME'),
             ),
-            Center(
+            const Center(
               child: Text('SONG ARTIST'),
             ),
             Center(
               child: IconButton(
                 onPressed: () {},
-                icon: Icon(Icons.play_arrow_outlined),
+                icon: const Icon(Icons.play_arrow_outlined),
               ),
             ),
           ],

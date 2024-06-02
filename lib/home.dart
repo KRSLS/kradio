@@ -7,27 +7,19 @@ import 'package:KRadio/Cover.dart';
 import 'package:KRadio/Covers.dart';
 import 'package:KRadio/historyData.dart';
 import 'package:KRadio/history.dart';
-import 'package:KRadio/profile.dart';
 import 'package:KRadio/saved.dart';
 import 'package:KRadio/savedData.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:KRadio/globalSettings.dart';
 import 'package:KRadio/kstream.dart';
-import 'package:KRadio/playerScreen.dart';
 import 'package:KRadio/settings.dart';
-import 'package:KRadio/welcomeScreen.dart';
 
 import 'package:radio_player/radio_player.dart';
 import 'package:headset_connection_event/headset_event.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xml/xml.dart';
-import 'package:xml/xml_events.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math' as math;
@@ -75,7 +67,6 @@ class _HomeState extends State<Home> {
   void initState() {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // TODO: implement initState
     super.initState();
 
     //load global settings
@@ -105,24 +96,24 @@ class _HomeState extends State<Home> {
     headsetPlugin.requestPermission();
 
     //set the current state of audio output
-    headsetPlugin.getCurrentState.then((_val) {
+    headsetPlugin.getCurrentState.then((val) {
       setState(() {
-        headsetState = _val;
+        headsetState = val;
       });
     });
 
     //listen for changes to audio output
-    headsetPlugin.setListener((_val) {
+    headsetPlugin.setListener((val) {
       setState(() {
-        headsetState = _val;
-        if (this.headsetState == HeadsetState.DISCONNECT) {
+        headsetState = val;
+        if (headsetState == HeadsetState.DISCONNECT) {
           if (GlobalSettings.stopPlayerOnDeviceDisconnect) {
             radioPlayer.stop();
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content:
-                    Text('Audio output device disconnected, stopped playing.'),
+                content: const Text(
+                    'Audio output device disconnected, stopped playing.'),
                 action: SnackBarAction(
                   label: ('Okay'),
                   onPressed: () {
@@ -139,12 +130,11 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
   Future<void> fetchRandomGif(bool setTag) async {
-    final apiKey = '';
+    const apiKey = '';
     String tag = '';
     bool cancel = false;
 
@@ -156,11 +146,11 @@ class _HomeState extends State<Home> {
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return AlertDialog(
-                title: Text('Search with a tag'),
+                title: const Text('Search with a tag'),
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: [
-                      Text(
+                      const Text(
                           "If it doesn't work then the API reached the limit for today. Sorry :("),
                       TextField(
                         controller: controller,
@@ -170,7 +160,7 @@ class _HomeState extends State<Home> {
                 ),
                 actions: [
                   TextButton(
-                    child: Text('Cancel'),
+                    child: const Text('Cancel'),
                     onPressed: () {
                       cancel = true;
                       Navigator.of(context).pop();
@@ -189,8 +179,9 @@ class _HomeState extends State<Home> {
           );
         },
       );
-    } else
+    } else {
       tag = 'loop';
+    }
 
     if (cancel != true) {
       final url = Uri.parse(
@@ -200,18 +191,15 @@ class _HomeState extends State<Home> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['data'] != null) {
-          print(data['data']['id']);
           setState(() {
             KStream.streams[currentStationIndex].customUrlImage =
                 'https://i.giphy.com/${data['data']['id']}.webp';
           });
           GlobalSettings.saveSettings();
-        } else {
-          print("Can't get a response from the api");
         }
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('API limit reached.')));
+            .showSnackBar(const SnackBar(content: Text('API limit reached.')));
       }
     }
   }
@@ -261,8 +249,9 @@ class _HomeState extends State<Home> {
     //handle out of range index
     if (currentStationIndex - 1 < 0) {
       changeRadioStation(false, KStream.streams.length - 1);
-    } else
+    } else {
       changeRadioStation(false, currentStationIndex - 1);
+    }
   }
 
   //go the next station
@@ -270,8 +259,9 @@ class _HomeState extends State<Home> {
     //handle out of range index
     if (currentStationIndex + 1 > KStream.streams.length - 1) {
       changeRadioStation(false, 0);
-    } else
+    } else {
       changeRadioStation(false, currentStationIndex + 1);
+    }
   }
 
   //check for internet connection and provide info to the end user
@@ -286,13 +276,13 @@ class _HomeState extends State<Home> {
           ScaffoldMessenger.of(context).clearMaterialBanners();
           if (GlobalSettings.notifyInternetLoss) {
             MaterialBanner(
-              content: Text('Connected to the internet.'),
+              content: const Text('Connected to the internet.'),
               actions: [
                 TextButton(
                   onPressed: () {
                     ScaffoldMessenger.of(context).clearMaterialBanners();
                   },
-                  child: Text('Okay'),
+                  child: const Text('Okay'),
                 ),
               ],
             );
@@ -304,13 +294,13 @@ class _HomeState extends State<Home> {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showMaterialBanner(
               MaterialBanner(
-                content: Text('Not connected to the internet.'),
+                content: const Text('Not connected to the internet.'),
                 actions: [
                   TextButton(
                     onPressed: () {
                       ScaffoldMessenger.of(context).clearMaterialBanners();
                     },
-                    child: Text('Okay'),
+                    child: const Text('Okay'),
                   ),
                 ],
               ),
@@ -324,7 +314,7 @@ class _HomeState extends State<Home> {
   //this handles the next song information from xml
   void loadNextSongInformation() async {
     String tempCurrentSong = '';
-    Timer.periodic(Duration(seconds: 1), (timer) async {
+    Timer.periodic(const Duration(seconds: 1), (timer) async {
       String url = KStream.streams[currentStationIndex].urlNext;
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -342,7 +332,7 @@ class _HomeState extends State<Home> {
             tempCurrentSong = metadata![1];
             HistoryData.history.add(HistoryData(
                 id: HistoryData.history.length + 1,
-                songTitle: metadata![1] + ' - ' + metadata![0],
+                songTitle: '${metadata![1]} - ${metadata![0]}',
                 station: KStream.streams[currentStationIndex].title));
 
             GlobalSettings.saveSettings();
@@ -404,19 +394,19 @@ class _HomeState extends State<Home> {
     String minElapsed = '';
     String secElapsed = '';
     if (elapsedTime.inMinutes.remainder(60) < 10) {
-      minElapsed = '0' + elapsedTime.inMinutes.remainder(60).toString();
+      minElapsed = '0${elapsedTime.inMinutes.remainder(60)}';
     } else if (elapsedTime.inMinutes.remainder(60) > 10) {
       minElapsed = elapsedTime.inMinutes.remainder(60).toString();
     }
 
     if (elapsedTime.inSeconds.remainder(60) < 10) {
-      secElapsed = '0' + elapsedTime.inSeconds.remainder(60).toString();
+      secElapsed = '0${elapsedTime.inSeconds.remainder(60)}';
     } else if (elapsedTime.inSeconds.remainder(60) > 10) {
       secElapsed = elapsedTime.inSeconds.remainder(60).toString();
     }
 
     setState(() {
-      elapsedTimeString = minElapsed + ':' + secElapsed;
+      elapsedTimeString = '$minElapsed:$secElapsed';
     });
 
     //clamp 0 to 1 for the percentage
@@ -429,13 +419,11 @@ class _HomeState extends State<Home> {
     timer = Timer(Duration(minutes: sleepTimer.toInt()), () async {
       //only run the code bellow if the option is still enabled
       if (enableSleepTimer) {
-        print('Sleep timer execution.');
         await radioPlayer.stop();
         setState(() {
           enableSleepTimer = false;
         });
-      } else
-        print('Sleep timer execution but the options is not enabled.');
+      }
     });
   }
 
@@ -470,11 +458,11 @@ class _HomeState extends State<Home> {
                       GlobalSettings.radioListIndex = value;
                       GlobalSettings.saveSettings();
                     },
-                    splashBorderRadius: BorderRadius.only(
+                    splashBorderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
                     ),
-                    tabs: [
+                    tabs: const [
                       Tab(
                         icon: Icon(Icons.list_alt_rounded),
                       ),
@@ -484,76 +472,73 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                   Expanded(
-                    child: Container(
-                      child: TabBarView(children: [
-                        //Radio list
-                        ListView.builder(
-                            itemCount: KStream.streams.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                onTap: () {
-                                  changeRadioStation(false, index);
-                                  Navigator.pop(context);
+                    child: TabBarView(children: [
+                      //Radio list
+                      ListView.builder(
+                          itemCount: KStream.streams.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              onTap: () {
+                                changeRadioStation(false, index);
+                                Navigator.pop(context);
+                              },
+                              title: Text(
+                                  'Station: ${KStream.streams[index].title}'),
+                              subtitle: KStream.streams[index].description !=
+                                      null
+                                  ? Text(KStream.streams[index].description!)
+                                  : const Text('TBA'),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    KStream.streams[index].isFavorite =
+                                        !KStream.streams[index].isFavorite;
+                                  });
+                                  loadFavorites();
+                                  GlobalSettings.saveSettings();
                                 },
-                                title: Text(
-                                    'Station: ' + KStream.streams[index].title),
-                                subtitle: KStream.streams[index].description !=
-                                        null
-                                    ? Text(KStream.streams[index].description!)
-                                    : Text('TBA'),
-                                trailing: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      KStream.streams[index].isFavorite =
-                                          !KStream.streams[index].isFavorite;
-                                    });
-                                    loadFavorites();
-                                    GlobalSettings.saveSettings();
+                                icon: Icon(KStream.streams[index].isFavorite
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_outline_rounded),
+                              ),
+                            );
+                          }),
+                      //Favorite radio list
+                      favorites.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'Nothing found. 💔',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: favorites.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  onTap: () {
+                                    changeRadioStation(true, index);
+                                    Navigator.pop(context);
                                   },
-                                  icon: Icon(KStream.streams[index].isFavorite
-                                      ? Icons.favorite_rounded
-                                      : Icons.favorite_outline_rounded),
-                                ),
-                              );
-                            }),
-                        //Favorite radio list
-                        favorites.isEmpty
-                            ? Center(
-                                child: Text(
-                                  'Nothing found. 💔',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              )
-                            : ListView.builder(
-                                itemCount: favorites.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    onTap: () {
-                                      changeRadioStation(true, index);
-                                      Navigator.pop(context);
+                                  title: Text(
+                                      'Station: ${favorites[index].title}'),
+                                  subtitle: favorites[index].description != null
+                                      ? Text(favorites[index].description!)
+                                      : const Text('TBA'),
+                                  trailing: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        favorites[index].isFavorite = false;
+                                      });
+                                      loadFavorites();
+                                      GlobalSettings.saveSettings();
                                     },
-                                    title: Text(
-                                        'Station: ' + favorites[index].title),
-                                    subtitle: favorites[index].description !=
-                                            null
-                                        ? Text(favorites[index].description!)
-                                        : Text('TBA'),
-                                    trailing: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          favorites[index].isFavorite = false;
-                                        });
-                                        loadFavorites();
-                                        GlobalSettings.saveSettings();
-                                      },
-                                      icon: Icon(favorites[index].isFavorite
-                                          ? Icons.favorite_rounded
-                                          : Icons.favorite_outline_rounded),
-                                    ),
-                                  );
-                                }),
-                      ]),
-                    ),
+                                    icon: Icon(favorites[index].isFavorite
+                                        ? Icons.favorite_rounded
+                                        : Icons.favorite_outline_rounded),
+                                  ),
+                                );
+                              }),
+                    ]),
                   ),
                 ],
               ),
@@ -568,40 +553,135 @@ class _HomeState extends State<Home> {
         builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              width: double.infinity,
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(6.0),
-                      child: Center(
-                        child: Text(
-                          'Station Properties',
-                          style: TextStyle(fontSize: 20),
-                        ),
+            return Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
+                    child: Center(
+                      child: Text(
+                        'Station Properties',
+                        style: TextStyle(fontSize: 20),
                       ),
                     ),
-                    ListTile(
-                      leading: Icon(Icons.headset_rounded),
-                      title: Text(
-                        KStream.streams[currentStationIndex].title,
-                      ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.headset_rounded),
+                    title: Text(
+                      KStream.streams[currentStationIndex].title,
                     ),
-                    ListTile(
-                      leading: Icon(Icons.save_alt_rounded),
-                      title: Text('Save song'),
-                      subtitle: Text('Always remember the vibe.'),
-                      onTap: () {
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.save_alt_rounded),
+                    title: const Text('Save song'),
+                    subtitle: const Text('Always remember the vibe.'),
+                    onTap: () {
+                      bool add = true;
+
+                      // check if theres another song saved with the same name
+                      for (var i = 0; i < SavedData.saved.length; i++) {
+                        // if there is not the allow the save
+                        if (SavedData.saved[i].songTitle !=
+                            "${metadata![1]} - ${metadata![0]}") {
+                          add = true;
+                        } else {
+                          // if there is then don't allow and break the loop
+                          add = false;
+                          break;
+                        }
+                      }
+
+                      if (add) {
+                        setState(() {
+                          SavedData.saved.add(SavedData(
+                              id: SavedData.saved.length + 1,
+                              songTitle: "${metadata![1]} - ${metadata![0]}"));
+                        });
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Song saved.')));
+                        GlobalSettings.saveSettings();
+                      } else {
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Song exists.')));
+                      }
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.open_in_browser_rounded),
+                    title: const Text('Open with YouTube'),
+                    subtitle: const Text('Search for the song on YouTube'),
+                    onTap: () async {
+                      final searchFor = '${metadata![1]} - ${metadata![0]}';
+                      final Uri url = Uri.parse(
+                          'https://www.youtube.com/results?search_query=$searchFor');
+                      await launchUrl(url);
+                    },
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.share_rounded),
+                    title: const Text('Share'),
+                    subtitle: const Text('Share the vibe'),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await Share.share(
+                          KStream.streams[currentStationIndex].url);
+                    },
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                  ListTile(
+                    leading: Icon(enableSleepTimer
+                        ? Icons.mode_night_rounded
+                        : Icons.mode_night_outlined),
+                    title: const Text('Sleep timer'),
+                    subtitle: const Text('Stop the player after some time'),
+                    onTap: () {
+                      modalSleepTimer();
+                    },
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.image_outlined),
+                    title: const Text('Custom cover'),
+                    subtitle: const Text("Change current's station cover url"),
+                    onTap: () {
+                      changeImageAlertDialog();
+                    },
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.image_search_rounded),
+                    title: const Text('Random cover'),
+                    subtitle: const Text("Try holding me"),
+                    onTap: () {
+                      fetchRandomGif(false);
+                      Navigator.pop(context);
+                    },
+                    onLongPress: () {
+                      fetchRandomGif(true);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.save_outlined),
+                    title: const Text('Save cover'),
+                    subtitle: const Text("Save cover for later use"),
+                    onTap: () {
+                      setState(() {
                         bool add = true;
 
                         // check if theres another song saved with the same name
-                        for (var i = 0; i < SavedData.saved.length; i++) {
+                        for (var i = 0; i < Cover.covers.length; i++) {
                           // if there is not the allow the save
-                          if (SavedData.saved[i].songTitle !=
-                              metadata![1] + " - " + metadata![0]) {
+                          if (Cover.covers[i].coverUrl !=
+                              KStream
+                                  .streams[currentStationIndex].customUrlImage
+                                  .toString()) {
                             add = true;
                           } else {
                             // if there is then don't allow and break the loop
@@ -612,200 +692,101 @@ class _HomeState extends State<Home> {
 
                         if (add) {
                           setState(() {
-                            SavedData.saved.add(SavedData(
-                                id: SavedData.saved.length + 1,
-                                songTitle:
-                                    metadata![1] + " - " + metadata![0]));
+                            Cover.covers.add(
+                              Cover(
+                                id: Cover.covers.length + 1,
+                                coverUrl: KStream
+                                    .streams[currentStationIndex].customUrlImage
+                                    .toString(),
+                              ),
+                            );
                           });
                           ScaffoldMessenger.of(context).clearSnackBars();
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Song saved.')));
+                              const SnackBar(content: Text('Cover saved.')));
                           GlobalSettings.saveSettings();
                         } else {
                           ScaffoldMessenger.of(context).clearSnackBars();
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Song exists.')));
+                              const SnackBar(content: Text('Cover exists.')));
                         }
                         Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.open_in_browser_rounded),
-                      title: Text('Open with YouTube'),
-                      subtitle: Text('Search for the song on YouTube'),
-                      onTap: () async {
-                        final searchFor = metadata![1] + ' - ' + metadata![0];
-                        final Uri url = Uri.parse(
-                            'https://www.youtube.com/results?search_query=$searchFor');
-                        await launchUrl(url);
-                      },
-                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.share_rounded),
-                      title: Text('Share'),
-                      subtitle: Text('Share the vibe'),
-                      onTap: () async {
-                        Navigator.pop(context);
-                        await Share.share(
-                            KStream.streams[currentStationIndex].url);
-                      },
-                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
-                    ),
-                    ListTile(
-                      leading: Icon(enableSleepTimer
-                          ? Icons.mode_night_rounded
-                          : Icons.mode_night_outlined),
-                      title: Text('Sleep timer'),
-                      subtitle: Text('Stop the player after some time'),
-                      onTap: () {
-                        modalSleepTimer();
-                      },
-                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.image_outlined),
-                      title: Text('Custom cover'),
-                      subtitle: Text("Change current's station cover url"),
-                      onTap: () {
-                        changeImageAlertDialog();
-                      },
-                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.image_search_rounded),
-                      title: Text('Random cover'),
-                      subtitle: Text("Try holding me"),
-                      onTap: () {
-                        fetchRandomGif(false);
-                        Navigator.pop(context);
-                      },
-                      onLongPress: () async {
-                        await fetchRandomGif(true);
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.save_outlined),
-                      title: Text('Save cover'),
-                      subtitle: Text("Save cover for later use"),
-                      onTap: () {
-                        setState(() {
-                          bool add = true;
-
-                          // check if theres another song saved with the same name
-                          for (var i = 0; i < Cover.covers.length; i++) {
-                            // if there is not the allow the save
-                            if (Cover.covers[i].coverUrl !=
-                                KStream
-                                    .streams[currentStationIndex].customUrlImage
-                                    .toString()) {
-                              add = true;
-                            } else {
-                              // if there is then don't allow and break the loop
-                              add = false;
-                              break;
-                            }
-                          }
-
-                          if (add) {
-                            setState(() {
-                              Cover.covers.add(
-                                Cover(
-                                  id: Cover.covers.length + 1,
-                                  coverUrl: KStream.streams[currentStationIndex]
-                                      .customUrlImage
-                                      .toString(),
-                                ),
-                              );
-                            });
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Cover saved.')));
-                            GlobalSettings.saveSettings();
-                          } else {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Cover exists.')));
-                          }
-                          Navigator.pop(context);
-                        });
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.restore_outlined),
-                      title: Text('Reset cover'),
-                      subtitle: Text('Revert covert to original'),
-                      onTap: () {
-                        setState(() {
-                          KStream.streams[currentStationIndex].customUrlImage =
-                              KStream.streams[currentStationIndex].urlImage;
-                        });
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.copy_rounded),
-                      title: Text('Copy cover'),
-                      subtitle: Text("Get the url from the cover"),
-                      onTap: () {
-                        Clipboard.setData(
-                          ClipboardData(
-                              text: KStream
-                                  .streams[currentStationIndex].customUrlImage
-                                  .toString()),
-                        );
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Copied.",
-                              style: TextStyle(fontSize: 16),
-                            ),
+                      });
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.restore_outlined),
+                    title: const Text('Reset cover'),
+                    subtitle: const Text('Revert covert to original'),
+                    onTap: () {
+                      setState(() {
+                        KStream.streams[currentStationIndex].customUrlImage =
+                            KStream.streams[currentStationIndex].urlImage;
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.copy_rounded),
+                    title: const Text('Copy cover'),
+                    subtitle: const Text("Get the url from the cover"),
+                    onTap: () {
+                      Clipboard.setData(
+                        ClipboardData(
+                            text: KStream
+                                .streams[currentStationIndex].customUrlImage
+                                .toString()),
+                      );
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Copied.",
+                            style: TextStyle(fontSize: 16),
                           ),
-                        );
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.copy_rounded),
-                      title: Text('Copy current song'),
-                      subtitle: Text('Copies the current song'),
-                      onTap: () {
-                        Clipboard.setData(ClipboardData(
-                            text: '${metadata?[0]} - ${metadata?[1]}'));
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Copied.',
-                              style: TextStyle(fontSize: 16),
-                            ),
+                        ),
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.copy_rounded),
+                    title: const Text('Copy current song'),
+                    subtitle: const Text('Copies the current song'),
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(
+                          text: '${metadata?[0]} - ${metadata?[1]}'));
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Copied.',
+                            style: TextStyle(fontSize: 16),
                           ),
-                        );
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.copy_all_rounded),
-                      title: Text('Copy next song'),
-                      subtitle: Text('Copies the next song'),
-                      onTap: () {
-                        Clipboard.setData(ClipboardData(text: '${nextSong}'));
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Copied.',
-                              style: TextStyle(fontSize: 16),
-                            ),
+                        ),
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.copy_all_rounded),
+                    title: const Text('Copy next song'),
+                    subtitle: const Text('Copies the next song'),
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: nextSong));
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Copied.',
+                            style: TextStyle(fontSize: 16),
                           ),
-                        );
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
+                        ),
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
               ),
             );
           });
@@ -820,12 +801,12 @@ class _HomeState extends State<Home> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('Custom background'),
+              title: const Text('Custom background'),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: [
-                    Text('Image/gif URL'),
-                    Text(
+                    const Text('Image/gif URL'),
+                    const Text(
                         'Please note that the higher the quality of the image the longer it will take to load.'),
                     TextField(
                       controller: controller,
@@ -835,7 +816,7 @@ class _HomeState extends State<Home> {
               ),
               actions: [
                 TextButton(
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -850,7 +831,7 @@ class _HomeState extends State<Home> {
                         Navigator.pop(context);
                       } else {
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text(
                                 'Wrong format. Only images and gifs are allowed.')));
                       }
@@ -873,74 +854,71 @@ class _HomeState extends State<Home> {
         builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              width: double.infinity,
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(6.0),
-                      child: Text(
-                        'Sleep timer',
-                        style: TextStyle(fontSize: 20),
-                      ),
+            return Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
+                    child: Text(
+                      'Sleep timer',
+                      style: TextStyle(fontSize: 20),
                     ),
-                    CheckboxListTile(
-                        title: Text('Enable'),
-                        subtitle:
-                            Text('This will stop the player after some time.'),
-                        value: enableSleepTimer,
-                        onChanged: (value) {
-                          setState(() {
-                            enableSleepTimer = value!;
+                  ),
+                  CheckboxListTile(
+                      title: const Text('Enable'),
+                      subtitle: const Text(
+                          'This will stop the player after some time.'),
+                      value: enableSleepTimer,
+                      onChanged: (value) {
+                        setState(() {
+                          enableSleepTimer = value!;
 
-                            if (enableSleepTimer) {
-                              sleep();
-                              sleepTimerDT = DateTime.now()
-                                  .add(Duration(minutes: sleepTimer.toInt()));
-                            } else {
+                          if (enableSleepTimer) {
+                            sleep();
+                            sleepTimerDT = DateTime.now()
+                                .add(Duration(minutes: sleepTimer.toInt()));
+                          } else {
+                            enableSleepTimer = false;
+                            timer!.cancel();
+                          }
+                        });
+                      }),
+                  Visibility(
+                      visible: enableSleepTimer,
+                      child: Slider(
+                        min: 0,
+                        max: maxSleepTimer,
+                        divisions: maxSleepTimer.toInt(),
+                        label: '${sleepTimer.round()} min',
+                        value: sleepTimer,
+                        onChanged: (value) {
+                          timer!.cancel();
+                          setState(() {
+                            sleepTimer = value;
+                            sleepTimerDT = DateTime.now()
+                                .add(Duration(minutes: sleepTimer.toInt()));
+                          });
+                        },
+                        onChangeEnd: (value) {
+                          //if the value at the end of the drag is 0
+                          // then just disable the sleep feature
+                          if (value == 0) {
+                            setState(() {
                               enableSleepTimer = false;
                               timer!.cancel();
-                            }
-                          });
-                        }),
-                    Visibility(
-                        visible: enableSleepTimer,
-                        child: Slider(
-                          min: 0,
-                          max: maxSleepTimer,
-                          divisions: maxSleepTimer.toInt(),
-                          label: sleepTimer.round().toString() + ' min',
-                          value: sleepTimer,
-                          onChanged: (value) {
-                            timer!.cancel();
-                            setState(() {
-                              sleepTimer = value;
-                              sleepTimerDT = DateTime.now()
-                                  .add(Duration(minutes: sleepTimer.toInt()));
                             });
-                          },
-                          onChangeEnd: (value) {
-                            //if the value at the end of the drag is 0
-                            // then just disable the sleep feature
-                            if (value == 0) {
-                              setState(() {
-                                enableSleepTimer = false;
-                                timer!.cancel();
-                              });
-                            } else {
-                              timer!.cancel;
-                              sleep();
-                            }
-                          },
-                        )),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
+                          } else {
+                            timer!.cancel;
+                            sleep();
+                          }
+                        },
+                      )),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
               ),
             );
           });
@@ -964,7 +942,7 @@ class _HomeState extends State<Home> {
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
-              icon: Icon(Icons.menu_rounded),
+              icon: const Icon(Icons.menu_rounded),
             );
           },
         ),
@@ -990,13 +968,13 @@ class _HomeState extends State<Home> {
                             ScaffoldMessenger.of(context)
                                 .clearMaterialBanners();
                           },
-                          child: Text('Change')),
+                          child: const Text('Change')),
                       TextButton(
                           onPressed: () {
                             ScaffoldMessenger.of(context)
                                 .clearMaterialBanners();
                           },
-                          child: Text('Okay'))
+                          child: const Text('Okay'))
                     ]));
               },
               icon: Icon(enableSleepTimer
@@ -1009,13 +987,13 @@ class _HomeState extends State<Home> {
             onPressed: () {
               modalPlayerProperties();
             },
-            icon: Icon(Icons.more_vert_rounded),
+            icon: const Icon(Icons.more_vert_rounded),
           ),
         ],
       ),
       drawer: Drawer(
         child: Padding(
-          padding: EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(6.0),
           child: SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1036,21 +1014,21 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return History();
+                          return const History();
                         }));
                       },
-                      title: Text('History'),
-                      leading: Icon(Icons.history_rounded),
+                      title: const Text('History'),
+                      leading: const Icon(Icons.history_rounded),
                     ),
                     ListTile(
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return Saved();
+                          return const Saved();
                         }));
                       },
-                      title: Text('Saved'),
-                      leading: Icon(Icons.save_alt_outlined),
+                      title: const Text('Saved'),
+                      leading: const Icon(Icons.save_alt_outlined),
                     ),
                     ListTile(
                       onTap: () {
@@ -1061,8 +1039,8 @@ class _HomeState extends State<Home> {
                           );
                         }));
                       },
-                      title: Text('Covers'),
-                      leading: Icon(Icons.image_outlined),
+                      title: const Text('Covers'),
+                      leading: const Icon(Icons.image_outlined),
                     ),
                   ],
                 ),
@@ -1073,13 +1051,13 @@ class _HomeState extends State<Home> {
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return Settings();
+                      return const Settings();
                     }));
                   },
-                  title: Text(
+                  title: const Text(
                     'Settings',
                   ),
-                  leading: Icon(Icons.settings_rounded),
+                  leading: const Icon(Icons.settings_rounded),
                 ),
               ],
             ),
@@ -1133,7 +1111,7 @@ class _HomeState extends State<Home> {
   Widget playerCover(double coverHeight, double coverWidth) {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Material(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -1151,7 +1129,7 @@ class _HomeState extends State<Home> {
                 KStream.streams[currentStationIndex].customUrlImage.toString(),
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 },
               ),
             ),
@@ -1163,7 +1141,7 @@ class _HomeState extends State<Home> {
 
   Widget playerInformation() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           Align(
@@ -1172,7 +1150,7 @@ class _HomeState extends State<Home> {
               metadata?[1] ?? '',
               overflow: TextOverflow.fade,
               maxLines: 2,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
           ),
           Align(
@@ -1181,7 +1159,7 @@ class _HomeState extends State<Home> {
               metadata?[0] ?? '',
               overflow: TextOverflow.fade,
               maxLines: 2,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           Align(
@@ -1189,8 +1167,8 @@ class _HomeState extends State<Home> {
             child: Visibility(
               visible: GlobalSettings.showNextSong,
               child: Text(
-                'Next: ${nextSong}',
-                style: TextStyle(
+                'Next: $nextSong',
+                style: const TextStyle(
                   fontSize: 16,
                 ),
                 maxLines: 2,
@@ -1205,16 +1183,16 @@ class _HomeState extends State<Home> {
 
   Widget playerController() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 30),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Visibility(
             visible: GlobalSettings.showProgressBar,
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: LinearProgressIndicator(
-                backgroundColor: Color.fromRGBO(255, 255, 255, 0.2),
+                backgroundColor: const Color.fromRGBO(255, 255, 255, 0.2),
                 minHeight: 4,
                 borderRadius: BorderRadius.circular(12),
                 value: runetimePercentage,
@@ -1223,12 +1201,12 @@ class _HomeState extends State<Home> {
           ),
           Visibility(
             visible: GlobalSettings.showProgressBar,
-            child: SizedBox(
+            child: const SizedBox(
               height: 10,
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -1237,7 +1215,7 @@ class _HomeState extends State<Home> {
                   child: Text(
                     textAlign: TextAlign.center,
                     elapsedTimeString,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                     overflow: TextOverflow.fade,
@@ -1248,7 +1226,7 @@ class _HomeState extends State<Home> {
                   child: Text(
                     textAlign: TextAlign.center,
                     songRuntime,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                     overflow: TextOverflow.fade,
@@ -1259,80 +1237,78 @@ class _HomeState extends State<Home> {
           ),
           Visibility(
             visible: GlobalSettings.showRunTime,
-            child: SizedBox(
+            child: const SizedBox(
               height: 10,
             ),
           ),
           //add padding if the users wants to
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  IconButton(
-                    tooltip: 'Favorite',
-                    onPressed: () {
-                      setState(() {
-                        KStream.streams[currentStationIndex].isFavorite =
-                            !KStream.streams[currentStationIndex].isFavorite;
-                      });
-                      GlobalSettings.saveSettings();
-                    },
-                    icon: Icon(
-                      KStream.streams[currentStationIndex].isFavorite
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_outline_rounded,
-                      size: 30,
-                    ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                IconButton(
+                  tooltip: 'Favorite',
+                  onPressed: () {
+                    setState(() {
+                      KStream.streams[currentStationIndex].isFavorite =
+                          !KStream.streams[currentStationIndex].isFavorite;
+                    });
+                    GlobalSettings.saveSettings();
+                  },
+                  icon: Icon(
+                    KStream.streams[currentStationIndex].isFavorite
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_outline_rounded,
+                    size: 30,
                   ),
-                  IconButton(
-                    tooltip: 'Previous',
-                    onPressed: () {
-                      previousStation();
-                    },
-                    icon: Icon(
-                      Icons.arrow_circle_left_rounded,
-                      size: 40,
-                    ),
+                ),
+                IconButton(
+                  tooltip: 'Previous',
+                  onPressed: () {
+                    previousStation();
+                  },
+                  icon: const Icon(
+                    Icons.arrow_circle_left_rounded,
+                    size: 40,
                   ),
-                  IconButton(
-                    tooltip: isPlaying ? 'Stop' : 'Play',
-                    onPressed: () async {
-                      isPlaying
-                          ? await radioPlayer.pause()
-                          : await radioPlayer.play();
-                    },
-                    icon: Icon(
-                      !isPlaying
-                          ? Icons.play_circle_rounded
-                          : Icons.pause_circle_rounded,
-                      size: 56,
-                    ),
+                ),
+                IconButton(
+                  tooltip: isPlaying ? 'Stop' : 'Play',
+                  onPressed: () async {
+                    isPlaying
+                        ? await radioPlayer.pause()
+                        : await radioPlayer.play();
+                  },
+                  icon: Icon(
+                    !isPlaying
+                        ? Icons.play_circle_rounded
+                        : Icons.pause_circle_rounded,
+                    size: 56,
                   ),
-                  IconButton(
-                    tooltip: 'Next',
-                    onPressed: () {
-                      nextStation();
-                    },
-                    icon: Icon(
-                      Icons.arrow_circle_right_rounded,
-                      size: 40,
-                    ),
+                ),
+                IconButton(
+                  tooltip: 'Next',
+                  onPressed: () {
+                    nextStation();
+                  },
+                  icon: const Icon(
+                    Icons.arrow_circle_right_rounded,
+                    size: 40,
                   ),
-                  IconButton(
-                    tooltip: 'Radio List',
-                    onPressed: () {
-                      modalRadioList();
-                    },
-                    icon: Icon(
-                      Icons.list_alt_rounded,
-                      size: 30,
-                    ),
+                ),
+                IconButton(
+                  tooltip: 'Radio List',
+                  onPressed: () {
+                    modalRadioList();
+                  },
+                  icon: const Icon(
+                    Icons.list_alt_rounded,
+                    size: 30,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

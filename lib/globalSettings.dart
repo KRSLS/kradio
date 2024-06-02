@@ -18,27 +18,27 @@ class GlobalSettings {
   static void loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    radioListIndex = await prefs.getInt('radioListIndex')!;
-    statusBarBackground = await prefs.getBool('statusBarBackground')!;
-    appBarTitle = await prefs.getBool('appBarTitle')!;
-    showRunTime = await prefs.getBool('showRunTime')!;
-    showProgressBar = await prefs.getBool('showProgressBar')!;
-    notifyInternetLoss = await prefs.getBool('notifyInternetLoss')!;
-    showNextSong = await prefs.getBool('showNextSong')!;
+    radioListIndex = prefs.getInt('radioListIndex')!;
+    statusBarBackground = prefs.getBool('statusBarBackground')!;
+    appBarTitle = prefs.getBool('appBarTitle')!;
+    showRunTime = prefs.getBool('showRunTime')!;
+    showProgressBar = prefs.getBool('showProgressBar')!;
+    notifyInternetLoss = prefs.getBool('notifyInternetLoss')!;
+    showNextSong = prefs.getBool('showNextSong')!;
     stopPlayerOnDeviceDisconnect =
-        await prefs.getBool('stopPlayerOnDeviceDisconnect')!;
+        prefs.getBool('stopPlayerOnDeviceDisconnect')!;
 
     //get custom image url
     for (var i = 0; i < KStream.streams.length; i++) {
-      KStream.streams[i].customUrlImage = await prefs.getString(
+      KStream.streams[i].customUrlImage = prefs.getString(
         KStream.streams[i].title,
       )!;
     }
 
     //get station isFavorite status
     for (var i = 0; i < KStream.streams.length; i++) {
-      KStream.streams[i].isFavorite = await prefs.getBool(
-        KStream.streams[i].title + 'isFavorite',
+      KStream.streams[i].isFavorite = prefs.getBool(
+        '${KStream.streams[i].title}isFavorite',
       )!;
     }
 
@@ -99,7 +99,7 @@ class GlobalSettings {
     //save station isFavorite status
     for (var i = 0; i < KStream.streams.length; i++) {
       prefs.setBool(
-        KStream.streams[i].title + 'isFavorite',
+        '${KStream.streams[i].title}isFavorite',
         KStream.streams[i].isFavorite,
       );
     }

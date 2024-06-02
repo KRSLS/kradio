@@ -24,20 +24,10 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ),
-        title: Text('Profile'),
+        title: const Text('Profile'),
       ),
       body: ListView(
-        children: [
-          SizedBox(height: 30,),
-          Container(
-            height: 100,
-            child: CircleAvatar(
-              child: Icon(
-                Icons.person_rounded,
-              ),
-            ),
-          ),
-        ],
+        children: const [],
       ),
     );
   }

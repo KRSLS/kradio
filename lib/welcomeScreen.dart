@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:KRadio/globalSettings.dart';
 import 'package:KRadio/home.dart';
 import 'package:KRadio/kstream.dart';
 
@@ -14,7 +13,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -23,13 +21,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('KRadio'),
+        title: const Text('KRadio'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            Text(
+            const Text(
               'Pick a radio stream to start!',
               style: TextStyle(fontSize: 18),
             ),

@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:KRadio/historyData.dart';
 import 'package:KRadio/savedData.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:KRadio/globalSettings.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +20,6 @@ class _SettingsState extends State<Settings> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -45,13 +43,13 @@ class _SettingsState extends State<Settings> {
               ),
             ),
           ),
-          title: Text('Settings'),
+          title: const Text('Settings'),
         ),
         body: Padding(
-          padding: EdgeInsets.all(0),
+          padding: const EdgeInsets.all(0),
           child: ListView(
             children: [
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(6.0),
                 child: Center(
                   child: Text(
@@ -61,8 +59,8 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               SwitchListTile.adaptive(
-                  title: Text('App bar title'),
-                  subtitle: Text('Show the station title on the app bar.'),
+                  title: const Text('App bar title'),
+                  subtitle: const Text('Show the station title on the app bar.'),
                   value: GlobalSettings.appBarTitle,
                   onChanged: (value) {
                     setState(() {
@@ -70,14 +68,14 @@ class _SettingsState extends State<Settings> {
                     });
                     GlobalSettings.saveSettings();
                   }),
-              Divider(),
+              const Divider(),
               Visibility(
                 visible: Platform.isAndroid,
                   child: Column(
                 children: [
                   SwitchListTile.adaptive(
-                      title: Text('Status bar background'),
-                      subtitle: Text(
+                      title: const Text('Status bar background'),
+                      subtitle: const Text(
                           "Darken the status bar, can help when icons aren't visible."),
                       value: GlobalSettings.statusBarBackground,
                       onChanged: (value) {
@@ -99,13 +97,13 @@ class _SettingsState extends State<Settings> {
                         });
                         GlobalSettings.saveSettings();
                       }),
-                  Divider(),
+                  const Divider(),
                 ],
               )),
               SwitchListTile.adaptive(
-                  title: Text('Notify internet loss'),
+                  title: const Text('Notify internet loss'),
                   subtitle:
-                      Text('Notify when internet connection is not available.'),
+                      const Text('Notify when internet connection is not available.'),
                   value: GlobalSettings.notifyInternetLoss,
                   onChanged: (value) {
                     setState(() {
@@ -113,10 +111,10 @@ class _SettingsState extends State<Settings> {
                     });
                     GlobalSettings.saveSettings();
                   }),
-              Divider(),
+              const Divider(),
               SwitchListTile.adaptive(
-                  title: Text('Stop player on output disconnect'),
-                  subtitle: Text(
+                  title: const Text('Stop player on output disconnect'),
+                  subtitle: const Text(
                       'When disconnecting an audio output like bluetooth speaker or headphones etc, the radio player will stop.'),
                   value: GlobalSettings.stopPlayerOnDeviceDisconnect,
                   onChanged: (value) {
@@ -125,10 +123,10 @@ class _SettingsState extends State<Settings> {
                     });
                     GlobalSettings.saveSettings();
                   }),
-              Divider(),
+              const Divider(),
               SwitchListTile.adaptive(
-                  title: Text('Show upcoming song'),
-                  subtitle: Text('Displays upcoming song information.'),
+                  title: const Text('Show upcoming song'),
+                  subtitle: const Text('Displays upcoming song information.'),
                   value: GlobalSettings.showNextSong,
                   onChanged: (value) {
                     setState(() {
@@ -136,10 +134,10 @@ class _SettingsState extends State<Settings> {
                     });
                     GlobalSettings.saveSettings();
                   }),
-              Divider(),
+              const Divider(),
               SwitchListTile.adaptive(
-                  title: Text('Show song run time'),
-                  subtitle: Text("Display song's run time information."),
+                  title: const Text('Show song run time'),
+                  subtitle: const Text("Display song's run time information."),
                   value: GlobalSettings.showRunTime,
                   onChanged: (value) {
                     setState(() {
@@ -147,10 +145,10 @@ class _SettingsState extends State<Settings> {
                     });
                     GlobalSettings.saveSettings();
                   }),
-              Divider(),
+              const Divider(),
               SwitchListTile.adaptive(
-                  title: Text('Show progress bar'),
-                  subtitle: Text("Display song's run time progress bar."),
+                  title: const Text('Show progress bar'),
+                  subtitle: const Text("Display song's run time progress bar."),
                   value: GlobalSettings.showProgressBar,
                   onChanged: (value) {
                     setState(() {
@@ -158,8 +156,8 @@ class _SettingsState extends State<Settings> {
                     });
                     GlobalSettings.saveSettings();
                   }),
-              Divider(),
-              Padding(
+              const Divider(),
+              const Padding(
                 padding: EdgeInsets.all(6.0),
                 child: Center(
                   child: Text(
@@ -169,15 +167,15 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               ListTile(
-                title: Text('Delete listening history'),
-                subtitle: Text(
+                title: const Text('Delete listening history'),
+                subtitle: const Text(
                   'WARNING, this will delete listening history.',
                   style: TextStyle(color: Colors.red),
                 ),
                 onTap: () {
                   ScaffoldMessenger.of(context).showMaterialBanner(
                     MaterialBanner(
-                      content: Text(
+                      content: const Text(
                         'Are you sure you want to delete the listening history?',
                         style: TextStyle(color: Colors.red),
                       ),
@@ -190,19 +188,19 @@ class _SettingsState extends State<Settings> {
                                 .clearMaterialBanners();
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 content: Text('Deleted listening history.'),
                               ),
                             );
                           },
-                          child: Text('Yes'),
+                          child: const Text('Yes'),
                         ),
                         TextButton(
                           onPressed: () {
                             ScaffoldMessenger.of(context)
                                 .clearMaterialBanners();
                           },
-                          child: Text('No'),
+                          child: const Text('No'),
                         ),
                       ],
                     ),
@@ -210,15 +208,15 @@ class _SettingsState extends State<Settings> {
                 },
               ),
               ListTile(
-                title: Text('Delete saved songs'),
-                subtitle: Text(
+                title: const Text('Delete saved songs'),
+                subtitle: const Text(
                   'WARNING, this will delete all saved songs.',
                   style: TextStyle(color: Colors.red),
                 ),
                 onTap: () {
                   ScaffoldMessenger.of(context).showMaterialBanner(
                     MaterialBanner(
-                      content: Text(
+                      content: const Text(
                         'Are you sure you want to delete all saved songs?',
                         style: TextStyle(color: Colors.red),
                       ),
@@ -231,20 +229,20 @@ class _SettingsState extends State<Settings> {
                                 .clearMaterialBanners();
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 content: Text(
                                     'Deleted all saved songs from the application.'),
                               ),
                             );
                           },
-                          child: Text('Yes'),
+                          child: const Text('Yes'),
                         ),
                         TextButton(
                           onPressed: () {
                             ScaffoldMessenger.of(context)
                                 .clearMaterialBanners();
                           },
-                          child: Text('No'),
+                          child: const Text('No'),
                         ),
                       ],
                     ),
@@ -252,15 +250,15 @@ class _SettingsState extends State<Settings> {
                 },
               ),
               ListTile(
-                title: Text('Delete local data'),
-                subtitle: Text(
+                title: const Text('Delete local data'),
+                subtitle: const Text(
                   'WARNING, this will delete all local data.',
                   style: TextStyle(color: Colors.red),
                 ),
                 onTap: () {
                   ScaffoldMessenger.of(context).showMaterialBanner(
                     MaterialBanner(
-                      content: Text(
+                      content: const Text(
                         'Are you sure you want to delete all local data?',
                         style: TextStyle(color: Colors.red),
                       ),
@@ -275,20 +273,20 @@ class _SettingsState extends State<Settings> {
                                 .clearMaterialBanners();
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 content: Text(
                                     'Deleted all local data, please restart your application.'),
                               ),
                             );
                           },
-                          child: Text('Yes'),
+                          child: const Text('Yes'),
                         ),
                         TextButton(
                           onPressed: () {
                             ScaffoldMessenger.of(context)
                                 .clearMaterialBanners();
                           },
-                          child: Text('No'),
+                          child: const Text('No'),
                         ),
                       ],
                     ),

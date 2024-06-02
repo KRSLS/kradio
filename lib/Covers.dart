@@ -32,7 +32,7 @@ class _CoversState extends State<Covers> {
               ),
             ),
           ),
-        title: Text('Covers'),
+        title: const Text('Covers'),
         actions: [
           IconButton(
             onPressed: () {
@@ -41,11 +41,11 @@ class _CoversState extends State<Covers> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('Add a cover'),
+                      title: const Text('Add a cover'),
                       content: SingleChildScrollView(
                         child: ListBody(
                           children: [
-                            Text("Image/Gif URL"),
+                            const Text("Image/Gif URL"),
                             TextField(
                               controller: controller,
                             ),
@@ -54,7 +54,7 @@ class _CoversState extends State<Covers> {
                       ),
                       actions: [
                         TextButton(
-                          child: Text('Cancel'),
+                          child: const Text('Cancel'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -76,7 +76,7 @@ class _CoversState extends State<Covers> {
                     );
                   });
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ],
       ),
@@ -94,64 +94,62 @@ class _CoversState extends State<Covers> {
                       showModalBottomSheet(
                           context: context,
                           builder: (context) {
-                            return Container(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(16.0),
-                                    child: Center(
-                                      child: Text(
-                                        'Cover properties',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Center(
+                                    child: Text(
+                                      'Cover properties',
+                                      style: TextStyle(
+                                        fontSize: 20,
                                       ),
                                     ),
                                   ),
-                                  ListTile(
-                                    leading: Icon(Icons.route_rounded),
-                                    title: Text('Use'),
-                                    subtitle: Text(
-                                        'Use cover for the current station'),
-                                    onTap: () {
-                                      setState(() {
-                                        KStream
-                                                .streams[widget.currentStationIndex]
-                                                .customUrlImage =
-                                            Cover.covers[index].coverUrl;
-                                      });
-                                      GlobalSettings.saveSettings();
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  ListTile(
-                                    leading: Icon(Icons.copy_rounded),
-                                    title: Text('Copy'),
-                                    subtitle: Text('Copy the url'),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  ListTile(
-                                    leading: Icon(Icons.delete_rounded),
-                                    title: Text('Delete'),
-                                    subtitle: Text('Delete cover'),
-                                    onTap: () {
-                                      setState(() {
-                                        Cover.covers.removeAt(index);
-                                      });
-                                      GlobalSettings.saveSettings();
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                ],
-                              ),
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.route_rounded),
+                                  title: const Text('Use'),
+                                  subtitle: const Text(
+                                      'Use cover for the current station'),
+                                  onTap: () {
+                                    setState(() {
+                                      KStream
+                                              .streams[widget.currentStationIndex]
+                                              .customUrlImage =
+                                          Cover.covers[index].coverUrl;
+                                    });
+                                    GlobalSettings.saveSettings();
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.copy_rounded),
+                                  title: const Text('Copy'),
+                                  subtitle: const Text('Copy the url'),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.delete_rounded),
+                                  title: const Text('Delete'),
+                                  subtitle: const Text('Delete cover'),
+                                  onTap: () {
+                                    setState(() {
+                                      Cover.covers.removeAt(index);
+                                    });
+                                    GlobalSettings.saveSettings();
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                              ],
                             );
                           });
                     },
@@ -160,7 +158,7 @@ class _CoversState extends State<Covers> {
                       Cover.covers[index].coverUrl,
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       },
                     ),
                   ),
