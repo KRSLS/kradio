@@ -1098,216 +1098,244 @@ class _HomeState extends State<Home> {
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Material(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    elevation: 40,
-                    child: Container(
-                      height: coverHeight,
-                      width: coverWidth,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          fit: BoxFit.cover,
-                          KStream.streams[currentStationIndex].customUrlImage
-                              .toString(),
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Center(child: CircularProgressIndicator());
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        metadata?[1] ?? '',
-                        overflow: TextOverflow.fade,
-                        maxLines: 2,
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        metadata?[0] ?? '',
-                        overflow: TextOverflow.fade,
-                        maxLines: 2,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Visibility(
-                        visible: GlobalSettings.showNextSong,
-                        child: Text(
-                          'Next: ${nextSong}',
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.fade,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Visibility(
-                      visible: GlobalSettings.showProgressBar,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: LinearProgressIndicator(
-                          backgroundColor: Color.fromRGBO(255, 255, 255, 0.2),
-                          minHeight: 4,
-                          borderRadius: BorderRadius.circular(12),
-                          value: runetimePercentage,
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: GlobalSettings.showProgressBar,
-                      child: SizedBox(
-                        height: 10,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Visibility(
-                            visible: GlobalSettings.showRunTime,
-                            child: Text(
-                              textAlign: TextAlign.center,
-                              elapsedTimeString,
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                              overflow: TextOverflow.fade,
-                            ),
-                          ),
-                          Visibility(
-                            visible: GlobalSettings.showRunTime,
-                            child: Text(
-                              textAlign: TextAlign.center,
-                              songRuntime,
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                              overflow: TextOverflow.fade,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Visibility(
-                      visible: GlobalSettings.showRunTime,
-                      child: SizedBox(
-                        height: 10,
-                      ),
-                    ),
-                    //add padding if the users wants to
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.max,
+          child: OrientationBuilder(
+            builder: (context, orientation) {
+              return orientation == Orientation.portrait
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        playerCover(coverHeight, coverWidth),
+                        playerInformation(),
+                        playerController(),
+                      ],
+                    )
+                  : GridView.count(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.45,
+                      children: [
+                        playerCover(coverHeight, coverWidth),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              tooltip: 'Favorite',
-                              onPressed: () {
-                                setState(() {
-                                  KStream.streams[currentStationIndex]
-                                          .isFavorite =
-                                      !KStream.streams[currentStationIndex]
-                                          .isFavorite;
-                                });
-                                GlobalSettings.saveSettings();
-                              },
-                              icon: Icon(
-                                KStream.streams[currentStationIndex].isFavorite
-                                    ? Icons.favorite_rounded
-                                    : Icons.favorite_outline_rounded,
-                                size: 30,
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: 'Previous',
-                              onPressed: () {
-                                previousStation();
-                              },
-                              icon: Icon(
-                                Icons.arrow_circle_left_rounded,
-                                size: 40,
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: isPlaying ? 'Stop' : 'Play',
-                              onPressed: () async {
-                                isPlaying
-                                    ? await radioPlayer.pause()
-                                    : await radioPlayer.play();
-                              },
-                              icon: Icon(
-                                !isPlaying
-                                    ? Icons.play_circle_rounded
-                                    : Icons.pause_circle_rounded,
-                                size: 56,
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: 'Next',
-                              onPressed: () {
-                                nextStation();
-                              },
-                              icon: Icon(
-                                Icons.arrow_circle_right_rounded,
-                                size: 40,
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: 'Radio List',
-                              onPressed: () {
-                                modalRadioList();
-                              },
-                              icon: Icon(
-                                Icons.list_alt_rounded,
-                                size: 30,
-                              ),
-                            ),
+                            playerInformation(),
+                            playerController(),
                           ],
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                      ],
+                    );
+            },
           ),
         ),
+      ),
+    );
+  }
+
+  Widget playerCover(double coverHeight, double coverWidth) {
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Material(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 40,
+          child: Container(
+            height: coverHeight,
+            width: coverWidth,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                fit: BoxFit.cover,
+                KStream.streams[currentStationIndex].customUrlImage.toString(),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(child: CircularProgressIndicator());
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget playerInformation() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              metadata?[1] ?? '',
+              overflow: TextOverflow.fade,
+              maxLines: 2,
+              style: TextStyle(fontSize: 24),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              metadata?[0] ?? '',
+              overflow: TextOverflow.fade,
+              maxLines: 2,
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Visibility(
+              visible: GlobalSettings.showNextSong,
+              child: Text(
+                'Next: ${nextSong}',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.fade,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget playerController() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Visibility(
+            visible: GlobalSettings.showProgressBar,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: LinearProgressIndicator(
+                backgroundColor: Color.fromRGBO(255, 255, 255, 0.2),
+                minHeight: 4,
+                borderRadius: BorderRadius.circular(12),
+                value: runetimePercentage,
+              ),
+            ),
+          ),
+          Visibility(
+            visible: GlobalSettings.showProgressBar,
+            child: SizedBox(
+              height: 10,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Visibility(
+                  visible: GlobalSettings.showRunTime,
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    elapsedTimeString,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+                Visibility(
+                  visible: GlobalSettings.showRunTime,
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    songRuntime,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Visibility(
+            visible: GlobalSettings.showRunTime,
+            child: SizedBox(
+              height: 10,
+            ),
+          ),
+          //add padding if the users wants to
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  IconButton(
+                    tooltip: 'Favorite',
+                    onPressed: () {
+                      setState(() {
+                        KStream.streams[currentStationIndex].isFavorite =
+                            !KStream.streams[currentStationIndex].isFavorite;
+                      });
+                      GlobalSettings.saveSettings();
+                    },
+                    icon: Icon(
+                      KStream.streams[currentStationIndex].isFavorite
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_outline_rounded,
+                      size: 30,
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Previous',
+                    onPressed: () {
+                      previousStation();
+                    },
+                    icon: Icon(
+                      Icons.arrow_circle_left_rounded,
+                      size: 40,
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: isPlaying ? 'Stop' : 'Play',
+                    onPressed: () async {
+                      isPlaying
+                          ? await radioPlayer.pause()
+                          : await radioPlayer.play();
+                    },
+                    icon: Icon(
+                      !isPlaying
+                          ? Icons.play_circle_rounded
+                          : Icons.pause_circle_rounded,
+                      size: 56,
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Next',
+                    onPressed: () {
+                      nextStation();
+                    },
+                    icon: Icon(
+                      Icons.arrow_circle_right_rounded,
+                      size: 40,
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Radio List',
+                    onPressed: () {
+                      modalRadioList();
+                    },
+                    icon: Icon(
+                      Icons.list_alt_rounded,
+                      size: 30,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
