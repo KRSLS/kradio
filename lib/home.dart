@@ -9,6 +9,7 @@ import 'package:KRadio/historyData.dart';
 import 'package:KRadio/history.dart';
 import 'package:KRadio/saved.dart';
 import 'package:KRadio/savedData.dart';
+import 'package:KRadio/secure/secure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:KRadio/globalSettings.dart';
@@ -134,7 +135,8 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> fetchRandomGif(bool setTag) async {
-    const apiKey = '';
+    String apiKey =
+        Platform.isAndroid ? Secure.giphyAndroidAPIKey : Secure.giphyIOSAPIKey;
     String tag = '';
     bool cancel = false;
 
