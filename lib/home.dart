@@ -572,7 +572,7 @@ class _HomeState extends State<Home> {
                   ListTile(
                     leading: const Icon(Icons.headset_rounded),
                     title: Text(
-                      KStream.streams[currentStationIndex].title,
+                      'Listening to: ${KStream.streams[currentStationIndex].title}',
                     ),
                   ),
                   ListTile(
