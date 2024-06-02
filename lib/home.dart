@@ -247,7 +247,7 @@ class _HomeState extends State<Home> {
         currentStationIndex = index;
       }
     });
-
+    if (Platform.isAndroid) await radioPlayer.pause();
     // await radioPlayer.pause();
     await radioPlayer.setChannel(
       title: KStream.streams[currentStationIndex].title,
@@ -416,8 +416,7 @@ class _HomeState extends State<Home> {
     }
 
     setState(() {
-      elapsedTimeString =
-          minElapsed + ':' + secElapsed;
+      elapsedTimeString = minElapsed + ':' + secElapsed;
     });
 
     //clamp 0 to 1 for the percentage
@@ -496,7 +495,8 @@ class _HomeState extends State<Home> {
                                   changeRadioStation(false, index);
                                   Navigator.pop(context);
                                 },
-                                title: Text('Station: ' + KStream.streams[index].title),
+                                title: Text(
+                                    'Station: ' + KStream.streams[index].title),
                                 subtitle: KStream.streams[index].description !=
                                         null
                                     ? Text(KStream.streams[index].description!)
@@ -532,7 +532,8 @@ class _HomeState extends State<Home> {
                                       changeRadioStation(true, index);
                                       Navigator.pop(context);
                                     },
-                                    title: Text('Station: ' + favorites[index].title),
+                                    title: Text(
+                                        'Station: ' + favorites[index].title),
                                     subtitle: favorites[index].description !=
                                             null
                                         ? Text(favorites[index].description!)
