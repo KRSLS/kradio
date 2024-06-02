@@ -237,7 +237,7 @@ class _HomeState extends State<Home> {
         currentStationIndex = index;
       }
     });
-    if (Platform.isAndroid) await radioPlayer.pause();
+    if (Platform.isAndroid) await radioPlayer.stop();
     // await radioPlayer.pause();
     await radioPlayer.setChannel(
       title: KStream.streams[currentStationIndex].title,
