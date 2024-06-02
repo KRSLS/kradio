@@ -664,8 +664,8 @@ class _HomeState extends State<Home> {
                       fetchRandomGif(false);
                       Navigator.pop(context);
                     },
-                    onLongPress: () {
-                      fetchRandomGif(true);
+                    onLongPress: () async {
+                      await fetchRandomGif(true);
                       Navigator.pop(context);
                     },
                   ),
