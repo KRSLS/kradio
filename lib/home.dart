@@ -239,7 +239,7 @@ class _HomeState extends State<Home> {
     });
     if (Platform.isAndroid) await radioPlayer.stop();
     // await radioPlayer.pause();
-    await radioPlayer.setChannel(
+    radioPlayer.setChannel(
       title: KStream.streams[currentStationIndex].title,
       url: KStream.streams[currentStationIndex].url,
       imagePath: KStream.streams[currentStationIndex].customUrlImage,
