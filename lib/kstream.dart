@@ -94,7 +94,7 @@ class KStream {
     ),
     KStream(
       index: 5,
-      title: 'KISS DISCO',
+      title: 'KISS Disco',
       url: 'https://netradio.live24.gr/actionfm',
       urlOnAir:
           'https://deliver.siliconweb.com/kissfm/Webradios/Disco/NowOnAir.xml',
@@ -108,7 +108,7 @@ class KStream {
     ),
     KStream(
       index: 6,
-      title: 'KISS LATIN',
+      title: 'KISS Latin',
       url: 'https://netradio.live24.gr/kiss-web-latin1',
       urlOnAir:
           'https://deliver.siliconweb.com/kissfm/Webradios/Latin/NowOnAir.xml',
@@ -122,7 +122,7 @@ class KStream {
     ),
     KStream(
       index: 7,
-      title: 'KISS CHILL',
+      title: 'KISS Chill',
       url: 'https://netradio.live24.gr/kiss-web-lounge',
       urlOnAir:
           'https://deliver.siliconweb.com/kissfm/Webradios/Chill/NowOnAir.xml',
@@ -136,7 +136,7 @@ class KStream {
     ),
     KStream(
       index: 8,
-      title: 'KISS BALLADS',
+      title: 'KISS Ballads',
       url: 'https://netradio.live24.gr/kiss-web-balads',
       urlOnAir:
           'https://deliver.siliconweb.com/kissfm/Webradios/Ballads/NowOnAir.xml',
@@ -164,7 +164,7 @@ class KStream {
     ),
     KStream(
       index: 10,
-      title: 'KISS JAZZ',
+      title: 'KISS Jazz',
       url: 'https://netradio.live24.gr/kiss-web-jazz',
       urlOnAir:
           'https://deliver.siliconweb.com/kissfm/Webradios/Jazz/NowOnAir.xml',
