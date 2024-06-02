@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
             const ProgressIndicatorThemeData(color: Colors.white),
         appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       home: const WelcomeScreen(),
     );
