@@ -1022,16 +1022,16 @@ class _HomeState extends State<Home> {
               children: [
                 Column(
                   children: [
-                    ListTile(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return Profile();
-                        }));
-                      },
-                      title: Text('Profile'),
-                      leading: Icon(Icons.person_rounded),
-                    ),
+                    // ListTile(
+                    //   onTap: () {
+                    //     Navigator.push(context,
+                    //         MaterialPageRoute(builder: (context) {
+                    //       return Profile();
+                    //     }));
+                    //   },
+                    //   title: Text('Profile'),
+                    //   leading: Icon(Icons.person_rounded),
+                    // ),
                     ListTile(
                       onTap: () {
                         Navigator.push(context,
