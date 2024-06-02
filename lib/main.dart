@@ -13,7 +13,7 @@ void main() {
     ),
   );
   SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
+    // DeviceOrientation.portraitUp,
   ]);
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 }
