@@ -94,8 +94,7 @@ class _CoversState extends State<Covers> {
                       showModalBottomSheet(
                           context: context,
                           builder: (context) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
+                            return ListView(
                               children: [
                                 const Padding(
                                   padding: EdgeInsets.all(16.0),
