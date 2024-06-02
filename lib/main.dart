@@ -32,17 +32,25 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         listTileTheme: ListTileThemeData(
-          iconColor: const Color(0xDD1c1c1c),
-          textColor: const Color(0xDD1c1c1c),
+          iconColor: const Color.fromARGB(255, 28, 28, 28),
+          textColor: const Color.fromARGB(255, 28, 28, 28),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        iconTheme: const IconThemeData(color: Color(0xDD1c1c1c)),
-        primaryIconTheme: const IconThemeData(color: Color(0xDD1c1c1c)),
-        progressIndicatorTheme:
-            const ProgressIndicatorThemeData(color: Color(0xDD1c1c1c)),
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 28, 28, 28),
+        ),
+        primaryIconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 28, 28, 28),
+        ),
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: Color.fromARGB(255, 28, 28, 28),
+        ),
         appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
+        snackBarTheme: const SnackBarThemeData(
+          backgroundColor: Color.fromARGB(255, 28, 28, 28),
+        ),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -63,6 +71,7 @@ class MyApp extends StatelessWidget {
         progressIndicatorTheme:
             const ProgressIndicatorThemeData(color: Colors.white),
         appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
+        snackBarTheme: const SnackBarThemeData(backgroundColor: Colors.white),
       ),
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
