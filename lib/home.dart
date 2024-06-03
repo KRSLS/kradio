@@ -1081,28 +1081,32 @@ class _HomeState extends State<Home> {
           child: OrientationBuilder(
             builder: (context, orientation) {
               return orientation == Orientation.portrait
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        playerCover(coverHeight, coverWidth),
-                        playerInformation(),
-                        playerController(),
-                      ],
-                    )
-                  : GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.45,
-                      children: [
-                        playerCover(coverHeight, coverWidth),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            playerInformation(),
-                            playerController(),
-                          ],
-                        ),
-                      ],
-                    );
+                  ? SafeArea(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          playerCover(coverHeight, coverWidth),
+                          playerInformation(),
+                          playerController(),
+                        ],
+                      ),
+                  )
+                  : SafeArea(
+                    child: GridView.count(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.45,
+                        children: [
+                          playerCover(coverHeight, coverWidth),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              playerInformation(),
+                              playerController(),
+                            ],
+                          ),
+                        ],
+                      ),
+                  );
             },
           ),
         ),
