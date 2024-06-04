@@ -1197,6 +1197,7 @@ class _HomeState extends State<Home> {
                   fit: BoxFit.cover,
                   opacity: .5,
                   image: NetworkImage(
+                    //cache image sometime
                     KStream.streams[currentStationIndex].customUrlImage
                         .toString(),
                   ),
