@@ -46,6 +46,7 @@ dependencies:
   provider: ^6.1.2
   theme_provider: ^0.6.0
   flutter_animate: ^4.5.0
+  cached_network_image: ^3.3.1
 
   
 
