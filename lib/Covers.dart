@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:KRadio/Cover.dart';
 import 'package:KRadio/globalSettings.dart';
 import 'package:KRadio/kstream.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -23,16 +24,16 @@ class _CoversState extends State<Covers> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          surfaceTintColor: Colors.transparent,
-          flexibleSpace: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-              child: Container(
-                color: Colors.transparent,
-              ),
+      appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+            child: Container(
+              color: Colors.transparent,
             ),
           ),
+        ),
         title: const Text('Covers'),
         actions: [
           IconButton(
@@ -153,13 +154,15 @@ class _CoversState extends State<Covers> {
                             );
                           });
                     },
-                    child: Image.network(
+                    child: CachedNetworkImage(
                       fit: BoxFit.cover,
-                      Cover.covers[index].coverUrl,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(child: CircularProgressIndicator());
+                      imageUrl: Cover.covers[index].coverUrl
+                          .toString(),
+                      placeholder: (context, url) {
+                        return Center(
+                            child: CircularProgressIndicator.adaptive());
                       },
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                 ).animate().fadeIn();

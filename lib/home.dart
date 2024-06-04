@@ -9,6 +9,7 @@ import 'package:KRadio/historyData.dart';
 import 'package:KRadio/history.dart';
 import 'package:KRadio/saved.dart';
 import 'package:KRadio/savedData.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:KRadio/secure/secure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +26,8 @@ import 'package:xml/xml.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math' as math;
+
+import 'Secure.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -141,8 +144,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> fetchRandomGif(bool setTag) async {
-    String apiKey = '';
-    // Platform.isAndroid ? Secure.giphyAndroidAPIKey : Secure.giphyIOSAPIKey;
+    String apiKey = Platform.isAndroid ? Secure.giphyAndroid : Secure.giphyIOS;
     String tag = '';
     bool cancel = false;
 
@@ -212,7 +214,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void initRadioPlayer() {
+  void initRadioPlayer() async {
     //set a listener for the radio player
     //this will change the isPlaying bool if the radio stops or starts
     radioPlayer.stateStream.listen((value) {
@@ -245,11 +247,13 @@ class _HomeState extends State<Home> {
     });
     if (Platform.isAndroid) await radioPlayer.stop();
     // await radioPlayer.pause();
-    radioPlayer.setChannel(
+    await radioPlayer.setChannel(
       title: KStream.streams[currentStationIndex].title,
       url: KStream.streams[currentStationIndex].url,
       imagePath: KStream.streams[currentStationIndex].customUrlImage,
     );
+
+    await radioPlayer.play();
   }
 
   //go to previous station
@@ -1279,13 +1283,14 @@ class _HomeState extends State<Home> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
+              child: CachedNetworkImage(
                 fit: BoxFit.cover,
-                KStream.streams[currentStationIndex].customUrlImage.toString(),
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
+                imageUrl: KStream.streams[currentStationIndex].customUrlImage
+                    .toString(),
+                placeholder: (context, url) {
+                  return Center(child: CircularProgressIndicator.adaptive());
                 },
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             ),
           ),
