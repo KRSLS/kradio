@@ -4,6 +4,7 @@ import 'package:KRadio/Cover.dart';
 import 'package:KRadio/globalSettings.dart';
 import 'package:KRadio/kstream.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class Covers extends StatefulWidget {
   const Covers({
@@ -161,7 +162,7 @@ class _CoversState extends State<Covers> {
                       },
                     ),
                   ),
-                );
+                ).animate().fadeIn();
               });
         },
       ),

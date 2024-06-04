@@ -6,6 +6,7 @@ import 'package:KRadio/savedData.dart';
 import 'package:flutter/material.dart';
 import 'package:KRadio/globalSettings.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings extends StatefulWidget {
@@ -295,7 +296,7 @@ class _SettingsState extends State<Settings> {
               ),
             ],
           ),
-        ),
+        ).animate().fadeIn(),
       ),
     );
   }

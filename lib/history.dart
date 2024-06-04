@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:KRadio/historyData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class History extends StatefulWidget {
@@ -64,7 +65,8 @@ class _HistoryState extends State<History> {
                             title: Text(
                               HistoryData.history[index].songTitle,
                             ),
-                            subtitle: Text(HistoryData.history[index].station),
+                            subtitle: Text(
+                                'Listened on: ${HistoryData.history[index].station}'),
                           ),
                           ListTile(
                             leading: const Icon(Icons.open_in_browser_rounded),
@@ -112,7 +114,7 @@ class _HistoryState extends State<History> {
                       );
                     });
               },
-            );
+            ).animate().fadeIn();
           },
         ),
       ),

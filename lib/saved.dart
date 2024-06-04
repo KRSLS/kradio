@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:KRadio/savedData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Saved extends StatefulWidget {
@@ -110,7 +111,7 @@ class _SavedState extends State<Saved> {
                       );
                     });
               },
-            );
+            ).animate().fadeIn();
           },
         ),
       ),

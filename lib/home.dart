@@ -9,12 +9,13 @@ import 'package:KRadio/historyData.dart';
 import 'package:KRadio/history.dart';
 import 'package:KRadio/saved.dart';
 import 'package:KRadio/savedData.dart';
-import 'package:KRadio/secure/secure.dart';
+// import 'package:KRadio/secure/secure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:KRadio/globalSettings.dart';
 import 'package:KRadio/kstream.dart';
 import 'package:KRadio/settings.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:radio_player/radio_player.dart';
 import 'package:headset_connection_event/headset_event.dart';
@@ -63,6 +64,11 @@ class _HomeState extends State<Home> {
   double maxSleepTimer = 120;
   DateTime sleepTimerDT = DateTime.now();
   Timer? timer;
+
+  bool showLike = false;
+
+  bool swipeNext = false;
+  bool swipePrevious = false;
 
   @override
   void initState() {
@@ -135,8 +141,8 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> fetchRandomGif(bool setTag) async {
-    String apiKey =
-        Platform.isAndroid ? Secure.giphyAndroidAPIKey : Secure.giphyIOSAPIKey;
+    String apiKey = '';
+    // Platform.isAndroid ? Secure.giphyAndroidAPIKey : Secure.giphyIOSAPIKey;
     String tag = '';
     bool cancel = false;
 
@@ -442,6 +448,38 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void saveSong() {
+    bool add = true;
+
+    // check if theres another song saved with the same name
+    for (var i = 0; i < SavedData.saved.length; i++) {
+      // if there is not the allow the save
+      if (SavedData.saved[i].songTitle != "${metadata![1]} - ${metadata![0]}") {
+        add = true;
+      } else {
+        // if there is then don't allow and break the loop
+        add = false;
+        break;
+      }
+    }
+
+    if (add) {
+      setState(() {
+        SavedData.saved.add(SavedData(
+            id: SavedData.saved.length + 1,
+            songTitle: "${metadata![1]} - ${metadata![0]}"));
+      });
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Song saved.')));
+      GlobalSettings.saveSettings();
+    } else {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Song exists.')));
+    }
+  }
+
   void modalRadioList() {
     loadFavorites();
     showModalBottomSheet(
@@ -503,7 +541,7 @@ class _HomeState extends State<Home> {
                                     ? Icons.favorite_rounded
                                     : Icons.favorite_outline_rounded),
                               ),
-                            );
+                            ).animate().fadeIn();
                           }),
                       //Favorite radio list
                       favorites.isEmpty
@@ -512,7 +550,7 @@ class _HomeState extends State<Home> {
                                 'Nothing found. 💔',
                                 style: TextStyle(fontSize: 20),
                               ),
-                            )
+                            ).animate().fadeIn()
                           : ListView.builder(
                               itemCount: favorites.length,
                               itemBuilder: (context, index) {
@@ -538,7 +576,7 @@ class _HomeState extends State<Home> {
                                         ? Icons.favorite_rounded
                                         : Icons.favorite_outline_rounded),
                                   ),
-                                );
+                                ).animate().fadeIn();
                               }),
                     ]),
                   ),
@@ -576,42 +614,15 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.save_alt_rounded),
-                    title: const Text('Save song'),
-                    subtitle: const Text('Always remember the vibe.'),
-                    onTap: () {
-                      bool add = true;
-
-                      // check if theres another song saved with the same name
-                      for (var i = 0; i < SavedData.saved.length; i++) {
-                        // if there is not the allow the save
-                        if (SavedData.saved[i].songTitle !=
-                            "${metadata![1]} - ${metadata![0]}") {
-                          add = true;
-                        } else {
-                          // if there is then don't allow and break the loop
-                          add = false;
-                          break;
-                        }
-                      }
-
-                      if (add) {
-                        setState(() {
-                          SavedData.saved.add(SavedData(
-                              id: SavedData.saved.length + 1,
-                              songTitle: "${metadata![1]} - ${metadata![0]}"));
-                        });
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Song saved.')));
-                        GlobalSettings.saveSettings();
-                      } else {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Song exists.')));
-                      }
+                    leading: const Icon(Icons.share_rounded),
+                    title: const Text('Share'),
+                    subtitle: const Text('Share the vibe'),
+                    onTap: () async {
                       Navigator.pop(context);
+                      await Share.share(
+                          KStream.streams[currentStationIndex].url);
                     },
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                   ),
                   ListTile(
                     leading: const Icon(Icons.open_in_browser_rounded),
@@ -626,15 +637,13 @@ class _HomeState extends State<Home> {
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.share_rounded),
-                    title: const Text('Share'),
-                    subtitle: const Text('Share the vibe'),
-                    onTap: () async {
+                    leading: const Icon(Icons.save_alt_rounded),
+                    title: const Text('Save song'),
+                    subtitle: const Text('Always remember the vibe.'),
+                    onTap: () {
+                      saveSong();
                       Navigator.pop(context);
-                      await Share.share(
-                          KStream.streams[currentStationIndex].url);
                     },
-                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                   ),
                   ListTile(
                     leading: Icon(enableSleepTimer
@@ -649,12 +658,80 @@ class _HomeState extends State<Home> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.image_outlined),
+                    title: const Text('Cover'),
+                    subtitle: const Text('See all cover options'),
+                    onTap: () {
+                      modalCoverOptions();
+                    },
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.copy_rounded),
+                    title: const Text('Copy'),
+                    subtitle: const Text("Copy song's information"),
+                    onTap: () {
+                      modalCopyOptions();
+                    },
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                ],
+              ),
+            );
+          });
+        });
+  }
+
+  void modalCoverOptions() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
+                    child: Center(
+                      child: Text(
+                        'Cover Options',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.image_outlined),
                     title: const Text('Custom cover'),
                     subtitle: const Text("Change current's station cover url"),
                     onTap: () {
                       changeImageAlertDialog();
                     },
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.copy_rounded),
+                    title: const Text('Copy cover'),
+                    subtitle: const Text("Get the url from the cover"),
+                    onTap: () {
+                      Clipboard.setData(
+                        ClipboardData(
+                            text: KStream
+                                .streams[currentStationIndex].customUrlImage
+                                .toString()),
+                      );
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Copied.",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      );
+                      Navigator.pop(context);
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.image_search_rounded),
@@ -728,28 +805,32 @@ class _HomeState extends State<Home> {
                       Navigator.pop(context);
                     },
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.copy_rounded),
-                    title: const Text('Copy cover'),
-                    subtitle: const Text("Get the url from the cover"),
-                    onTap: () {
-                      Clipboard.setData(
-                        ClipboardData(
-                            text: KStream
-                                .streams[currentStationIndex].customUrlImage
-                                .toString()),
-                      );
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Copied.",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    },
+                ],
+              ),
+            );
+          });
+        });
+  }
+
+  void modalCopyOptions() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
+                    child: Center(
+                      child: Text(
+                        'Copy Options',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
                   ),
                   ListTile(
                     leading: const Icon(Icons.copy_rounded),
@@ -863,9 +944,11 @@ class _HomeState extends State<Home> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(6.0),
-                    child: Text(
-                      'Sleep timer',
-                      style: TextStyle(fontSize: 20),
+                    child: Center(
+                      child: Text(
+                        'Sleep Timer',
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
                   ),
                   CheckboxListTile(
@@ -982,7 +1065,7 @@ class _HomeState extends State<Home> {
               icon: Icon(enableSleepTimer
                   ? Icons.mode_night_rounded
                   : Icons.mode_night_outlined),
-            ),
+            ).animate().fadeIn(),
           ),
           IconButton(
             tooltip: 'Properties',
@@ -1066,49 +1149,115 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            opacity: .5,
-            image: NetworkImage(
-              KStream.streams[currentStationIndex].customUrlImage.toString(),
+      body: GestureDetector(
+        onDoubleTap: () {
+          setState(() {
+            showLike = true;
+          });
+          saveSong();
+          Future.delayed(const Duration(milliseconds: 900), () {
+            setState(() {
+              showLike = false;
+            });
+          });
+        },
+        onHorizontalDragUpdate: (details) {
+          double sens = 8.0;
+
+          if (details.delta.dx > sens) {
+            swipeNext = true;
+            swipePrevious = false;
+          } else if (details.delta.dx < sens) {
+            swipeNext = false;
+            swipePrevious = true;
+          }
+        },
+        onHorizontalDragEnd: (details) {
+          if (swipeNext) {
+            nextStation();
+            swipeNext = false;
+            swipePrevious = false;
+          }
+
+          if (swipePrevious) {
+            previousStation();
+            swipeNext = false;
+            swipePrevious = false;
+          }
+        },
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  opacity: .5,
+                  image: NetworkImage(
+                    KStream.streams[currentStationIndex].customUrlImage
+                        .toString(),
+                  ),
+                ),
+              ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                child: OrientationBuilder(
+                  builder: (context, orientation) {
+                    return orientation == Orientation.portrait
+                        ? SafeArea(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                playerCover(coverHeight, coverWidth),
+                                playerInformation(),
+                                playerController(),
+                              ],
+                            ),
+                          )
+                        : SafeArea(
+                            child: GridView.count(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1.45,
+                              children: [
+                                playerCover(coverHeight, coverWidth),
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    playerInformation(),
+                                    playerController(),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                  },
+                ),
+              ),
             ),
-          ),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-          child: OrientationBuilder(
-            builder: (context, orientation) {
-              return orientation == Orientation.portrait
-                  ? SafeArea(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          playerCover(coverHeight, coverWidth),
-                          playerInformation(),
-                          playerController(),
-                        ],
+            Visibility(
+              visible: showLike,
+              child: Center(
+                child: const Icon(
+                  Icons.favorite_rounded,
+                  size: 250,
+                )
+                    .animate()
+                    .shimmer()
+                    .shake(
+                        duration: Duration(
+                      milliseconds: 300,
+                    ))
+                    .fadeIn(
+                      duration: Duration(
+                        milliseconds: 300,
                       ),
-                  )
-                  : SafeArea(
-                    child: GridView.count(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1.45,
-                        children: [
-                          playerCover(coverHeight, coverWidth),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              playerInformation(),
-                              playerController(),
-                            ],
-                          ),
-                        ],
-                      ),
-                  );
-            },
-          ),
+                    )
+                    .fadeOut(
+                      delay: const Duration(milliseconds: 600),
+                    ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -1142,7 +1291,7 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-    );
+    ).animate().fadeIn();
   }
 
   Widget playerInformation() {
@@ -1184,7 +1333,7 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-    );
+    ).animate().fadeIn();
   }
 
   Widget playerController() {
@@ -1319,6 +1468,6 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-    );
+    ).animate().fadeIn();
   }
 }
