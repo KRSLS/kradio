@@ -10,7 +10,6 @@ import 'package:KRadio/history.dart';
 import 'package:KRadio/saved.dart';
 import 'package:KRadio/savedData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:KRadio/secure/secure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:KRadio/globalSettings.dart';
@@ -72,6 +71,10 @@ class _HomeState extends State<Home> {
 
   bool swipeNext = false;
   bool swipePrevious = false;
+
+  //Spotify
+  String? spotifyToken;
+  String? spotifyCoverUrl;
 
   @override
   void initState() {
@@ -141,6 +144,66 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<void> fetchToken() async {
+    String clientId = Secure.spotifyClientId;
+    String clientSecret = Secure.spotifyClientSecret;
+    String credentials =
+        Base64Encoder().convert(utf8.encode("$clientId:$clientSecret"));
+    String authorizationHeader = "Basic $credentials";
+    Map<String, String> headers = {"Authorization": authorizationHeader};
+    Map<String, String> body = {"grant_type": "client_credentials"};
+
+    try {
+      final url = Uri.parse("https://accounts.spotify.com/api/token");
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final accessToken = data["access_token"];
+        print("Access Token: $accessToken");
+        setState(() {
+          spotifyToken = accessToken;
+        });
+      } else {
+        throw Exception("Error: ${response.statusCode}");
+      }
+    } on Exception catch (e) {
+      print("Error fetching access token: $e");
+    }
+  }
+
+  Future<void> fetchCoverImage(
+      String searchFor, String songTitle, String songArtist) async {
+    // search with filters, results are much better
+    final url = Uri.parse(
+        "https://api.spotify.com/v1/search?q=$searchFor%2520track%3$songTitle%2520artist%3$songArtist&type=track");
+    // this is without filters, and might return wrong covers
+    // final url = Uri.parse(
+    //     "https://api.spotify.com/v1/search?q=$searchFor&type=track");
+    final headers = {"Authorization": "Bearer $spotifyToken"};
+
+    try {
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final tracks = data["tracks"]["items"] as List;
+
+        if (tracks.isNotEmpty) {
+          setState(() {
+            spotifyCoverUrl = tracks[0]["album"]["images"][0]["url"];
+          });
+        } else
+          print("Tracks is empty");
+      } else {
+        fetchToken();
+        throw Exception("Error: ${response.statusCode}");
+      }
+    } on Exception catch (e) {
+      print("Error fetching search results: $e");
+    }
   }
 
   Future<void> fetchRandomGif(bool setTag) async {
