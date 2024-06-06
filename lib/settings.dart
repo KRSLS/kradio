@@ -126,6 +126,18 @@ class _SettingsState extends State<Settings> {
                   }),
               const Divider(),
               SwitchListTile.adaptive(
+                  title: const Text("Use cover from Spotify"),
+                  subtitle: const Text(
+                      "Display song's cover from Spotify API."),
+                  value: GlobalSettings.useSongsCover,
+                  onChanged: (value) {
+                    setState(() {
+                      GlobalSettings.useSongsCover = value;
+                    });
+                    GlobalSettings.saveSettings();
+                  }),
+              const Divider(),
+              SwitchListTile.adaptive(
                   title: const Text('Show upcoming song'),
                   subtitle: const Text('Displays upcoming song information.'),
                   value: GlobalSettings.showNextSong,

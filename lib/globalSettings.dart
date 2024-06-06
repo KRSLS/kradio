@@ -8,6 +8,7 @@ class GlobalSettings {
   //Player Settings
   static int radioListIndex = 1;
   static bool appBarTitle = true;
+  static bool useSongsCover = false;
   static bool statusBarBackground = false;
   static bool showRunTime = true;
   static bool showProgressBar = true;
@@ -21,6 +22,7 @@ class GlobalSettings {
     radioListIndex = prefs.getInt('radioListIndex')!;
     statusBarBackground = prefs.getBool('statusBarBackground')!;
     appBarTitle = prefs.getBool('appBarTitle')!;
+    useSongsCover = prefs.getBool('useSongsCover')!;
     showRunTime = prefs.getBool('showRunTime')!;
     showProgressBar = prefs.getBool('showProgressBar')!;
     notifyInternetLoss = prefs.getBool('notifyInternetLoss')!;
@@ -83,6 +85,7 @@ class GlobalSettings {
     prefs.setInt('radioListIndex', radioListIndex);
     prefs.setBool('statusBarBackground', statusBarBackground);
     prefs.setBool('appBarTitle', appBarTitle);
+    prefs.setBool('useSongsCover', useSongsCover);
     prefs.setBool('showRunTime', showRunTime);
     prefs.setBool('showProgressBar', showProgressBar);
     prefs.setBool('notifyInternetLoss', notifyInternetLoss);

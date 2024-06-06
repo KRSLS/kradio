@@ -43,6 +43,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   RadioPlayer radioPlayer = RadioPlayer();
   bool isPlaying = false;
+  bool playerStarted = false;
 
   final headsetPlugin = HeadsetEvent();
   HeadsetState? headsetState;
@@ -308,14 +309,13 @@ class _HomeState extends State<Home> {
         currentStationIndex = index;
       }
     });
-    if (Platform.isAndroid) await radioPlayer.stop();
-    // await radioPlayer.pause();
+    if (playerStarted) await radioPlayer.stop();
+    if (!playerStarted) playerStarted = true;
     await radioPlayer.setChannel(
       title: KStream.streams[currentStationIndex].title,
       url: KStream.streams[currentStationIndex].url,
       imagePath: KStream.streams[currentStationIndex].customUrlImage,
     );
-
     await radioPlayer.play();
   }
 
@@ -1290,8 +1290,8 @@ class _HomeState extends State<Home> {
                   opacity: .5,
                   image: NetworkImage(
                     //cache image sometime
-                    KStream.streams[currentStationIndex].customUrlImage
-                        .toString(),
+                    GlobalSettings.useSongsCover ? spotifyCoverUrl.toString() :  KStream.streams[currentStationIndex].customUrlImage
+                    .toString(),
                   ),
                 ),
               ),
@@ -1378,7 +1378,7 @@ class _HomeState extends State<Home> {
               borderRadius: BorderRadius.circular(12),
               child: CachedNetworkImage(
                 fit: BoxFit.cover,
-                imageUrl: KStream.streams[currentStationIndex].customUrlImage
+                imageUrl: GlobalSettings.useSongsCover ? spotifyCoverUrl.toString() :  KStream.streams[currentStationIndex].customUrlImage
                     .toString(),
                 placeholder: (context, url) {
                   return Center(child: CircularProgressIndicator.adaptive());
