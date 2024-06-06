@@ -12,6 +12,7 @@ class GlobalSettings {
   static bool statusBarBackground = false;
   static bool showRunTime = true;
   static bool showProgressBar = true;
+  static bool swipe = false;
   static bool notifyInternetLoss = true;
   static bool showNextSong = true;
   static bool stopPlayerOnDeviceDisconnect = true;
@@ -25,6 +26,7 @@ class GlobalSettings {
     useSongsCover = prefs.getBool('useSongsCover')!;
     showRunTime = prefs.getBool('showRunTime')!;
     showProgressBar = prefs.getBool('showProgressBar')!;
+    swipe = prefs.getBool('swipe')!;
     notifyInternetLoss = prefs.getBool('notifyInternetLoss')!;
     showNextSong = prefs.getBool('showNextSong')!;
     stopPlayerOnDeviceDisconnect =
@@ -88,6 +90,7 @@ class GlobalSettings {
     prefs.setBool('useSongsCover', useSongsCover);
     prefs.setBool('showRunTime', showRunTime);
     prefs.setBool('showProgressBar', showProgressBar);
+    prefs.setBool('swipe', swipe);
     prefs.setBool('notifyInternetLoss', notifyInternetLoss);
     prefs.setBool('showNextSong', showNextSong);
     prefs.setBool('stopPlayerOnDeviceDisconnect', stopPlayerOnDeviceDisconnect);

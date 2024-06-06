@@ -390,8 +390,10 @@ class _HomeState extends State<Home> {
   void loadCurrentSongInformation() async {
     //Fetch album image every 3 seconds //will change
     Timer.periodic(const Duration(seconds: 3), (timer) async {
-      fetchCoverImage(currentSongTitle + currentSongArtist, currentSongTitle,
-          currentSongArtist);
+      if (GlobalSettings.useSongsCover) {
+        fetchCoverImage(currentSongTitle + currentSongArtist, currentSongTitle,
+            currentSongArtist);
+      }
     });
     String tempCurrentArtist = '';
     String tempCurrentSong = '';
@@ -1269,16 +1271,18 @@ class _HomeState extends State<Home> {
           }
         },
         onHorizontalDragEnd: (details) {
-          if (swipeNext) {
-            nextStation();
-            swipeNext = false;
-            swipePrevious = false;
-          }
+          if (GlobalSettings.swipe) {
+            if (swipeNext) {
+              nextStation();
+              swipeNext = false;
+              swipePrevious = false;
+            }
 
-          if (swipePrevious) {
-            previousStation();
-            swipeNext = false;
-            swipePrevious = false;
+            if (swipePrevious) {
+              previousStation();
+              swipeNext = false;
+              swipePrevious = false;
+            }
           }
         },
         child: Stack(
@@ -1290,8 +1294,10 @@ class _HomeState extends State<Home> {
                   opacity: .5,
                   image: NetworkImage(
                     //cache image sometime
-                    GlobalSettings.useSongsCover ? spotifyCoverUrl.toString() :  KStream.streams[currentStationIndex].customUrlImage
-                    .toString(),
+                    GlobalSettings.useSongsCover
+                        ? spotifyCoverUrl.toString()
+                        : KStream.streams[currentStationIndex].customUrlImage
+                            .toString(),
                   ),
                 ),
               ),
@@ -1378,8 +1384,10 @@ class _HomeState extends State<Home> {
               borderRadius: BorderRadius.circular(12),
               child: CachedNetworkImage(
                 fit: BoxFit.cover,
-                imageUrl: GlobalSettings.useSongsCover ? spotifyCoverUrl.toString() :  KStream.streams[currentStationIndex].customUrlImage
-                    .toString(),
+                imageUrl: GlobalSettings.useSongsCover
+                    ? spotifyCoverUrl.toString()
+                    : KStream.streams[currentStationIndex].customUrlImage
+                        .toString(),
                 placeholder: (context, url) {
                   return Center(child: CircularProgressIndicator.adaptive());
                 },

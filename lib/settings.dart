@@ -138,6 +138,18 @@ class _SettingsState extends State<Settings> {
                   }),
               const Divider(),
               SwitchListTile.adaptive(
+                  title: const Text("Swipe to change station"),
+                  subtitle: const Text(
+                      "Enable swipe left / right to change radio stations."),
+                  value: GlobalSettings.swipe,
+                  onChanged: (value) {
+                    setState(() {
+                      GlobalSettings.swipe = value;
+                    });
+                    GlobalSettings.saveSettings();
+                  }),
+              const Divider(),
+              SwitchListTile.adaptive(
                   title: const Text('Show upcoming song'),
                   subtitle: const Text('Displays upcoming song information.'),
                   value: GlobalSettings.showNextSong,
