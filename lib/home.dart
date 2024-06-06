@@ -1252,6 +1252,7 @@ class _HomeState extends State<Home> {
           setState(() {
             showLike = true;
           });
+          HapticFeedback.heavyImpact();
           saveSong();
           Future.delayed(const Duration(milliseconds: 900), () {
             setState(() {
