@@ -43,14 +43,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   RadioPlayer radioPlayer = RadioPlayer();
   bool isPlaying = false;
-  List<String>? metadata;
 
   final headsetPlugin = HeadsetEvent();
   HeadsetState? headsetState;
 
   int currentStationIndex = 0;
 
+  String currentSongArtist = '';
+  String currentSongTitle = '';
+  String currentSong = '';
+
   bool showNextSong = false;
+
   String nextSong = '';
   String songRuntime = '';
   DateTime songStartTime = DateTime.now();
@@ -90,6 +94,9 @@ class _HomeState extends State<Home> {
 
     //initialize radio player
     initRadioPlayer();
+
+    //load currents song information
+    loadCurrentSongInformation();
 
     //load the next song information
     loadNextSongInformation();
@@ -286,13 +293,6 @@ class _HomeState extends State<Home> {
         showNextSong = isPlaying;
       });
     });
-
-    //set a listener to get metadata from the radio url (icy)
-    radioPlayer.metadataStream.listen((value) {
-      setState(() {
-        metadata = value;
-      });
-    });
   }
 
   //change the current radio station with the provided index
@@ -386,6 +386,33 @@ class _HomeState extends State<Home> {
     });
   }
 
+  //this handles currents song information from xml
+  void loadCurrentSongInformation() async {
+    //Fetch album image every 3 seconds //will change
+    Timer.periodic(const Duration(seconds: 3), (timer) async {
+      fetchCoverImage(currentSongTitle + currentSongArtist, currentSongTitle,
+          currentSongArtist);
+    });
+    String tempCurrentArtist = '';
+    String tempCurrentSong = '';
+    Timer.periodic(const Duration(seconds: 1), (timer) async {
+      String url = KStream.streams[currentStationIndex].urlOnAir;
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final document = XmlDocument.parse(response.body);
+        final tempTitle =
+            document.findAllElements('Song').first.attributes.first.value;
+        final tempArtist =
+            document.findAllElements('Artist').first.attributes.first.value;
+
+        setState(() {
+          currentSongTitle = tempTitle;
+          currentSongArtist = tempArtist;
+        });
+      }
+    });
+  }
+
   //this handles the next song information from xml
   void loadNextSongInformation() async {
     String tempCurrentSong = '';
@@ -403,11 +430,11 @@ class _HomeState extends State<Home> {
 
         setState(() {
           nextSong = tempNextSongInformation.toString();
-          if (tempCurrentSong != metadata![1]) {
-            tempCurrentSong = metadata![1];
+          if (tempCurrentSong != currentSongTitle) {
+            tempCurrentSong = currentSongTitle;
             HistoryData.history.add(HistoryData(
                 id: HistoryData.history.length + 1,
-                songTitle: '${metadata![1]} - ${metadata![0]}',
+                songTitle: '$currentSongTitle - $currentSongArtist',
                 station: KStream.streams[currentStationIndex].title));
 
             GlobalSettings.saveSettings();
@@ -521,7 +548,8 @@ class _HomeState extends State<Home> {
     // check if theres another song saved with the same name
     for (var i = 0; i < SavedData.saved.length; i++) {
       // if there is not the allow the save
-      if (SavedData.saved[i].songTitle != "${metadata![1]} - ${metadata![0]}") {
+      if (SavedData.saved[i].songTitle !=
+          "$currentSongTitle - $currentSongArtist") {
         add = true;
       } else {
         // if there is then don't allow and break the loop
@@ -534,7 +562,7 @@ class _HomeState extends State<Home> {
       setState(() {
         SavedData.saved.add(SavedData(
             id: SavedData.saved.length + 1,
-            songTitle: "${metadata![1]} - ${metadata![0]}"));
+            songTitle: "$currentSongTitle - $currentSongArtist"));
       });
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context)
@@ -696,7 +724,8 @@ class _HomeState extends State<Home> {
                     title: const Text('Open with YouTube'),
                     subtitle: const Text('Search for the song on YouTube'),
                     onTap: () async {
-                      final searchFor = '${metadata![1]} - ${metadata![0]}';
+                      final searchFor =
+                          '"$currentSongTitle - $currentSongArtist")';
                       final Uri url = Uri.parse(
                           'https://www.youtube.com/results?search_query=$searchFor');
                       await launchUrl(url);
@@ -905,7 +934,7 @@ class _HomeState extends State<Home> {
                     subtitle: const Text('Copies the current song'),
                     onTap: () {
                       Clipboard.setData(ClipboardData(
-                          text: '${metadata?[0]} - ${metadata?[1]}'));
+                          text: "$currentSongTitle - $currentSongArtist"));
                       ScaffoldMessenger.of(context).clearSnackBars();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -1371,19 +1400,10 @@ class _HomeState extends State<Home> {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              metadata?[1] ?? '',
+              '$currentSongTitle - $currentSongArtist',
               overflow: TextOverflow.fade,
               maxLines: 2,
               style: const TextStyle(fontSize: 24),
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              metadata?[0] ?? '',
-              overflow: TextOverflow.fade,
-              maxLines: 2,
-              style: const TextStyle(fontSize: 16),
             ),
           ),
           Align(
