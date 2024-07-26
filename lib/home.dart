@@ -318,7 +318,7 @@ class _HomeState extends State<Home> {
       }
     });
   }
-
+ 
   //this handles the next song information from xml
   void loadNextSongInformation() async {
     String tempCurrentSong = '';

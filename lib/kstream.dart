@@ -41,7 +41,7 @@ class KStream {
       title: 'KISS 70s',
       url: 'https://netradio.live24.gr/kiss-web-70s',
       urlOnAir:
-          'https://deliver.siliconweb.com/kissfm/Webradios/70s/NowOnAir.xml  ',
+          'https://deliver.siliconweb.com/kissfm/Webradios/70s/NowOnAir.xml',
       urlNext:
           'https://deliver.siliconweb.com/kissfm/Webradios/70s/AirPlayNext.xml',
       urlImage:
